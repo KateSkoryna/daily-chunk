@@ -55,7 +55,9 @@ Not set up yet (phase 0). Fill this in once the project is created.
 - Clear, self-explaining names for variables, functions and components. No abbreviations like `w`, `r`, `p`, `tmp`.
 - Reuse components: if a UI pattern appears twice, make it a component.
 - Build reusable wrappers for shared behaviour (e.g. `Screen`, `HardShadow`, `PressableFocus`) instead of repeating styles or logic.
-- Keep state where it's used: put it in the lowest component that needs it; lift it only when siblings share it. Global stores only for app-wide data (profile, words, progress).
+- Use component composition: build with `children` and slots (e.g. `<Card><Card.Header/>…</Card>`, `<TopBar left={…} right={…}/>`) instead of one component with many config props. Prefer compound components for related parts (`SegmentedTabs` + `SegmentedTabs.Tab`).
+- Make reusable UI components controlled: they take `value` / `selected` / `checked` and report changes with `onChange` / `onSelect` / `onToggle`; they don't own that state. Examples: `Switch`, `SegmentedTabs`, `ArticlePicker`, `OptionGrid`, `WordCard` (`isFlipped` + `onFlip`).
+- Keep state where it's used: the lowest screen or feature component that needs it owns it and passes it to the controlled components. Lift it only when siblings share it. Global stores only for app-wide data (profile, words, progress).
 
 ## Language rules (must follow)
 
