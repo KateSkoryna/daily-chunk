@@ -1,0 +1,230 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Account.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "My account",
+      "w": 390,
+      "x": 1830,
+      "y": 2528
+    },
+    "Confirm.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S2 Confirm words",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Done.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S9 Lesson done",
+      "w": 390,
+      "x": 470,
+      "y": 1264
+    },
+    "Flashcards.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S3 Task 1 · Flashcards",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "GapFill.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S7 Task 5 · Gap fill",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    },
+    "Lessons.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Tab · Lessons",
+      "w": 390,
+      "x": 2300,
+      "y": 2528
+    },
+    "Listen.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S4 Task 2 · Listen & shadow",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Logo.dc.html": {
+      "h": 900,
+      "title": "Logo · 3 directions",
+      "w": 1280,
+      "x": 0,
+      "y": 2528
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S1 Home · Add words",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Menu.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Burger menu (open)",
+      "w": 390,
+      "x": 1360,
+      "y": 2528
+    },
+    "Notifications.dc.html": {
+      "h": 844,
+      "title": "Push & home widgets",
+      "w": 390,
+      "x": 2820,
+      "y": 1264
+    },
+    "Read.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S5 Task 3 · Read the story",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Record.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S6 Task 4 · Read aloud",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "Review.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S10 Review",
+      "w": 390,
+      "x": 940,
+      "y": 1264
+    },
+    "Score.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Tab · Score",
+      "w": 390,
+      "x": 2770,
+      "y": 2528
+    },
+    "Settings.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S13 Settings",
+      "w": 390,
+      "x": 2350,
+      "y": 1264
+    },
+    "Stats.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Tab · Stats",
+      "w": 390,
+      "x": 3240,
+      "y": 2528
+    },
+    "Test.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S12 Boss round",
+      "w": 390,
+      "x": 1880,
+      "y": 1264
+    },
+    "Translate.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S8 Task 6 · RU → DE",
+      "w": 390,
+      "x": 0,
+      "y": 1264
+    },
+    "WordBank.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S11 Word bank",
+      "w": 390,
+      "x": 1410,
+      "y": 1264
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-30T16:05:00Z",
+    "v": 1
+  },
+  "designSystems": [
+    {
+      "artifact": "https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8",
+      "copiedAt": "2026-10-30T16:05:00Z",
+      "namespace": "dailywort",
+      "title": "Daily Wort",
+      "version": "1793375736-e038"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Add words → lesson tasks 1–5",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Task 6, review, tests, settings, notifications",
+      "w": 240,
+      "x": 0,
+      "y": 964
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 3630,
+      "text": "Daily Chunk: logo, burger menu, bottom tabs",
+      "w": 240,
+      "x": 0,
+      "y": 2228
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Confirm.dc.html",
+    "Flashcards.dc.html",
+    "Listen.dc.html",
+    "Read.dc.html",
+    "Record.dc.html",
+    "GapFill.dc.html",
+    "Translate.dc.html",
+    "Done.dc.html",
+    "Review.dc.html",
+    "WordBank.dc.html",
+    "Test.dc.html",
+    "Settings.dc.html",
+    "Notifications.dc.html",
+    "Logo.dc.html",
+    "Menu.dc.html",
+    "Account.dc.html",
+    "Lessons.dc.html",
+    "Score.dc.html",
+    "Stats.dc.html"
+  ],
+  "pages": [],
+  "title": "Daily Chunk Mobile"
+}

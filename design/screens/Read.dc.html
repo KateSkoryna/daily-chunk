@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Task 3 Read the story</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=VT323&amp;family=Pixelify+Sans&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 48px 24px 16px; display: flex; flex-direction: column; gap: 16px; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'VT323', 'Pixelify Sans', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 24px; letter-spacing: 2px">
+<a href="Listen.dc.html" aria-label="Back" style="display: flex; align-items: center; gap: 8px; min-height: 44px; color: #2EE6D6"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M10 2 L4 8 L10 14"></path></svg><span>BACK</span></a>
+<button type="button" onClick="{{toggleRu}}" aria-pressed="{{ruPressed}}" style="min-height: 44px; padding: 0 12px; background: transparent; border: 2px solid #7A6CC4; color: #F3EFE6; font-size: 20px; letter-spacing: 2px; cursor: pointer">{{ruLabel}}</button>
+</div>
+<div role="progressbar" aria-label="Lesson step 3 of 6" aria-valuemin="1" aria-valuemax="6" aria-valuenow="3" style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 20px; letter-spacing: 2px"><span style="color: #FF3D8B">03 / READ THE STORY</span><span style="color: #A9A3C2">+40 XP</span></div>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px"><i style="display: block; height: 8px; background: #2EE6D6; border-radius: 2px"></i><i style="display: block; height: 8px; background: #2EE6D6; border-radius: 2px"></i><i style="display: block; height: 8px; background: #FFD23F; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i></div>
+</div>
+<h2 style="margin: 0; font-family: 'Bungee', sans-serif; font-weight: 400; font-size: 24px; line-height: 1.1">DER LETZTE ZUG</h2>
+<div style="position: relative; display: flex; flex-direction: column; gap: 10px; font-family: 'IBM Plex Sans', sans-serif; font-size: 20px; line-height: 32px">
+<p style="margin: 0">Anna steht am <span style="border-bottom: 3px solid #5AA9FF">Bahnhof</span>. Ihr Zug ist wieder <span style="border-bottom: 3px solid #A9A3C2">verspätet</span>.</p>
+<sc-if value="{{ru}}" hint-placeholder-val="{{false}}"><p style="margin: -6px 0 0; font-size: 15px; line-height: 22px; color: #A9A3C2">Анна стоит на вокзале. Её поезд снова опаздывает.</p></sc-if>
+<p style="margin: 0">Sie sucht ihre <span style="border-bottom: 3px solid #FF6B6B; background: #3A2030">Fahrkarte</span> in der Tasche.</p>
+<div role="dialog" aria-label="Word: die Fahrkarte" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #251E48; border: 2px solid #FF6B6B; box-shadow: 4px 4px 0 #FF3D8B">
+<span style="display: flex; align-items: center; height: 28px; padding: 0 8px; background: #FF6B6B; color: #120E24; font-weight: 600; font-size: 15px">die</span>
+<span style="flex: 1; display: flex; flex-direction: column; line-height: 22px"><span style="font-weight: 600; font-size: 18px">die Fahrkarte</span><span style="font-size: 15px; color: #A9A3C2">билет · Pl. die Fahrkarten</span></span>
+<button type="button" aria-label="Play die Fahrkarte" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 2px solid #2EE6D6; color: #2EE6D6; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z M17 9a4 4 0 0 1 0 6"></path></svg></button>
+</div>
+<p style="margin: 0">Endlich hört sie: „Der Zug nach Berlin fährt von <span style="border-bottom: 3px solid #4ADE80">Gleis</span> drei.“ Anna lacht und läuft los.</p>
+</div>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 18px; color: #A9A3C2">TAP AN UNDERLINED WORD FOR ITS CARD</div>
+<a href="Record.dc.html" style="display: flex; align-items: center; justify-content: center; height: 64px; background: #FFD23F; color: #120E24; font-family: 'Bungee', sans-serif; font-size: 20px; box-shadow: 4px 4px 0 #FF3D8B">NOW READ IT ALOUD</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+state = { ru: false };
+renderVals() {
+const on = this.state.ru;
+return { ru: on, ruPressed: on ? 'true' : 'false', ruLabel: on ? 'RU ON' : 'RU OFF', toggleRu: () => this.setState({ ru: !on }) };
+}
+}
+</script>
+</body>
+</html>

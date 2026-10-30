@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Score and ranks</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=VT323&amp;family=Pixelify+Sans&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 48px 24px 0; display: flex; flex-direction: column; gap: 12px; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'VT323', 'Pixelify Sans', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<a href="Menu.dc.html" aria-label="Open menu" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border: 2px solid #7A6CC4; color: #F3EFE6"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"></path></svg></a>
+<svg width="40" height="40" viewBox="0 0 24 24" role="img" aria-label="Daily Chunk"><polygon points="13,2 15.94,8.95 23.46,9.6 17.76,14.55 19.47,21.9 13,18 6.53,21.9 8.24,14.55 2.54,9.6 10.06,8.95" fill="#FF3D8B"></polygon><polygon points="12,1 14.94,7.95 22.46,8.6 16.76,13.55 18.47,20.9 12,17 5.53,20.9 7.24,13.55 1.54,8.6 9.06,7.95" fill="#FFD23F"></polygon><circle cx="12" cy="12.4" r="4.6" fill="#120E24"></circle><text x="12" y="14.1" text-anchor="middle" font-family="Bungee, sans-serif" font-size="4.6" fill="#F3EFE6">DC</text></svg>
+<span style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-size: 18px; letter-spacing: 1px; color: #2EE6D6"><span><span style="font-family: 'Bungee', sans-serif; font-size: 16px; color: #FFD23F">1240</span> XP</span><span>STREAK 13</span></span>
+</div>
+<h1 style="margin: 0; font-family: 'Bungee', sans-serif; font-weight: 400; font-size: 34px; line-height: 1; text-shadow: 3px 0 #FF3D8B, -3px 0 #2EE6D6">YOUR RANK</h1>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #1B1636; border: 2px solid #FFD23F; box-shadow: 6px 6px 0 #FF3D8B">
+<div style="display: flex; align-items: center; gap: 14px">
+<svg width="64" height="64" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1 14.94,7.95 22.46,8.6 16.76,13.55 18.47,20.9 12,17 5.53,20.9 7.24,13.55 1.54,8.6 9.06,7.95" fill="#FFD23F"></polygon><circle cx="12" cy="12.4" r="4.6" fill="#120E24"></circle><text x="12" y="14.2" text-anchor="middle" font-family="Bungee, sans-serif" font-size="5" fill="#FFD23F">II</text></svg>
+<span style="display: flex; flex-direction: column; gap: 2px; line-height: 1"><span style="font-size: 20px; color: #A9A3C2; letter-spacing: 2px">RANK 2 OF 8</span><span style="font-family: 'Bungee', sans-serif; font-size: 24px; line-height: 26px">TEXAS<br>RANGER</span></span>
+</div>
+<div role="progressbar" aria-label="13 of 20 lessons to Sergeant Painful" aria-valuemin="10" aria-valuemax="20" aria-valuenow="13" style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px">
+<i style="display: block; height: 12px; background: #2EE6D6"></i><i style="display: block; height: 12px; background: #2EE6D6"></i><i style="display: block; height: 12px; background: #2EE6D6"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i><i style="display: block; height: 12px; background: #251E48"></i>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 19px; color: #A9A3C2"><span>13 LESSONS · 7 TO GO</span><span>NEXT: SGT. PAINFUL</span></div>
+</div>
+<div style="font-size: 22px; color: #FF3D8B; letter-spacing: 2px">THE RANKS · 1 PER 10 LESSONS</div>
+<ol aria-label="Rank ladder" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border: 2px solid #5A4E96">
+<sc-for list="{{ranks}}" as="r" hint-placeholder-count="8">
+<li style="{{r.row}}">
+<span style="width: 34px; flex: none; font-family: 'Bungee', sans-serif; font-size: 14px; color: {{r.numColor}}">{{r.at}}</span>
+<span style="flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; overflow: hidden"><span style="font-size: 21px; letter-spacing: 2px">{{r.name}}</span></span>
+<span style="font-size: 18px; color: {{r.tagColor}}">{{r.tag}}</span>
+</li>
+</sc-for>
+</ol>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: #1B1636; border: 2px solid #5A4E96"><i style="display: block; width: 20px; height: 20px; background: #2EE6D6; box-shadow: 3px 3px 0 #FF3D8B"></i><span style="font-size: 16px">7-DAY STREAK</span></div>
+<div style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: #1B1636; border: 2px solid #5A4E96"><i style="display: block; width: 20px; height: 20px; background: #5AA9FF; box-shadow: 3px 3px 0 #FF3D8B"></i><span style="font-size: 16px">ARTICLE ACE</span></div>
+<div style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: #1B1636; border: 2px solid #5A4E96"><i style="display: block; width: 20px; height: 20px; background: #FF3D8B; box-shadow: 3px 3px 0 #FFD23F"></i><span style="font-size: 16px">BOSS 2 DOWN</span></div>
+</div>
+<nav aria-label="Main" style="margin: auto -24px 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-bottom: 16px; border-top: 2px solid #5A4E96; background: #120E24">
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; font-size: 18px; letter-spacing: 2px; color: #A9A3C2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M3 11 L12 4 L21 11 V20 H3 Z M10 20 V14 H14 V20"></path></svg>HOME</a>
+<a href="Lessons.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; font-size: 18px; letter-spacing: 2px; color: #A9A3C2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M3 5 H10 a2 2 0 0 1 2 2 V20 a2 2 0 0 0 -2 -2 H3 Z M21 5 H14 a2 2 0 0 0 -2 2 V20 a2 2 0 0 1 2 -2 H21 Z"></path></svg>LESSONS</a>
+<a href="Score.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; font-size: 18px; letter-spacing: 2px; color: #FFD23F; box-shadow: inset 0 3px 0 #FFD23F"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M7 4 H17 V10 a5 5 0 0 1 -10 0 Z M7 6 H4 V8 a3 3 0 0 0 3 3 M17 6 H20 V8 a3 3 0 0 1 -3 3 M12 15 V19 M8 20 H16"></path></svg>SCORE</a>
+<a href="Stats.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; font-size: 18px; letter-spacing: 2px; color: #A9A3C2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 20 V13 M11 20 V6 M17 20 V10 M2 21 H22"></path></svg>STATS</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const done = 13;
+const list = [
+[0, 'ROOKIE RECRUIT', ''],
+[10, 'TEXAS RANGER', ''],
+[20, 'SERGEANT PAINFUL', ''],
+[30, 'LIEUTENANT MACHO-NEY', ''],
+[40, 'CAPTAIN MARVELOUS', ''],
+[50, 'MAJOR TROUBLE', ''],
+[60, 'SHERIFF NO-MERCY', ''],
+[70, 'CHIEF CHUNK', '']
+];
+const ranks = list.map((r, i) => {
+const next = list[i + 1] ? list[i + 1][0] : Infinity;
+const current = done >= r[0] && done < next;
+const earned = done >= next;
+return {
+at: String(r[0]),
+name: r[1],
+meaning: r[2],
+tag: current ? '◀ YOU' : earned ? '✓' : (r[0] - done) + ' TO GO',
+tagColor: current ? '#FFD23F' : earned ? '#2EE6D6' : '#A9A3C2',
+numColor: current ? '#120E24' : '#A9A3C2',
+row: 'display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px; ' + (i ? 'border-top: 2px solid #251E48; ' : '') + (current ? 'background: #FFD23F; color: #120E24;' : earned ? 'color: #F3EFE6;' : 'color: #A9A3C2;')
+};
+});
+ranks.forEach((r) => { if (r.tag === '◀ YOU') r.tagColor = '#120E24'; });
+return { ranks };
+}
+}
+</script>
+</body>
+</html>

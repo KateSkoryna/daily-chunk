@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=VT323&amp;family=Pixelify+Sans&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 48px 24px 16px; display: flex; flex-direction: column; gap: 14px; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'VT323', 'Pixelify Sans', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 24px; letter-spacing: 2px">
+<a href="WordBank.dc.html" aria-label="Back" style="display: flex; align-items: center; gap: 8px; min-height: 44px; color: #2EE6D6"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M10 2 L4 8 L10 14"></path></svg><span>BACK</span></a>
+</div>
+<h1 style="margin: 0; font-family: 'Bungee', sans-serif; font-weight: 400; font-size: 34px; line-height: 1; text-shadow: 3px 0 #FF3D8B, -3px 0 #2EE6D6">SETTINGS</h1>
+<div style="font-size: 22px; color: #FF3D8B; letter-spacing: 2px">01 / CHUNK MODE</div>
+<div role="radiogroup" aria-label="Chunk mode" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{tutors}}" as="t" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{t.checked}}" onClick="{{t.pick}}" style="{{t.style}}">
+<span style="font-size: 22px; letter-spacing: 2px">{{t.name}}</span>
+<span style="font-size: 19px; line-height: 1.05; opacity: 0.85">{{t.line}}</span>
+</button>
+</sc-for>
+</div>
+<div style="font-size: 22px; color: #FF3D8B; letter-spacing: 2px; margin-top: 4px">02 / NOTIFICATIONS</div>
+<div style="display: flex; flex-direction: column; border: 2px solid #5A4E96">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 12px">
+<span style="display: flex; flex-direction: column"><span>DAILY DIGEST</span><span style="font-size: 18px; color: #A9A3C2">All due words, once a day</span></span>
+<button type="button" aria-label="Digest time, 08:30" style="min-width: 88px; height: 44px; background: #1B1636; border: 2px solid #2EE6D6; color: #2EE6D6; font-size: 22px; cursor: pointer">08:30</button>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 12px; border-top: 2px solid #5A4E96">
+<span style="display: flex; flex-direction: column"><span>WORD OF THE MOMENT</span><span style="font-size: 18px; color: #A9A3C2">{{wotmHint}}</span></span>
+<button type="button" role="switch" aria-checked="{{wotmChecked}}" aria-label="Word of the moment" onClick="{{toggleWotm}}" style="{{switchStyle}}"><i style="{{knobStyle}}"></i></button>
+</div>
+</div>
+<div style="font-size: 22px; color: #FF3D8B; letter-spacing: 2px; margin-top: 4px">03 / LANGUAGE &amp; AUDIO</div>
+<div style="display: flex; flex-direction: column; border: 2px solid #5A4E96">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 52px; padding: 0 12px"><span>APP LANGUAGE</span><span style="color: #2EE6D6">ENGLISH ›</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 52px; padding: 0 12px; border-top: 2px solid #5A4E96"><span>AUDIO VOICE</span><span style="color: #2EE6D6">FEMALE · BERLIN ›</span></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+state = { tutor: 'full', wotm: true };
+renderVals() {
+const s = this.state;
+const tutors = [
+['full', 'FULL CHUNK', '"Der, die, das ask Chunk which one they are."'],
+['mild', 'MILD CHUNK', 'One joke per lesson, more encouragement.'],
+['quiet', 'QUIET CHUNK', 'Only a short line at lesson start.']
+].map((t) => {
+const on = s.tutor === t[0];
+return {
+name: (on ? '● ' : '○ ') + t[1], line: t[2], checked: on ? 'true' : 'false',
+pick: () => this.setState({ tutor: t[0] }),
+style: 'min-height: 64px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 8px 12px; text-align: left; cursor: pointer; ' + (on ? 'background: #FFD23F; color: #120E24; border: 2px solid #FFD23F; box-shadow: 4px 4px 0 #FF3D8B;' : 'background: #1B1636; color: #F3EFE6; border: 2px solid #7A6CC4;')
+};
+});
+return {
+tutors,
+wotmChecked: s.wotm ? 'true' : 'false',
+wotmHint: s.wotm ? '3 times a day, 10:00–20:00' : 'Off',
+toggleWotm: () => this.setState({ wotm: !s.wotm }),
+switchStyle: 'position: relative; width: 64px; height: 36px; padding: 0; cursor: pointer; border: 2px solid ' + (s.wotm ? '#2EE6D6' : '#7A6CC4') + '; background: ' + (s.wotm ? '#2EE6D6' : '#1B1636') + ';',
+knobStyle: 'position: absolute; top: 4px; left: ' + (s.wotm ? '32px' : '4px') + '; width: 24px; height: 24px; background: ' + (s.wotm ? '#120E24' : '#A9A3C2') + ';'
+};
+}
+}
+</script>
+</body>
+</html>

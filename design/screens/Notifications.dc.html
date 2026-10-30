@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Push notifications and home widgets</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=VT323&amp;family=Pixelify+Sans&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 40px 16px 24px; display: flex; flex-direction: column; gap: 12px; background: #0A0816; color: #F3EFE6; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+<div style="font-family: 'VT323', monospace; font-size: 22px; letter-spacing: 2px; color: #A9A3C2">LOCK SCREEN · PUSH</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; background: #2A2540; border-radius: 18px">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #A9A3C2"><span style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: #120E24; border: 1px solid #FFD23F; color: #FFD23F; font-family: 'Bungee', sans-serif; font-size: 10px; border-radius: 5px">C</span><span style="flex: 1">DAILY CHUNK · DAILY DIGEST</span><span>08:30</span></div>
+<div style="font-weight: 600; font-size: 15px">5 words are due today</div>
+<div style="font-size: 14px; line-height: 20px; color: #D9D4E8">Chunk finished tomorrow's reviews yesterday. Your turn: der Kühlschrank, die Fahrkarte and 3 more. About 3 minutes.</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; background: #2A2540; border-radius: 18px">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #A9A3C2"><span style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: #120E24; border: 1px solid #FFD23F; color: #FFD23F; font-family: 'Bungee', sans-serif; font-size: 10px; border-radius: 5px">C</span><span style="flex: 1">DAILY CHUNK · WORD OF THE MOMENT</span><span>14:10</span></div>
+<div style="font-weight: 600; font-size: 15px"><span style="color: #5AA9FF">der</span> Bahnhof · <span style="font-weight: 400; color: #D9D4E8">вокзал</span></div>
+<div style="font-size: 14px; line-height: 20px; color: #D9D4E8">Pl. die Bahnhöfe. „Ich warte am Bahnhof.“</div>
+</div>
+<div style="font-family: 'VT323', monospace; font-size: 22px; letter-spacing: 2px; color: #A9A3C2; margin-top: 10px">HOME SCREEN WIDGETS</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<div aria-label="Small widget: word of the moment" style="height: 170px; box-sizing: border-box; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); border: 2px solid #2EE6D6; border-radius: 22px">
+<span style="font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px; color: #FF3D8B">WORD NOW</span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="align-self: flex-start; padding: 0 6px; background: #4ADE80; color: #120E24; font-weight: 600; font-size: 13px; line-height: 22px">das</span><span style="font-weight: 600; font-size: 22px; line-height: 26px">Gleis</span><span style="font-size: 13px; color: #A9A3C2">путь, платформа</span></span>
+</div>
+<div aria-label="Small widget: streak" style="height: 170px; box-sizing: border-box; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; background: #FFD23F; color: #120E24; border-radius: 22px">
+<span style="font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px">STREAK</span>
+<span style="font-family: 'Bungee', sans-serif; font-size: 46px; line-height: 1">13</span>
+<span style="font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 1px">DAYS · DON'T BREAK IT</span>
+</div>
+</div>
+<div aria-label="Medium widget: today" style="height: 170px; box-sizing: border-box; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); border: 2px solid #5A4E96; border-radius: 22px; font-family: 'VT323', monospace">
+<div style="display: flex; justify-content: space-between; font-size: 20px; letter-spacing: 2px"><span style="font-family: 'Bungee', sans-serif; font-size: 16px; text-shadow: 2px 0 #FF3D8B, -2px 0 #2EE6D6">DAILY CHUNK</span><span style="color: #FFD23F">1240 XP</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center">
+<span style="display: flex; flex-direction: column; padding: 6px 0; background: #1B1636"><span style="font-family: 'Bungee', sans-serif; font-size: 20px; color: #FF3D8B">5</span><span style="font-size: 16px; color: #A9A3C2">DUE</span></span>
+<span style="display: flex; flex-direction: column; padding: 6px 0; background: #1B1636"><span style="font-family: 'Bungee', sans-serif; font-size: 20px; color: #2EE6D6">4/5</span><span style="font-size: 16px; color: #A9A3C2">TO BOSS</span></span>
+<span style="display: flex; flex-direction: column; padding: 6px 0; background: #1B1636"><span style="font-family: 'Bungee', sans-serif; font-size: 20px; color: #F3EFE6">31</span><span style="font-size: 16px; color: #A9A3C2">LEARNED</span></span>
+</div>
+<a href="Main.dc.html" style="display: flex; align-items: center; justify-content: center; height: 40px; background: #FFD23F; color: #120E24; font-family: 'Bungee', sans-serif; font-size: 14px">+ ADD TODAY'S WORDS</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
