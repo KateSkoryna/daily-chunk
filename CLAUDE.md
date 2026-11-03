@@ -2,14 +2,14 @@
 
 Mobile-first vocabulary trainer. **v1: target language German; native language Russian or English.** Must stay open to more languages (rules below). The user adds the words they met today; the app normalises them and runs a 6-task lesson (flashcards → listen & shadow → read story → read aloud → gap fill → RU→DE), then spaced repetition and a Boss round every 5th lesson. A tutor character, "Chunk", speaks in short dry one-liners.
 
-**Status:** planning. See `plan.md` for phases, open decisions (D1–D7) and the screen/route map. Don't start a phase until the user asks.
+**Status:** decisions confirmed (`plan.md` §2), phase 0 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Don't start a phase until the user asks.
 
 ## Index
 
 | Path | What |
 | --- | --- |
 | `DESIGN.md` | **Design system, single source of truth for visuals**: tokens (rem), shadcn variable mapping, type scale, components, NativeWind config |
-| `plan.md` | Implementation plan, decisions, screen → route table, component inventory |
+| `plan.md` | Implementation plan: decisions, repo layout, CI/CD, how we work, phases, screen → route table, component inventory |
 | `design/screens/*.dc.html` | The 20 designed screens (390×844), one file each. Markup + inline styles + a `<script data-dc-script>` block with the demo state logic |
 | `design/screens/canvas.json` | Screen titles and order (S1–S13 + tabs, menu, account, logo, notifications) |
 | `design/system/README.md` | Original design system brand book (reference for DESIGN.md): product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y |
@@ -23,23 +23,38 @@ Design links: screens https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-60
 - `DESIGN.md` = **how it looks**: tokens, component styling and states, layout, icons, a11y. Read it before building any UI.
 - Disagreement: *what* → screens, *how it looks* → `DESIGN.md`. Never copy inline px/hex values from a `.dc.html`; map them to `DESIGN.md` tokens and components. Conflict list in `plan.md` §3.
 
-## Planned stack (confirm D1–D5 in plan.md first)
+## Stack (plan.md §2)
 
-Expo (React Native) + TypeScript + Expo Router, NativeWind v4 + React Native Reusables (shadcn), `react-native-svg` for icons, Zustand, `expo-sqlite`, small backend for AI calls. Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
+Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
 
-Planned layout:
+Layout:
 ```
-app/                 Expo Router routes: (tabs)/, lesson/, review, word-bank, boss, settings, account
-global.css           CSS variables from DESIGN.md §10.1
-tailwind.config.js   theme from DESIGN.md §10.2
-src/theme/           fonts, HardShadow, Scanlines
-src/components/ui/   React Native Reusables components, restyled per DESIGN.md §9
-src/components/      primitives + app components (see plan.md §5)
-src/features/        words, lesson, srs, review, boss, stats, settings
-src/mocks/           demo content copied from the design screens
-src/languages/       language packs: de/ (target rules), ru/, en/ (native)
-src/i18n/            EN / RU UI strings, incl. Chunk's lines
+apps/app/                Expo app + Storybook (.storybook/)
+  app/                   Expo Router routes: (tabs)/, lesson/, review, word-bank, boss, settings, account
+  global.css             CSS variables from DESIGN.md §10.1
+  tailwind.config.js     theme from DESIGN.md §10.2
+  src/theme/             fonts, HardShadow, Scanlines
+  src/components/ui/     React Native Reusables components, restyled per DESIGN.md §9
+  src/components/        primitives + app components (see plan.md §5)
+  src/features/          words, lesson, srs, review, boss, stats, settings
+  src/mocks/             demo content copied from the design screens
+apps/extension/          WXT browser extension (later)
+packages/core/           domain types, SRS, lesson generator, AI request/response types
+packages/languages/      language packs: de/ (target rules), ru/, en/ (native)
+packages/i18n/           EN / RU UI strings, incl. Chunk's lines
+supabase/                migrations, Edge Functions
+docs/learn/, docs/tasks/ learning notes and the owner's learning tasks
 ```
+
+Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/languages/` and `packages/i18n/`; `src/components/` means `apps/app/src/components/`.
+
+## Workflow (must follow, plan.md §2d)
+
+- Every component and screen gets a story (`*.stories.tsx`) next to its meta. Stories are the component tests.
+- One step per branch. Before handing a step to the user: run tests, then a reviewer subagent with a fresh context checks tests/lint/typecheck, design rules + metas, language rules, and a browser run against the `.dc.html`. Fix its findings first.
+- When a learning task in `docs/tasks/` is open, tell the user, don't touch its files, keep building other parts. Review it when the user says "check".
+- Explain new concepts in chat when they first come up and add a short `docs/learn/<topic>.md` note in the same branch.
+- Shared packages export TypeScript source; every consumer lists the packages it imports in its `package.json`.
 
 ## Commands
 
@@ -76,9 +91,9 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 ## Language rules (must follow)
 
 - Three settings: `targetLang` (v1 `de`), `nativeLang` (`ru` | `en`), `uiLang` (`en` | `ru`, defaults to native).
-- No German/Russian/English logic outside `src/languages/`. Articles, genders, noun display, typing alternatives (ae→ä…), grammar tips and TTS voices come from the target pack.
+- No German/Russian/English logic outside `packages/languages/`. Articles, genders, noun display, typing alternatives (ae→ä…), grammar tips and TTS voices come from the target pack.
 - Components use semantic gender roles (`gender-masc/fem/neut/plural`), not `der/die/das`. The pack maps roles to article words and the design's article colours.
-- No user-visible string in components: everything goes through `src/i18n/`.
+- No user-visible string in components: everything goes through `packages/i18n/`.
 - Translations are stored per native language (`translations.ru`, `translations.en`). Never a `ru` field on its own.
 - Labels built from the pair, e.g. task 6 = `RU → DE` / `EN → DE`.
 - Every backend call passes `{ targetLang, nativeLang }`.
