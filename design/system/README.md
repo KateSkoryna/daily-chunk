@@ -1,6 +1,6 @@
-# Daily Wort
+# Daily Chunk
 
-A German vocabulary trainer for Russian speakers, in the arcade-night look of Daily Chuck. You drop in the words you heard today; the app finds article, plural and translation, then runs a short lesson built from them. "Daily Wort" is a working title.
+A German vocabulary trainer for Russian speakers, in the "Arcade Night" look. You drop in the words you heard today; the app finds article, plural and translation, then runs a short lesson built from them.
 
 ## 1. Product in one screen
 
@@ -38,7 +38,7 @@ A German vocabulary trainer for Russian speakers, in the arcade-night look of Da
 | S12 | Boss round test | 3 parts, score at the end. | Same, 720px column. |
 | S13 | Settings | Tutor persona, digest time, word-of-the-moment on/off, voice for audio. | Same. |
 
-Navigation: mobile bottom TabBar with **WORDS · LEARN · REVIEW · ME**; desktop ≥1024px the same four items in a 240px left rail.
+Navigation: mobile bottom TabBar with **HOME · LESSONS · SCORE · STATS** (plus a burger menu); desktop ≥1024px the same four items in a 240px left rail.
 
 ## 3. Visual foundations
 
