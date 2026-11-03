@@ -6,19 +6,20 @@ Status: **planning only, nothing implemented yet.**
 
 A mobile-first vocabulary trainer. **v1: learn German, with Russian or English as the native language.** Built so more languages can be added later (see section 2a). The user types or dictates the words they met today; the app normalises them (dictionary form, article, plural, Russian translation), the user confirms, and the app builds a 6-task lesson from them. Words then go into spaced repetition (1, 3, 7, 14, 30 days). Every 5th lesson unlocks a "Boss round" test. A tutor character ("Chunk") speaks in short, dry one-liners.
 
-Look: "Arcade Night": dark only, scanline ground, square corners, hard pink offset shadows, Bungee / VT323 / IBM Plex Sans.
+Look: "Arcade Night": dark only, scanline ground, square corners, hard pink offset shadows, Bungee / VT323 / IBM Plex Sans. Full visual spec: [`DESIGN.md`](DESIGN.md).
 
 ### Sources (copied into `design/`)
 
 | Source | Link | Local copy |
 | --- | --- | --- |
 | Screens canvas "Daily Chunk Mobile" (20 artboards, 390×844) | https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-6097f560f8d7 | `design/screens/*.dc.html`, `design/screens/canvas.json` |
-| Design system "Daily Wort" | https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8 | `design/system/README.md`, `design/system/tokens.json`, `design/system/components/*.md` |
+| Design system | https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8 | `design/system/README.md`, `design/system/tokens.json`, `design/system/components/*.md` |
+| Design spec (single source of truth for visuals) | — | [`DESIGN.md`](DESIGN.md), built from the design system above |
 
 **How to use each source:**
 - **Canvas = logic and content.** Which screens exist, what is on each one, the flow between them, navigation structure, copy, demo data, interactive behaviour (the `<script data-dc-script>` blocks).
-- **Design system = visual reference.** Colours, type scale, spacing, radii, shadows, component anatomy and states, layout grid, tablet/desktop layouts, icon style, accessibility rules.
-- When they disagree: *what* is shown → canvas; *how* it looks → design system. Known conflicts are in section 3.
+- **`DESIGN.md` = how it looks.** Colours, type scale, spacing (rem), radii, shadows, sizes, breakpoints, motion, the shadcn token mapping, component styling, icon style, accessibility rules. `design/system/` is the original reference it was built from.
+- When they disagree: *what* is shown → canvas; *how* it looks → `DESIGN.md`. Known conflicts are in section 3.
 
 ## 2. Decisions to confirm before coding
 
@@ -27,13 +28,12 @@ The repo is empty, so there are no existing components or conventions yet. Recom
 | # | Decision | Recommendation | Why | Alternative |
 | --- | --- | --- | --- | --- |
 | D1 | App stack | **Expo (React Native) + TypeScript + Expo Router** | Design needs push notifications, home-screen widgets, mic recording, TTS: all native features. `react-native-web` also covers the desktop layout from the system. | React + Vite PWA (faster to build, but no real widgets, weaker iOS push and recording) |
-| D2 | Styling | `StyleSheet` + typed theme object generated from `design/system/tokens.json` | One source of truth for colours, type, spacing | NativeWind (Tailwind) |
+| D2 | Styling | **NativeWind v4 (Tailwind 3.4) + React Native Reusables** (shadcn/ui port). Tokens defined in `DESIGN.md`, implemented in `global.css` + `tailwind.config.js` (DESIGN.md §10). All lengths in rem, `1rem = 16px` | shadcn components and API, one set of CSS variables for web and native | `StyleSheet` + typed theme object |
 | D3 | State / data | Zustand for UI state, local SQLite (`expo-sqlite`) for words and reviews, offline-first | SRS must work offline; data is per-user and small | Remote DB only |
 | D4 | Backend + AI | Small API (e.g. Supabase or a serverless function) that calls an LLM for: word normalisation, story generation, translation checking, pronunciation feedback | Keys must not ship in the app | Run everything on device (not realistic for AI) |
 | D5 | Auth | Google sign-in (Account screen shows "Google sign-in") | Matches design | Email magic link |
 | D6 | Logo | Direction **B, Sheriff badge** (marked CHOSEN on the Logo artboard; the star badge with "DC" already used in the screen headers) | Design says so | A or C |
 | D7 | App name | **Daily Chunk** ("Daily Wort" was the working title) | Canvas title, logo and screens all say Daily Chunk | |
-
 | D8 | Languages | **Target: German. Native: Russian, English.** UI language follows the native language by default (changeable in Settings) | User decision | — |
 
 Phases 1–4 below use mock data only, so D3/D4/D5 can wait until phase 5.
@@ -49,7 +49,7 @@ v1 ships one target language (German) and two native languages (Russian, English
 
 **Language packs** (`src/languages/<code>/`)
 - *Target pack* (`de`): grammatical genders and their articles (`masc` → der, `fem` → die, `neut` → das, `plural` → die … Pl.), which parts of speech show a gender chip, how a noun is displayed (article + capitalised noun), accepted typing alternatives (ae/oe/ue/ss → ä/ö/ü/ß), TTS voice options, grammar-tip rules used in feedback (e.g. an + dem = am).
-- *Native pack* (`ru`, `en`): name, font fallback needs (Cyrillic → Pixelify Sans in pixel UI, Plex covers both).
+- *Native pack* (`ru`, `en`): name, font needs (Cyrillic → Russo One for display, Pixelify Sans for pixel UI; Plex covers both). See DESIGN.md §5.1.
 - *UI strings* (`src/i18n/en.json`, `ru.json`): every visible string, including Chunk's lines (EN and RU versions of each).
 
 **What this changes in the design**
@@ -62,14 +62,14 @@ v1 ships one target language (German) and two native languages (Russian, English
 
 **Adding a language later** = add a pack + UI strings + backend prompt support. No screen changes.
 
-## 3. Design conflicts (canvas vs. system README)
+## 3. Design conflicts (canvas vs. design system)
 
-Split rule: content/logic → canvas, visuals → system.
+Split rule: content/logic → canvas, visuals → `DESIGN.md`. "System" below means the original `design/system/` files.
 
 | Topic | Kind | System says | Canvas shows | Use |
 | --- | --- | --- | --- | --- |
-| Name | content | Daily Wort | Daily Chunk | Canvas: **Daily Chunk** |
-| Navigation items | content | Tabs WORDS · LEARN · REVIEW · ME | Tabs HOME · LESSONS · SCORE · STATS + burger menu (Account, Lessons, Review, Word bank, Boss round, Settings, Help) | Canvas |
+| Name | content | Daily Wort | Daily Chunk | **Daily Chunk** (resolved: `design/system/` renamed) |
+| Navigation items | content | Tabs WORDS · LEARN · REVIEW · ME | Tabs HOME · LESSONS · SCORE · STATS + burger menu (Account, Lessons, Review, Word bank, Boss round, Settings, Help) | Canvas (resolved: `design/system/` updated) |
 | Tab bar look | visual | 56px + safe area, labels pixel 22px / 2px spacing, active yellow, others `ink-muted`, badge pink fill | min 60px, labels 18px, active also has a 3px yellow inset top bar | System (keep the yellow top bar as the active marker: it doesn't contradict the system) |
 | Review (S10) mechanic | logic | Swipe flashcards (right = knew, left = again) | der/die/das picker with interval feedback ("NEXT REVIEW IN 14 DAYS" / "BACK TO 1 DAY") | Canvas; swipe flashcards can come later as a second review mode |
 | Home main CTA | content | START LESSON | CHECK MY WORDS → Confirm (which has START LESSON) | Canvas |
@@ -79,7 +79,7 @@ Split rule: content/logic → canvas, visuals → system.
 | Flashcard border | visual | 2px `line` | 2px `line` + `shadow-hard` | Same in both |
 | Tablet / desktop | visual | Rail 240px, 720px lesson column, 1200px page, 12-col grid, display sizes grow | Not drawn | System (phase 6) |
 
-Rule for building a screen: take the structure, copy and states from its `.dc.html`, then restyle every element with the matching token or system component, not the inline px values in the canvas file.
+Rule for building a screen: take the structure, copy and states from its `.dc.html`, then restyle every element with the matching token or component from `DESIGN.md`, not the inline px values in the canvas file.
 
 ## 4. Screens and routes
 
@@ -110,11 +110,11 @@ Expo Router file routes. Tab screens live in `app/(tabs)/`; the lesson flow is a
 
 ## 5. Component inventory
 
-Build these once, then compose screens. Names match the design system where one exists.
+Build these once, then compose screens. Names match the design system where one exists. Base pieces come from React Native Reusables in `src/components/ui/`; DESIGN.md §9 maps each app component to its base and tokens.
 
 **Primitives**
-- `Screen`: scanline background, safe-area padding (56/48 top, 24 sides, 16 bottom), optional tab bar slot
-- `Text` variants: `display-xl`, `display-l`, `display-btn`, `display-num`, `label`, `ui`, `caption`, `word-xl`, `word-l`, `reading`, `body`, `body-s`
+- `Screen`: scanline background, safe-area padding (`pt-screen-top px-gutter pb-screen-bottom`), optional tab bar slot
+- `Text` with `variant` (the type scale in DESIGN.md §5.2), picks the Cyrillic display/pixel font from `uiLang`
 - `GlitchTitle`: Bungee with `3px 0 pink, -3px 0 cyan` text shadow
 - `Icon`: inline stroke SVGs from the screens (`react-native-svg`): menu, back, close, mic, speaker, play, pause, stop, pencil, check, cross, home, book, trophy, chart, search, heart
 - `PressableFocus`: wraps every control with the 2px cyan focus ring + 48px minimum target
@@ -142,12 +142,15 @@ Build these once, then compose screens. Names match the design system where one 
 
 ### Phase 0: project setup
 - `npx create-expo-app` (TypeScript, Expo Router), ESLint + Prettier, Jest + React Native Testing Library
-- Load fonts with `expo-font` / `@expo-google-fonts`: Bungee, VT323, Pixelify Sans, IBM Plex Sans 400/600
+- NativeWind v4 + React Native Reusables (`components.json`), `inlineRem: 16` in `metro.config.js` (DESIGN.md §2, §10)
+- Load fonts with `expo-font` / `@expo-google-fonts`: Bungee, Russo One, VT323, Pixelify Sans, IBM Plex Sans 400/600
+- Check that rem breakpoints work on native (DESIGN.md §14 Q1)
 - Fill in the Commands section of `CLAUDE.md`
 
-### Phase 1: theme from tokens
-- Script `scripts/build-tokens.ts`: reads `design/system/tokens.json` → writes `src/theme/tokens.ts` (colors, type styles, spacing, radius, shadow, sizes, durations, breakpoints)
-- Resolve aliases (`{cyan}` → `#2EE6D6`)
+### Phase 1: theme from DESIGN.md
+- Write `global.css` (palette, shadcn and domain variables) and the theme part of `tailwind.config.js` exactly as in DESIGN.md §10
+- `Text` variants (DESIGN.md §5.3)
+- Lint rule: no hex colours or px values under `src/` (DESIGN.md §10.4)
 - Hard shadows on native: RN `shadow*` blurs, so draw the offset shadow as an absolutely-positioned block behind the element (`HardShadow` wrapper). Web can use `boxShadow`.
 - Scanline overlay: SVG pattern (1px line every 4px, ink at 4%)
 
