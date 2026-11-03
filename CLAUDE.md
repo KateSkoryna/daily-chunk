@@ -8,34 +8,37 @@ Mobile-first vocabulary trainer. **v1: target language German; native language R
 
 | Path | What |
 | --- | --- |
+| `DESIGN.md` | **Design system, single source of truth for visuals**: tokens (rem), shadcn variable mapping, type scale, components, NativeWind config |
 | `plan.md` | Implementation plan, decisions, screen → route table, component inventory |
 | `design/screens/*.dc.html` | The 20 designed screens (390×844), one file each. Markup + inline styles + a `<script data-dc-script>` block with the demo state logic |
 | `design/screens/canvas.json` | Screen titles and order (S1–S13 + tabs, menu, account, logo, notifications) |
-| `design/system/README.md` | Design system brand book: product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y |
-| `design/system/tokens.json` | Source of truth for colours, type, spacing, radius, shadow, sizes, breakpoints, durations |
+| `design/system/README.md` | Original design system brand book (reference for DESIGN.md): product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y |
+| `design/system/tokens.json` | Original token values (px) that DESIGN.md was built from |
 | `design/system/components/*.md` | Specs: ArticleChip, Button, GapFill, LessonStepper, RecordButton, TabBar, TutorQuote, WordCard |
 
 Design links: screens https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-6097f560f8d7 · system https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8
 
-**How to use the two sources:**
+**How to use the sources:**
 - `design/screens/` (canvas) = **logic and content**: which screens exist, what's on them, flow, navigation, copy, demo data, interactive behaviour.
-- `design/system/` = **visual reference**: tokens, component anatomy and states, layout grid, desktop/tablet layouts, icons, a11y.
-- Disagreement: *what* → screens, *how it looks* → system. Never copy inline px/hex values from a `.dc.html`; map them to tokens and system components. Conflict list in `plan.md` §3.
+- `DESIGN.md` = **how it looks**: tokens, component styling and states, layout, icons, a11y. Read it before building any UI.
+- Disagreement: *what* → screens, *how it looks* → `DESIGN.md`. Never copy inline px/hex values from a `.dc.html`; map them to `DESIGN.md` tokens and components. Conflict list in `plan.md` §3.
 
 ## Planned stack (confirm D1–D5 in plan.md first)
 
-Expo (React Native) + TypeScript + Expo Router, `react-native-svg` for icons, Zustand, `expo-sqlite`, small backend for AI calls. Fonts: Bungee, VT323, Pixelify Sans, IBM Plex Sans 400/600.
+Expo (React Native) + TypeScript + Expo Router, NativeWind v4 + React Native Reusables (shadcn), `react-native-svg` for icons, Zustand, `expo-sqlite`, small backend for AI calls. Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
 
 Planned layout:
 ```
 app/                 Expo Router routes: (tabs)/, lesson/, review, word-bank, boss, settings, account
-src/theme/           tokens.ts (generated from design/system/tokens.json), fonts, HardShadow, Scanlines
-src/components/      primitives + design-system components (see plan.md §5)
+global.css           CSS variables from DESIGN.md §10.1
+tailwind.config.js   theme from DESIGN.md §10.2
+src/theme/           fonts, HardShadow, Scanlines
+src/components/ui/   React Native Reusables components, restyled per DESIGN.md §9
+src/components/      primitives + app components (see plan.md §5)
 src/features/        words, lesson, srs, review, boss, stats, settings
 src/mocks/           demo content copied from the design screens
 src/languages/       language packs: de/ (target rules), ru/, en/ (native)
 src/i18n/            EN / RU UI strings, incl. Chunk's lines
-scripts/build-tokens.ts
 ```
 
 ## Commands
@@ -59,6 +62,17 @@ Not set up yet (phase 0). Fill this in once the project is created.
 - Make reusable UI components controlled: they take `value` / `selected` / `checked` and report changes with `onChange` / `onSelect` / `onToggle`; they don't own that state. Examples: `Switch`, `SegmentedTabs`, `ArticlePicker`, `OptionGrid`, `WordCard` (`isFlipped` + `onFlip`).
 - Keep state where it's used: the lowest screen or feature component that needs it owns it and passes it to the controlled components. Lift it only when siblings share it. Global stores only for app-wide data (profile, words, progress).
 
+## Component metadata (mandatory, never violate)
+
+Every component has a meta file next to it: `<Name>.meta.ts` (format and example: `DESIGN.md` §14).
+
+- **Creating a component** (including one added from React Native Reusables): create its meta in the same commit. A component without a meta is not done.
+- **Changing a component** (props, variants, states, tokens, usage): update its meta in the same commit so they always match.
+- **Before building a screen or a new component:** read the existing metas and reuse a component whose `useWhen` fits. Make a new one only when none fits.
+- **Follow `aiHints`:** never use a component in a way its `avoidWhen` or `invalid` lists.
+- Metas name tokens (`primary`, `label`), never values. Use gender roles, not articles. No user-visible copy.
+- If a usage rule isn't clear from `DESIGN.md`, the component specs or the screens, **stop and ask the user**. Don't invent it.
+
 ## Language rules (must follow)
 
 - Three settings: `targetLang` (v1 `de`), `nativeLang` (`ru` | `en`), `uiLang` (`en` | `ru`, defaults to native).
@@ -70,17 +84,33 @@ Not set up yet (phase 0). Fill this in once the project is created.
 - Every backend call passes `{ targetLang, nativeLang }`.
 - Full details: `plan.md` §2a.
 
-## Design rules (must follow)
+## Design rules (mandatory, never violate)
 
-- **Tokens only.** Never hard-code a hex, font size or spacing in a component; use `src/theme/tokens.ts`. Change values in `design/system/tokens.json` and regenerate.
-- **Dark only.** Ground `bg-000` + scanline overlay; cards `bg-100`; raised `bg-200`.
-- **Square corners** (`radius-0`). Only exceptions: progress segments 2px, record button and avatar round.
-- **Depth = hard offset shadow** (`4px 4px 0 pink`, hero `6px 6px 0`), never blur. Pressed primary: translate 4px, no shadow.
-- **Colour jobs:** yellow = the one primary action per screen; cyan = focus, inputs, correct; pink = section labels, record, wrong. Correct/wrong always with ✓/✗, never colour alone.
-- **Article colours:** der `#5AA9FF`, die `#FF6B6B`, das `#4ADE80`, plural = dashed orange outline. The article word is always written next to the colour.
-- **Fonts by job:** Bungee = titles, buttons, numbers (Latin only, unicase: never target-language words or Cyrillic). VT323 = labels/UI copy, uppercase, numbered like `01 / FLASHCARDS` (Pixelify Sans for Cyrillic). IBM Plex Sans = every target-language word and sentence and all translations.
-- **Icons:** inline stroke SVG, 24 viewBox, stroke 2, square caps, `currentColor`. No emoji.
-- **Layout (mobile):** padding 56/24/16, primary button full width 64px pinned above the 4-tab bar (HOME · LESSONS · SCORE · STATS).
+**`DESIGN.md` is the single source of truth for design.** Every colour, font, size, spacing, radius, border, shadow, breakpoint, duration and component style comes from it. These rules are mandatory for every agent and every task. Not following them counts as a bug.
+
+**Before any UI work** (a screen, component, style or layout), read `DESIGN.md` and use only what it defines:
+- Only the tokens and classes from `DESIGN.md` (`bg-primary`, `text-label`, `px-gutter`, `border-field`…). No hex, `rgb()`, px or one-off value in code. All lengths in rem.
+- Only the semantic and domain tokens in components, never palette names.
+- Typography only through `Text` `variant`; shadows only through `HardShadow`; focus only through `PressableFocus`; screen padding and scanlines only through `Screen`.
+- shadcn / React Native Reusables components are restyled once in `src/components/ui/` as `DESIGN.md` §9 says, never per screen.
+- `design/system/` and `.dc.html` inline styles are reference only. If they differ from `DESIGN.md`, `DESIGN.md` wins.
+
+**Stop and ask the user. Never guess, invent or work around** when:
+- a value, token, style or component you need is not in `DESIGN.md`;
+- `DESIGN.md` contradicts itself, a screen, a component spec, `plan.md` or this file;
+- a rule can't be followed (platform limit, library limit, accessibility conflict);
+- a change would need a new token or a change to an existing one.
+
+Show the user: what you were building, which rule or section is involved, the problem, and 1–2 options with a recommendation. Wait for their answer before writing that part. Keep working on parts that don't depend on it.
+
+**Changing `DESIGN.md`** only with the user's explicit approval. Change it first, then `global.css` / `tailwind.config.js`, in the same branch. Never change the config alone.
+
+The core principles, so they're never missed (values are in `DESIGN.md`):
+- Dark only. Square corners. Depth = hard offset shadow, never blur.
+- Colour jobs: yellow = the one primary action per screen; cyan = focus, inputs, correct; pink = section labels, record, wrong. Correct/wrong always with ✓/✗, never colour alone.
+- Gender colours always next to the written article; plural = dashed outline.
+- Fonts by job: display (Bungee; Russo One for Cyrillic) = titles, buttons, numbers; pixel (VT323; Pixelify Sans for Cyrillic) = UI labels; content (IBM Plex Sans) = every target-language word and every translation.
+- Icons: inline stroke SVG, `currentColor`, no emoji.
 
 ## Accessibility (must follow)
 
