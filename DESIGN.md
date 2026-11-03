@@ -331,6 +331,7 @@ When adding any shadcn component:
 2. Set heights to `touch` / `control` / `button`.
 3. Make sure the focus ring uses `ring-ring`.
 4. Make sure every colour class is a semantic or domain token. No palette names, no hex.
+5. Create its meta file (§14).
 
 ### 9.1 Button (`ui/button`)
 
@@ -592,7 +593,129 @@ Inline stroke SVG via `react-native-svg`: 24 viewBox, stroke 2, square caps and 
 
 ---
 
-## 14. Open questions
+## 14. Component metadata
+
+Every component ships a **meta file** next to it. It tells developers and AI agents what the component is for, when to use it, what it's made of and which tokens it uses. An agent building a screen reads the metas to pick the right component instead of inventing one.
+
+### 14.1 Where it lives
+
+| Component | Meta file |
+| --- | --- |
+| `src/components/ui/button.tsx` | `src/components/ui/button.meta.ts` |
+| `src/components/WordCard/WordCard.tsx` | `src/components/WordCard/WordCard.meta.ts` |
+
+The `ComponentMeta` type lives in `src/components/meta.ts`. Storybook (later) shows each meta as a "Metadata" tab.
+
+### 14.2 Format
+
+```ts
+export type ComponentMeta = {
+  name: string;
+  category: 'atom' | 'molecule' | 'organism';
+  description: string;
+  base?: string;
+  spec: string;
+  props: Record<string, string>;
+  variants?: Record<string, string>;
+  states: string[];
+  relationships: {
+    composedOf?: string[];
+    usedIn?: string[];
+    pairsWith?: string[];
+    alternatives?: Record<string, string>;
+  };
+  tokens: {
+    color: SemanticToken[];
+    typography?: TextVariant[];
+    spacing?: string[];
+    other?: string[];
+  };
+  accessibility: string[];
+  aiHints: {
+    useWhen: string[];
+    avoidWhen: string[];
+    invalid: string[];
+  };
+};
+```
+
+| Field | What goes in it |
+| --- | --- |
+| `category` | `atom` = one element (Button, ArticleChip). `molecule` = a few atoms (GapFill, TutorQuote). `organism` = a screen section (TabBar, WordCard with its actions) |
+| `description` | One sentence: what it does |
+| `base` | The React Native Reusables component it's built on (`button`, `toggle-group`), if any |
+| `spec` | Where its look is defined: a DESIGN.md section and/or `design/system/components/*.md` |
+| `props` | Each prop and its meaning. Types come from TypeScript; this says *why*. Controlled pairs together: `"value / onValueChange": "…"` |
+| `variants` | Each variant and when to use it |
+| `states` | Every visual state that must exist (and get a story): `idle`, `pressed`, `focused`, `disabled`, `correct`, `wrong`… |
+| `relationships` | Parts it's built from, where it's used, what it's paired with, and which other component to use instead, and when |
+| `tokens` | Token **names** it uses (§4.2, §4.3, §5.2, §6, §7). **Never values** |
+| `accessibility` | Role, label and state requirements |
+| `aiHints` | When to use, when not to, and combinations that are never allowed |
+
+### 14.3 Rules
+
+- **Names, never values.** A meta lists `primary`, `label`, `gutter`, never `#FFD23F`, `24px` or `1.5rem`. `SemanticToken` and `TextVariant` are typed lists matching §4.2–4.3 and §5.3, so a wrong name fails type-checking. DESIGN.md stays the only place with values.
+- **Language-neutral.** Use gender roles (`gender-masc`), not `der`/`die`/`das`. No user-visible copy; that lives in `src/i18n/`.
+- **Matches the code.** Every variant, prop and state in the meta exists in the component, and the other way round. A component change and its meta change go in the same commit.
+- **Usage rules come from the design.** `variants`, `useWhen`, `avoidWhen` and `invalid` come from DESIGN.md, the component specs and the screens. If a rule isn't clear from them, ask the user. Don't invent one.
+
+### 14.4 Example: Button
+
+```ts
+export const buttonMeta = {
+  name: 'Button',
+  category: 'atom',
+  description: 'Triggers an action; the default variant is the one primary action of a screen.',
+  base: 'button',
+  spec: 'DESIGN.md §9.1, design/system/components/Button.md',
+  props: {
+    variant: 'Visual weight of the action, see variants',
+    disabled: 'Blocks the action until the screen is ready, e.g. fewer than 3 words added',
+    onPress: 'Called on press',
+    children: 'Label as a Text, or icon + Text',
+  },
+  variants: {
+    default: 'The single primary action of the screen: START LESSON, CHECK MY WORDS, NEXT CARD',
+    secondary: 'An action next to or below the primary: LISTEN, KNEW IT',
+    ghost: 'Low-priority action: SKIP, show hint',
+    destructive: 'Confirms losing data; only inside AlertDialog',
+  },
+  states: ['idle', 'pressed', 'focused', 'disabled'],
+  relationships: {
+    composedOf: ['Text', 'Icon', 'HardShadow', 'PressableFocus'],
+    usedIn: ['Screen footer', 'AlertDialog', 'WordCard', 'GapFill'],
+    alternatives: {
+      ArticleChip: 'Choosing der/die/das (a gender role) is a picker, not a button',
+      'ToggleGroup item': 'Choosing one option from a set',
+    },
+  },
+  tokens: {
+    color: ['primary', 'primary-foreground', 'ring', 'destructive', 'destructive-foreground', 'muted-foreground', 'popover', 'shadow'],
+    typography: ['display-btn', 'display-btn-sm', 'label'],
+    other: ['button', 'control', 'touch', 'button-max', 'shadow-hard', 'duration-fast'],
+  },
+  accessibility: [
+    'accessibilityRole="button"',
+    'Icon-only buttons need accessibilityLabel from i18n',
+    'accessibilityState.disabled when disabled',
+    'Height at least touch',
+  ],
+  aiHints: {
+    useWhen: ['The user starts, confirms or moves to the next step'],
+    avoidWhen: ['Navigating between tabs (TabBar)', 'Picking an answer option (ToggleGroup / ArticleChip)'],
+    invalid: [
+      'Two default buttons on one screen',
+      'destructive outside AlertDialog',
+      'A label in a content font (buttons use display)',
+    ],
+  },
+} satisfies ComponentMeta;
+```
+
+---
+
+## 15. Open questions
 
 | # | Question | Default until decided |
 | --- | --- | --- |

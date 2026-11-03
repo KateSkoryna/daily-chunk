@@ -62,6 +62,17 @@ Not set up yet (phase 0). Fill this in once the project is created.
 - Make reusable UI components controlled: they take `value` / `selected` / `checked` and report changes with `onChange` / `onSelect` / `onToggle`; they don't own that state. Examples: `Switch`, `SegmentedTabs`, `ArticlePicker`, `OptionGrid`, `WordCard` (`isFlipped` + `onFlip`).
 - Keep state where it's used: the lowest screen or feature component that needs it owns it and passes it to the controlled components. Lift it only when siblings share it. Global stores only for app-wide data (profile, words, progress).
 
+## Component metadata (mandatory, never violate)
+
+Every component has a meta file next to it: `<Name>.meta.ts` (format and example: `DESIGN.md` §14).
+
+- **Creating a component** (including one added from React Native Reusables): create its meta in the same commit. A component without a meta is not done.
+- **Changing a component** (props, variants, states, tokens, usage): update its meta in the same commit so they always match.
+- **Before building a screen or a new component:** read the existing metas and reuse a component whose `useWhen` fits. Make a new one only when none fits.
+- **Follow `aiHints`:** never use a component in a way its `avoidWhen` or `invalid` lists.
+- Metas name tokens (`primary`, `label`), never values. Use gender roles, not articles. No user-visible copy.
+- If a usage rule isn't clear from `DESIGN.md`, the component specs or the screens, **stop and ask the user**. Don't invent it.
+
 ## Language rules (must follow)
 
 - Three settings: `targetLang` (v1 `de`), `nativeLang` (`ru` | `en`), `uiLang` (`en` | `ru`, defaults to native).

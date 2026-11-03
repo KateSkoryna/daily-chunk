@@ -110,7 +110,7 @@ Expo Router file routes. Tab screens live in `app/(tabs)/`; the lesson flow is a
 
 ## 5. Component inventory
 
-Build these once, then compose screens. Names match the design system where one exists. Base pieces come from React Native Reusables in `src/components/ui/`; DESIGN.md §9 maps each app component to its base and tokens.
+Build these once, then compose screens. Names match the design system where one exists. Base pieces come from React Native Reusables in `src/components/ui/`; DESIGN.md §9 maps each app component to its base and tokens. Every component ships a meta file next to it (`<Name>.meta.ts`, DESIGN.md §14).
 
 **Primitives**
 - `Screen`: scanline background, safe-area padding (`pt-screen-top px-gutter pb-screen-bottom`), optional tab bar slot
@@ -144,7 +144,7 @@ Build these once, then compose screens. Names match the design system where one 
 - `npx create-expo-app` (TypeScript, Expo Router), ESLint + Prettier, Jest + React Native Testing Library
 - NativeWind v4 + React Native Reusables (`components.json`), `inlineRem: 16` in `metro.config.js` (DESIGN.md §2, §10)
 - Load fonts with `expo-font` / `@expo-google-fonts`: Bungee, Russo One, VT323, Pixelify Sans, IBM Plex Sans 400/600
-- Check that rem breakpoints work on native (DESIGN.md §14 Q1)
+- Check that rem breakpoints work on native (DESIGN.md §15 Q1)
 - Fill in the Commands section of `CLAUDE.md`
 
 ### Phase 1: theme from DESIGN.md
@@ -156,7 +156,10 @@ Build these once, then compose screens. Names match the design system where one 
 
 ### Phase 2: primitives and components
 - Build everything in section 5 against a dev-only gallery route `/dev/components` that shows each state (like the design-system previews)
+- `ComponentMeta` type in `src/components/meta.ts`, with typed `SemanticToken` and `TextVariant` lists (DESIGN.md §14)
+- Each component ships its `<Name>.meta.ts`, with every state from the meta shown in the gallery
 - Each component gets a render test and an accessibility test (role, label, state)
+- A test checks that every token named in a meta exists in `global.css` / the type scale
 
 ### Phase 3: navigation shell
 - `(tabs)` layout with the custom `TabBar` (HOME, LESSONS, SCORE, STATS)
