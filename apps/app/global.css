@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* palette */
+    --bg-000: 251 44% 9.8%;
+    --bg-100: 249 42.1% 14.9%;
+    --bg-200: 250 41.2% 20%;
+    --ink: 42 35.1% 92.7%;
+    --ink-muted: 252 20.3% 70%;
+    --line: 250 31.6% 44.7%;
+    --line-strong: 250 42.7% 59.6%;
+    --yellow: 46 100% 62.4%;
+    --cyan: 175 78.6% 54.1%;
+    --pink: 336 100% 62%;
+    --article-der: 211 100% 67.6%;
+    --article-die: 0 100% 71%;
+    --article-das: 142 69.2% 58%;
+    --article-plural: 36 100% 63.9%;
+
+    /* semantic (shadcn) */
+    --background: var(--bg-000);
+    --foreground: var(--ink);
+    --card: var(--bg-100);
+    --card-foreground: var(--ink);
+    --popover: var(--bg-200);
+    --popover-foreground: var(--ink);
+    --primary: var(--yellow);
+    --primary-foreground: var(--bg-000);
+    --secondary: var(--bg-200);
+    --secondary-foreground: var(--ink);
+    --muted: var(--bg-100);
+    --muted-foreground: var(--ink-muted);
+    --accent: var(--bg-200);
+    --accent-foreground: var(--ink);
+    --destructive: var(--pink);
+    --destructive-foreground: var(--bg-000);
+    --border: var(--line);
+    --input: var(--line-strong);
+    --ring: var(--cyan);
+    --radius: 0rem;
+    --chart-1: var(--yellow);
+    --chart-2: var(--cyan);
+    --chart-3: var(--pink);
+    --chart-4: var(--article-der);
+    --chart-5: var(--article-plural);
+
+    /* domain */
+    --field: var(--cyan);
+    --success: var(--cyan);
+    --success-foreground: var(--bg-000);
+    --highlight: var(--pink);
+    --shadow: var(--pink);
+    --gender-masc: var(--article-der);
+    --gender-fem: var(--article-die);
+    --gender-neut: var(--article-das);
+    --gender-plural: var(--article-plural);
+    --gender-foreground: var(--bg-000);
+  }
+}

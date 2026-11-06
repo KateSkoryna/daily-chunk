@@ -3,6 +3,11 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@expo-google-fonts/bungee": "^0.4.1",
+    "@expo-google-fonts/ibm-plex-sans": "^0.4.1",
+    "@expo-google-fonts/pixelify-sans": "^0.4.2",
+    "@expo-google-fonts/russo-one": "^0.4.1",
+    "@expo-google-fonts/vt323": "^0.4.1",
     "eslint-config-expo": "~58.0.4",
     "expo": "~58.0.23",
     "expo-constants": "~58.0.15",
@@ -12,6 +17,7 @@
     "expo-splash-screen": "~58.0.13",
     "expo-status-bar": "~58.0.4",
     "expo-system-ui": "~58.0.7",
+    "nativewind": "^4.2.7",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
@@ -24,6 +30,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "tailwindcss": "^3.4.19",
     "typescript": "~6.0.3"
   },
   "scripts": {

@@ -14,7 +14,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | ---------------------------------------------------- | ------ | ------------------------- |
 | 0.1 Workspace and shared packages                    | DONE   | `chore/workspace`         |
 | 0.2 Expo app with Expo Router                        | DONE   | `chore/expo-app`          |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | TODO   | `chore/theme-setup`       |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE   | `chore/theme-setup`       |
 | 0.4 Web storage check                                | TODO   | `chore/web-storage-check` |
 | 0.5 Storybook and Vitest                             | TODO   | `chore/storybook-vitest`  |
 | 0.6 CI on GitHub Actions                             | TODO   | `chore/ci`                |
@@ -83,3 +83,45 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - `npx prettier --check .` → exit 0
 - Risk: NativeWind v4 and Reusables are not confirmed on SDK 58 (their peer needs are met on paper). Step 0.3 checks this; fallback is SDK 57.
 - Owner actions: uninstall the sideloaded Expo Go 57, install Expo Go from the Play Store, run `npm start`, scan the QR code, check "Daily Chunk" shows.
+
+### 0.3 Theme: NativeWind, React Native Reusables, fonts
+
+- Result: NativeWind 4.2.7 + Tailwind 3.4.19 work on SDK 58 for the web build and compile for Android. Theme, fonts and a dev check screen are in place. Uncommitted on `chore/theme-setup`. Both questions were answered; decisions below.
+- SDK 58 verdict: no incompatibility found so far (web render verified in a browser, Android bundle builds, `expo-doctor` 20/20). On-device rendering still needs the owner's check. React Native Reusables components are not installed in this step; their SDK 58 support is first tested when Phase 1 adds one.
+- Evidence:
+  - `grep -rnE '#[0-9a-fA-F]{3,8}\b|[0-9]+px' apps/app/app` → nothing found
+  - `global.css` vs `DESIGN.md` §10.1 → identical (non-empty lines, trimmed); `tailwind.config.js` theme vs §10.2 → identical (deep comparison of the evaluated object; one `content` key added)
+  - `npx nx run @daily-chunk/app:export:web` → exit 0; `/dev/theme-check` loaded in headless Chromium (served with clean URLs): all 6 font faces report loaded (`document.fonts.check`), `font-display`/`font-pixel`/`font-content`/`font-content-semibold` resolve to the right families, `p-gutter` = 24px (1.5rem), no console errors
+  - the screen's `bg-background` element renders `rgb(18, 14, 36)`, which equals `hsl(251 44% 9.8%)`
+  - breakpoint element (`bg-secondary tablet:bg-primary`): `rgb(37, 30, 72)` at 390px wide, `rgb(255, 210, 63)` at 700px wide
+  - `npx expo export --platform android` → exit 0 (also with `--no-bytecode` for inspection)
+  - `npx expo-doctor` → 20/20; `npm start` dev server → status 200 and `/dev/theme-check` route 200
+  - `npx nx run-many -t lint typecheck` → exit 0; `npx prettier --check .` → exit 0
+- Not met as written: "`getComputedStyle(body).backgroundColor` matches `--background`". Body is transparent; the screen on top paints the colour. See question 2.
+- Question 1 (DESIGN.md §15 Q1, rem in `screens` on native): **Result: accepted, but evaluated with the wrong rem.** The Android bundle keeps the breakpoint as `{unit: "rem", value: 37.5}`. NativeWind resolves it at runtime with a `rem` value that starts at 14 (`react-native-css-interop`, `unit-observables.js`: `rem = observable(14)`), because `inlineRem: 16` only affects values converted at build time. So on native the `tablet` breakpoint would be 525px instead of 600px (and `desktop` 896px instead of 1024px) while web uses 600/1024. Options:
+  - **A (recommended).** Keep `DESIGN.md` as is and call `rem.set(16)` (exported by `nativewind`) once in `app/_layout.tsx`. Then web and native match. Not tested on a device.
+  - **B.** The `DESIGN.md` §15 default: convert the breakpoints to px in `tailwind.config.js` only. Needs your approval to change `DESIGN.md` §8/§10.2 wording.
+- Question 2 (body background on web): a custom `app/+html.tsx` (needed to put `bg-background` on `<body>`) makes Expo Router on SDK 58 drop both the stylesheet link and the script tag from the exported pages, even in its most minimal form (two builds compared; removed again). Options:
+  - **1 (recommended).** Leave it. The root screen paints the colour over the whole viewport; `<body>` only shows on overscroll. The `Screen` component (step 1.4) will own the full-screen background.
+  - **2.** A web-only effect that adds the class to `<body>` after the page loads (a workaround; white flash before JavaScript runs).
+  - **3.** Dig into why `+html` breaks injection (possible Expo bug) and revisit later.
+- Review: 0 blocking findings, 4 low/info. Fixed: `tailwindcss` moved to `devDependencies` (NativeWind docs). Noted: the Tailwind `content` globs only cover `app/` and `src/`, so classes used inside `packages/*` would not be scanned (fine until a package ships UI); `rem.set(16)` is not applied until question 1 is answered. The reviewer confirmed the facts in question 1 from the NativeWind source.
+- Notes for later:
+  - `components.json` uses the `@/components`, `@/lib` aliases; `apps/app/tsconfig.json` has no `@/*` path yet. Add it when the first Reusables component is installed (step 1.6).
+  - The default Stack screen background is light (`rgba(242,242,242)`), hidden behind the dev screen. `Screen` (step 1.4) should cover it.
+  - `app/dev/theme-check.tsx` has hard-coded English text and ships in production builds; remove or guard it before release.
+  - `app.json` `userInterfaceStyle` is now `dark` (`DESIGN.md` §10.2).
+  - Expo's tooling added `nativewind-env.d.ts` to `apps/app/tsconfig.json` itself.
+- Owner actions:
+  - Run `npm start`, scan the QR code with Expo Go, open `/dev/theme-check` (add `/dev/theme-check` to the URL, or use the Expo dev menu). Check: dark background, yellow box, six different fonts (two with Cyrillic text), 24px-ish padding around the card. Rotate the phone to landscape: the second box turns yellow.
+  - Look for the line `rem: 16` under the title. If it says `rem: 14`, tell me.
+
+#### 0.3 decisions
+
+- Question 1: owner chose **Fix A**. `app/_layout.tsx` now calls `rem.set(16)` (from `nativewind`) at module level, right after `SplashScreen.preventAutoHideAsync()`. `DESIGN.md` is unchanged. Native breakpoints are now 600/1024/1440px like web.
+  - Evidence: web page at `/dev/theme-check` shows `rem: 16` (headless Chromium, both widths, no console errors, breakpoint box still flips at 700px); the readable Android bundle contains `rem.set(16)` right after `preventAutoHideAsync()` (module level, before any screen renders); lint, typecheck, Prettier, web and Android exports all exit 0.
+  - Not yet seen on a device: the dev screen shows the live value (`rem: …`) so the owner can confirm `16` on the A54.
+- Question 2: owner accepted the recommendation, **option 1**: leave the web `<body>` transparent; the `Screen` component (step 1.4) owns the full-screen background.
+- Note: `expo export --platform android` writes into the same `dist` folder as the web export and replaces it; always rebuild the web export before serving `dist`.
+- Dark app shell (owner saw a light app): the navigation theme's default background (`rgb(242, 242, 242)`) was drawn over the dark root. `app/_layout.tsx` now wraps the `Stack` in `ThemeProvider` with `DarkTheme` and a `transparent` background, inside a `View className="flex-1 bg-background"`, plus `StatusBar style="light"`. Evidence: headless Chromium at 390x844 on `/` and `/dev/theme-check` → only `rgb(18, 14, 36)` full-screen layer, no light layer; lint, typecheck and web export exit 0. Not yet seen on a device.
+- Home placeholder (owner's request, after seeing an empty-looking screen): `app/index.tsx` had an uncoloured `<Text>`, black on the dark background. It is rewritten with DESIGN.md classes only: title (`font-display text-display-xl text-foreground`), a muted line, and a yellow `bg-primary` link button (`min-h-touch`, 48px) to `/dev/theme-check`. This file is reserved for learning task 1, so the task file `docs/tasks/01-structure.md` step 4 now says to add `pair.nativeLang` as a new `<Text>` on this screen. Evidence: headless Chromium at 390x844: title colour `rgb(243, 239, 230)`, font Bungee, button `rgb(255, 210, 63)`, 48px high, click opens `/dev/theme-check` which shows `rem: 16`; no console errors; screenshot checked; lint, typecheck, Prettier, web export exit 0. Hard-coded English text on this placeholder is temporary until the i18n step (1.2) and Home (3.5).
