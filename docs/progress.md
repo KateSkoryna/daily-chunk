@@ -10,16 +10,17 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ## Phase 0: project setup
 
-| Step                                                 | Status | Branch                    |
-| ---------------------------------------------------- | ------ | ------------------------- |
-| 0.1 Workspace and shared packages                    | DONE   | `chore/workspace`         |
-| 0.2 Expo app with Expo Router                        | DONE   | `chore/expo-app`          |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | TODO   | `chore/theme-setup`       |
-| 0.4 Web storage check                                | TODO   | `chore/web-storage-check` |
-| 0.5 Storybook and Vitest                             | TODO   | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | TODO   | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | TODO   | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO   | `chore/phase-0-wrap-up`   |
+| Step                                                 | Status         | Branch                    |
+| ---------------------------------------------------- | -------------- | ------------------------- |
+| 0.1 Workspace and shared packages                    | DONE           | `chore/workspace`         |
+| 0.2 Expo app with Expo Router                        | WAITING-REVIEW | `chore/expo-app`          |
+| 0.2b Docker dev environment                          | TODO           | `chore/docker`            |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | TODO           | `chore/theme-setup`       |
+| 0.4 Web storage check                                | TODO           | `chore/web-storage-check` |
+| 0.5 Storybook and Vitest                             | TODO           | `chore/storybook-vitest`  |
+| 0.6 CI on GitHub Actions                             | TODO           | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | TODO           | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
@@ -69,3 +70,17 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - If Expo Go from the Play Store is installed, uninstall it first (it only opens SDK 58).
   - Install [Expo Go 57.0.9](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk) on the A54 (allow "install unknown apps"), run `npm start` in the repo root (phone and laptop on the same Wi-Fi), scan the QR code with Expo Go. If it can't connect, run `npx expo start --tunnel` in `apps/app` instead, and check that "Daily Chunk" shows.
   - Start learning task 1 whenever you like, and say "check" when done.
+
+#### 0.2 follow-up: switch to SDK 58 (uncommitted)
+
+- Why: the owner wants any developer to test with the Play Store Expo Go (SDK 58), without sideloading (Expo Go 57 APK was needed before).
+- Done: `expo ~58.0.23`, React Native 0.88.1, React 19.3.0, reanimated 4.7.1, worklets 0.13.0, expo-router ~58.0.30; D1, `README.md` and the Expo learn note updated.
+- Evidence:
+  - `npx expo-doctor` → 20/20 checks passed
+  - `npx nx run-many -t lint typecheck` → exit 0, 4 projects
+  - `npx nx run @daily-chunk/app:export:web` → exit 0, `dist/index.html` exists
+  - `npx expo export --platform android` → exit 0
+  - `npm start` → Metro status endpoint `200`; stopped afterwards
+  - `npx prettier --check .` → exit 0
+- Risk: NativeWind v4 and Reusables are not confirmed on SDK 58 (their peer needs are met on paper). Step 0.3 checks this; fallback is SDK 57.
+- Owner actions: uninstall the sideloaded Expo Go 57, install Expo Go from the Play Store, run `npm start`, scan the QR code, check "Daily Chunk" shows.
