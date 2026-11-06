@@ -10,17 +10,16 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ## Phase 0: project setup
 
-| Step                                                 | Status         | Branch                    |
-| ---------------------------------------------------- | -------------- | ------------------------- |
-| 0.1 Workspace and shared packages                    | DONE           | `chore/workspace`         |
-| 0.2 Expo app with Expo Router                        | WAITING-REVIEW | `chore/expo-app`          |
-| 0.2b Docker dev environment                          | TODO           | `chore/docker`            |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | TODO           | `chore/theme-setup`       |
-| 0.4 Web storage check                                | TODO           | `chore/web-storage-check` |
-| 0.5 Storybook and Vitest                             | TODO           | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | TODO           | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | TODO           | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
+| Step                                                 | Status | Branch                    |
+| ---------------------------------------------------- | ------ | ------------------------- |
+| 0.1 Workspace and shared packages                    | DONE   | `chore/workspace`         |
+| 0.2 Expo app with Expo Router                        | DONE   | `chore/expo-app`          |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | TODO   | `chore/theme-setup`       |
+| 0.4 Web storage check                                | TODO   | `chore/web-storage-check` |
+| 0.5 Storybook and Vitest                             | TODO   | `chore/storybook-vitest`  |
+| 0.6 CI on GitHub Actions                             | TODO   | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | TODO   | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | TODO   | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
