@@ -5,8 +5,7 @@ Mobile-first vocabulary trainer. You add the German words you met today, the app
 ## Requirements
 
 - Node 24 (`.nvmrc`)
-- [Expo Go 57](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk) on an Android phone, to try the app without building it.
-  The Play Store version only opens the newest SDK (58) and says "incompatible" for this app. Uninstall it first, then install the APK (Android refuses to replace it with an older version).
+- Expo Go from the Play Store (it opens SDK 58 apps), to try the app on an Android phone without building it
 
 ## Run the app
 

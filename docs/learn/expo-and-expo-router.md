@@ -13,9 +13,9 @@
 - `apps/app/app.json`: app name, icons, plugins.
 - The same code runs on Android, iOS and web (`react-native-web` draws React Native components as HTML).
 
-## Why SDK 57
+## Why SDK 58
 
-SDK 56 has a memory bug that hits apps using `react-native-reanimated`, which NativeWind and Reusables need. SDK 57 fixes it and changes little otherwise. Details are in `plan.md` D1.
+It is the newest SDK, and the Expo Go on the Play Store opens it. SDK 56 has a memory bug that hits apps using `react-native-reanimated`, which NativeWind and Reusables need (fixed in 57). Details are in `plan.md` D1.
 
 ## Commands
 
@@ -26,4 +26,4 @@ SDK 56 has a memory bug that hits apps using `react-native-reanimated`, which Na
 
 ## Expo Go
 
-A ready-made app that opens your project without building it. It only runs one SDK per version, so install the one for SDK 57: https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk
+A ready-made app that opens your project without building it. It only opens the SDK it was built for. The Play Store version follows the newest SDK, which is the one we use. It is a developer tool: your users never install it.
