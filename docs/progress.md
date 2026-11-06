@@ -15,7 +15,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 0.1 Workspace and shared packages                    | DONE   | `chore/workspace`         |
 | 0.2 Expo app with Expo Router                        | DONE   | `chore/expo-app`          |
 | 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE   | `chore/theme-setup`       |
-| 0.4 Web storage check                                | TODO   | `chore/web-storage-check` |
+| 0.4 Web storage check                                | DONE   | `chore/web-storage-check` |
 | 0.5 Storybook and Vitest                             | TODO   | `chore/storybook-vitest`  |
 | 0.6 CI on GitHub Actions                             | TODO   | `chore/ci`                |
 | 0.7 EAS project and hosted Storybook                 | TODO   | `chore/eas`               |
@@ -125,3 +125,24 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Note: `expo export --platform android` writes into the same `dist` folder as the web export and replaces it; always rebuild the web export before serving `dist`.
 - Dark app shell (owner saw a light app): the navigation theme's default background (`rgb(242, 242, 242)`) was drawn over the dark root. `app/_layout.tsx` now wraps the `Stack` in `ThemeProvider` with `DarkTheme` and a `transparent` background, inside a `View className="flex-1 bg-background"`, plus `StatusBar style="light"`. Evidence: headless Chromium at 390x844 on `/` and `/dev/theme-check` → only `rgb(18, 14, 36)` full-screen layer, no light layer; lint, typecheck and web export exit 0. Not yet seen on a device.
 - Home placeholder (owner's request, after seeing an empty-looking screen): `app/index.tsx` had an uncoloured `<Text>`, black on the dark background. It is rewritten with DESIGN.md classes only: title (`font-display text-display-xl text-foreground`), a muted line, and a yellow `bg-primary` link button (`min-h-touch`, 48px) to `/dev/theme-check`. This file is reserved for learning task 1, so the task file `docs/tasks/01-structure.md` step 4 now says to add `pair.nativeLang` as a new `<Text>` on this screen. Evidence: headless Chromium at 390x844: title colour `rgb(243, 239, 230)`, font Bungee, button `rgb(255, 210, 63)`, 48px high, click opens `/dev/theme-check` which shows `rem: 16`; no console errors; screenshot checked; lint, typecheck, Prettier, web export exit 0. Hard-coded English text on this placeholder is temporary until the i18n step (1.2) and Home (3.5).
+
+### 0.4 Web storage check (expo-sqlite + Drizzle)
+
+- Result: **passed.** `expo-sqlite` 58 + `drizzle-orm` can save and read a row on web (dev server and exported build) and the Android export builds. D3 is confirmed (no IndexedDB fallback needed). Uncommitted on `chore/web-storage-check`.
+- Evidence (headless Chromium 390x844, fresh browser profile per run, page reloaded once):
+  - dev server on port 8083, headers served: first load `saved: row-…`, `rows: 1`; after reload `rows: 2` and `first:` unchanged (data persisted); `crossOriginIsolated` true; the page response carried `cross-origin-embedder-policy: credentialless` and `cross-origin-opener-policy: same-origin`
+  - exported build (`npx nx run @daily-chunk/app:export:web`) served locally with the headers read from `dist/_expo/.routes.json`: same result, no 404s, no console errors
+  - same exported build served without the headers: `error: SharedArrayBuffer is not defined`
+  - `npx expo export --platform android` → exit 0
+  - cleanup: throwaway route removed, `drizzle-kit` uninstalled (0 mentions in `package.json` and the lockfile), `expo-sqlite` and `drizzle-orm` kept; `git grep -n "storage-check" -- . ':!docs'` matches only the step text in `plan.md`, no code
+  - `npx nx run-many -t lint typecheck` → exit 0; `npx prettier --check .` → exit 0
+- What is kept: `metro.config.js` bundles `.wasm` and sends the two headers in the dev server; `app.json` has the `expo-router` plugin with the same `headers` (written to `.routes.json` on export) and the `expo-sqlite` plugin entry that `expo install` added; D3 in `plan.md` updated; `docs/learn/storage-on-web.md`.
+- Findings for later:
+  - First synchronous SQLite call on web timed out ("Sync operation timeout"): the worker has not started yet. A one-time async open first fixes it. Step 3.2 must do this, or use an async layer on web.
+  - Synchronous calls block the page on web (expo-sqlite warns about it).
+  - COOP `same-origin` and COEP `credentialless` can break popup-based sign-in and some third-party embeds (step 5.7). Any host of the web app must send both headers; GitHub Pages cannot (only matters for Storybook if it ever uses SQLite; it does not).
+  - Not caused by this step, seen in the web dev server only: `Error: Cannot manually set color scheme, as dark mode is type 'media'. Please use StyleSheet.setFlag('darkMode', 'class')`. Likely from `userInterfaceStyle: "dark"` (step 0.3) with NativeWind's default dark-mode type. The exported build had no such error. Needs a decision before it annoys development (for example `StyleSheet.setFlag('darkMode', 'class')` at startup).
+  - Web check ran in Chromium only. Safari support for `COEP: credentialless` is unconfirmed (reviewer's note); if iOS web is a target, test it before relying on web SQLite there.
+  - Not tested on a device: native SQLite on the A54 (the web check and Android export cannot show it).
+- Review: 0 blocking findings, 3 low/medium notes. Fixed: GitHub Pages wording softened; Chromium-only caveat added to the learn note and findings. The color-scheme dev error stays a separate out-of-scope finding.
+- Owner actions: read `docs/learn/storage-on-web.md`. No question raised for this step.
