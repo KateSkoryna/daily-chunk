@@ -2,14 +2,15 @@
 
 Mobile-first vocabulary trainer. **v1: target language German; native language Russian or English.** Must stay open to more languages (rules below). The user adds the words they met today; the app normalises them and runs a 6-task lesson (flashcards → listen & shadow → read story → read aloud → gap fill → RU→DE), then spaced repetition and a Boss round every 5th lesson. A tutor character, "Chunk", speaks in short dry one-liners.
 
-**Status:** decisions confirmed (`plan.md` §2), phase 0 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Don't start a phase until the user asks.
+**Status:** decisions confirmed (`plan.md` §2), phase 0 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Step status and results: `docs/progress.md`. Don't start a phase until the user asks.
 
 ## Index
 
 | Path | What |
 | --- | --- |
 | `DESIGN.md` | **Design system, single source of truth for visuals**: tokens (rem), shadcn variable mapping, type scale, components, NativeWind config |
-| `plan.md` | Implementation plan: decisions, repo layout, CI/CD, how we work, phases, screen → route table, component inventory |
+| `plan.md` | Implementation plan: decisions, repo layout, CI/CD, how we work (incl. the `/loop` protocol), phases split into steps with goals and done-when checks, screen → route table, component inventory |
+| `docs/progress.md` | Status and evidence for every step, phase reports, owner actions and questions |
 | `design/screens/*.dc.html` | The 20 designed screens (390×844), one file each. Markup + inline styles + a `<script data-dc-script>` block with the demo state logic |
 | `design/screens/canvas.json` | Screen titles and order (S1–S13 + tabs, menu, account, logo, notifications) |
 | `design/system/README.md` | Original design system brand book (reference for DESIGN.md): product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y |
@@ -51,6 +52,8 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 ## Workflow (must follow, plan.md §2d)
 
 - Every component and screen gets a story (`*.stories.tsx`) next to its meta. Stories are the component tests.
+- Phases run step by step with `/loop run plan.md phase <N>` following `plan.md` §2d: pick the next `TODO` step, build only its scope, prove every "Done when" item, record evidence in `docs/progress.md`.
+- Never push, open a PR or merge unless the user says so in chat. The user always merges.
 - One step per branch. Before handing a step to the user: run tests, then a reviewer subagent with a fresh context checks tests/lint/typecheck, design rules + metas, language rules, and a browser run against the `.dc.html`. Fix its findings first.
 - When a learning task in `docs/tasks/` is open, tell the user, don't touch its files, keep building other parts. Review it when the user says "check".
 - Explain new concepts in chat when they first come up and add a short `docs/learn/<topic>.md` note in the same branch.
