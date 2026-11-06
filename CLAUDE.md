@@ -6,29 +6,31 @@ Mobile-first vocabulary trainer. **v1: target language German; native language R
 
 ## Index
 
-| Path | What |
-| --- | --- |
-| `DESIGN.md` | **Design system, single source of truth for visuals**: tokens (rem), shadcn variable mapping, type scale, components, NativeWind config |
-| `plan.md` | Implementation plan: decisions, repo layout, CI/CD, how we work (incl. the `/loop` protocol), phases split into steps with goals and done-when checks, screen → route table, component inventory |
-| `docs/progress.md` | Status and evidence for every step, phase reports, owner actions and questions |
-| `design/screens/*.dc.html` | The 20 designed screens (390×844), one file each. Markup + inline styles + a `<script data-dc-script>` block with the demo state logic |
-| `design/screens/canvas.json` | Screen titles and order (S1–S13 + tabs, menu, account, logo, notifications) |
-| `design/system/README.md` | Original design system brand book (reference for DESIGN.md): product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y |
-| `design/system/tokens.json` | Original token values (px) that DESIGN.md was built from |
-| `design/system/components/*.md` | Specs: ArticleChip, Button, GapFill, LessonStepper, RecordButton, TabBar, TutorQuote, WordCard |
+| Path                            | What                                                                                                                                                                                             |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DESIGN.md`                     | **Design system, single source of truth for visuals**: tokens (rem), shadcn variable mapping, type scale, components, NativeWind config                                                          |
+| `plan.md`                       | Implementation plan: decisions, repo layout, CI/CD, how we work (incl. the `/loop` protocol), phases split into steps with goals and done-when checks, screen → route table, component inventory |
+| `docs/progress.md`              | Status and evidence for every step, phase reports, owner actions and questions                                                                                                                   |
+| `design/screens/*.dc.html`      | The 20 designed screens (390×844), one file each. Markup + inline styles + a `<script data-dc-script>` block with the demo state logic                                                           |
+| `design/screens/canvas.json`    | Screen titles and order (S1–S13 + tabs, menu, account, logo, notifications)                                                                                                                      |
+| `design/system/README.md`       | Original design system brand book (reference for DESIGN.md): product flow, visual rules, layout specs (mobile/tablet/desktop), voice, icons, a11y                                                |
+| `design/system/tokens.json`     | Original token values (px) that DESIGN.md was built from                                                                                                                                         |
+| `design/system/components/*.md` | Specs: ArticleChip, Button, GapFill, LessonStepper, RecordButton, TabBar, TutorQuote, WordCard                                                                                                   |
 
 Design links: screens https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-6097f560f8d7 · system https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8
 
 **How to use the sources:**
+
 - `design/screens/` (canvas) = **logic and content**: which screens exist, what's on them, flow, navigation, copy, demo data, interactive behaviour.
 - `DESIGN.md` = **how it looks**: tokens, component styling and states, layout, icons, a11y. Read it before building any UI.
-- Disagreement: *what* → screens, *how it looks* → `DESIGN.md`. Never copy inline px/hex values from a `.dc.html`; map them to `DESIGN.md` tokens and components. Conflict list in `plan.md` §3.
+- Disagreement: _what_ → screens, _how it looks_ → `DESIGN.md`. Never copy inline px/hex values from a `.dc.html`; map them to `DESIGN.md` tokens and components. Conflict list in `plan.md` §3.
 
 ## Stack (plan.md §2)
 
 Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
 
 Layout:
+
 ```
 apps/app/                Expo app + Storybook (.storybook/)
   app/                   Expo Router routes: (tabs)/, lesson/, review, word-bank, boss, settings, account
@@ -72,7 +74,7 @@ Not set up yet (phase 0). Fill this in once the project is created.
 
 ## Code rules (must follow)
 
-- Avoid comments. Code should explain itself; comment only when the *why* is impossible to show in code.
+- Avoid comments. Code should explain itself; comment only when the _why_ is impossible to show in code.
 - Clear, self-explaining names for variables, functions and components. No abbreviations like `w`, `r`, `p`, `tmp`.
 - Reuse components: if a UI pattern appears twice, make it a component.
 - Build reusable wrappers for shared behaviour (e.g. `Screen`, `HardShadow`, `PressableFocus`) instead of repeating styles or logic.
@@ -107,6 +109,7 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 **`DESIGN.md` is the single source of truth for design.** Every colour, font, size, spacing, radius, border, shadow, breakpoint, duration and component style comes from it. These rules are mandatory for every agent and every task. Not following them counts as a bug.
 
 **Before any UI work** (a screen, component, style or layout), read `DESIGN.md` and use only what it defines:
+
 - Only the tokens and classes from `DESIGN.md` (`bg-primary`, `text-label`, `px-gutter`, `border-field`…). No hex, `rgb()`, px or one-off value in code. All lengths in rem.
 - Only the semantic and domain tokens in components, never palette names.
 - Typography only through `Text` `variant`; shadows only through `HardShadow`; focus only through `PressableFocus`; screen padding and scanlines only through `Screen`.
@@ -114,6 +117,7 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 - `design/system/` and `.dc.html` inline styles are reference only. If they differ from `DESIGN.md`, `DESIGN.md` wins.
 
 **Stop and ask the user. Never guess, invent or work around** when:
+
 - a value, token, style or component you need is not in `DESIGN.md`;
 - `DESIGN.md` contradicts itself, a screen, a component spec, `plan.md` or this file;
 - a rule can't be followed (platform limit, library limit, accessibility conflict);
@@ -124,6 +128,7 @@ Show the user: what you were building, which rule or section is involved, the pr
 **Changing `DESIGN.md`** only with the user's explicit approval. Change it first, then `global.css` / `tailwind.config.js`, in the same branch. Never change the config alone.
 
 The core principles, so they're never missed (values are in `DESIGN.md`):
+
 - Dark only. Square corners. Depth = hard offset shadow, never blur.
 - Colour jobs: yellow = the one primary action per screen; cyan = focus, inputs, correct; pink = section labels, record, wrong. Correct/wrong always with ✓/✗, never colour alone.
 - Gender colours always next to the written article; plural = dashed outline.

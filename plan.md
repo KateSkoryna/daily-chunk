@@ -10,58 +10,62 @@ Look: "Arcade Night": dark only, scanline ground, square corners, hard pink offs
 
 ### Sources (copied into `design/`)
 
-| Source | Link | Local copy |
-| --- | --- | --- |
-| Screens canvas "Daily Chunk Mobile" (20 artboards, 390×844) | https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-6097f560f8d7 | `design/screens/*.dc.html`, `design/screens/canvas.json` |
-| Design system | https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8 | `design/system/README.md`, `design/system/tokens.json`, `design/system/components/*.md` |
-| Design spec (single source of truth for visuals) | — | [`DESIGN.md`](DESIGN.md), built from the design system above |
+| Source                                                      | Link                                                                 | Local copy                                                                              |
+| ----------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Screens canvas "Daily Chunk Mobile" (20 artboards, 390×844) | https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-6097f560f8d7 | `design/screens/*.dc.html`, `design/screens/canvas.json`                                |
+| Design system                                               | https://claude.ai/artifact/WPoD6RE9v815a6kdYTLzX8                    | `design/system/README.md`, `design/system/tokens.json`, `design/system/components/*.md` |
+| Design spec (single source of truth for visuals)            | —                                                                    | [`DESIGN.md`](DESIGN.md), built from the design system above                            |
 
 **How to use each source:**
+
 - **Canvas = logic and content.** Which screens exist, what is on each one, the flow between them, navigation structure, copy, demo data, interactive behaviour (the `<script data-dc-script>` blocks).
 - **`DESIGN.md` = how it looks.** Colours, type scale, spacing (rem), radii, shadows, sizes, breakpoints, motion, the shadcn token mapping, component styling, icon style, accessibility rules. `design/system/` is the original reference it was built from.
-- When they disagree: *what* is shown → canvas; *how* it looks → `DESIGN.md`. Known conflicts are in section 3.
+- When they disagree: _what_ is shown → canvas; _how_ it looks → `DESIGN.md`. Known conflicts are in section 3.
 
 ## 2. Decisions (confirmed 2026-11-03, extended 2026-11-06)
 
 v1 is for the owner's daily use and as a portfolio piece. Test device: Samsung A54 (Android). The same app also runs on web. No Play Store or iOS release in v1.
 
-| # | Decision | Choice |
-| --- | --- | --- |
-| D1 | App stack | **Expo (React Native) + TypeScript + Expo Router**. One app for Android, iOS and web (`react-native-web`). SDK version: chosen in step 0.2 (rule in that step), pinned, and recorded here with the reason. |
-| D2 | Styling | **React Native Reusables (shadcn port) on NativeWind v4 (Tailwind 3.4)**, exactly as DESIGN.md §10. All lengths in rem, `1rem = 16px`. |
-| D3 | State / data | Zustand for UI state. **Offline-first**: words, lessons and SRS in `expo-sqlite` through **Drizzle ORM** (typed schema, generated migrations). Web support is checked in step 0.4; fallback is IndexedDB on web behind the same `core` interface. Local-only until sign-in exists; then sync to Supabase, each row has `updatedAt`, newest change wins. |
-| D4 | Backend | **Supabase**: Postgres, row-level security, Edge Functions. Config in `supabase/`. |
-| D4a | AI | **Gemini API**, called only from Edge Functions; key stored as a Supabase secret. Flash for normalising and checking, Flash for stories too (switch to Pro only if stories read badly). `packages/core` defines the request/response types, so the provider can be swapped. |
-| D5 | Auth | **Guest first.** Google sign-in (Supabase) is optional and turns on sync of words, lessons and history. On first sign-in, local data uploads. The extension always needs sign-in. |
-| D6 | Logo | Direction **B, Sheriff badge** |
-| D7 | App name | **Daily Chunk** |
-| D8 | Languages | Target German; native Russian, English. UI language follows native by default. |
-| D9 | Repo | **Monorepo: npm workspaces + Nx** (Nx as task runner only, no `@nx/expo` plugin). Internal packages export TypeScript source (section 2b). |
-| D10 | Component workshop | **Storybook for web** (`@storybook/react-native-web-vite`). Every component and every screen has a story. No on-device Storybook. |
-| D11 | Tests | **One suite: Vitest.** Stories run as browser tests via the Storybook Vitest addon (interactions + accessibility). `packages/core` logic uses plain Vitest; coverage floor 80% for `core`. Fallback to Jest if the addon can't run the React Native web setup. No visual snapshots for now. |
-| D12 | Audio | TTS: device voices (`expo-speech`) first; Gemini TTS for story audio in phase 6, cached per lesson. Pronunciation: recording → Edge Function → Gemini returns transcript, score, words to fix (mocked until the backend exists). Dictation: `expo-speech-recognition` (German), Web Speech API on web. |
-| D13 | Browser extension | After the core loop. **WXT** + small React popup in `apps/extension`. Saves the selected word, its sentence and the page link to today's list; the app shows them on Home to confirm. Requires sign-in. |
-| D14 | Hosting and deploys | **EAS** (Expo Application Services): Hosting for web, Build for the Android APK, Update for over-the-air JS updates. Storybook is also tried on EAS Hosting; **fallback: GitHub Pages** (one Storybook from `main`, PRs reviewed locally). Supabase deploys from `main` (backend phase). Extension zip uploaded by hand later. Details in section 2c. |
-| D15 | Running on the phone | Expo Go until a native library is needed (dictation on Home), then a development build. |
-| D16 | UI strings | **i18next + react-i18next** in `packages/i18n` (EN/RU, incl. Russian plural forms), `expo-localization` for the device language. |
-| D17 | Mocks | `src/mocks/` uses the real `packages/core` types, one file per feature (`words.ts`, `lesson.ts`, `stats.ts`…), RU and EN copy inside each object. |
-| D18 | Edge Function import proof | Moved from phase 0 to step 5.1. |
+| #   | Decision                   | Choice                                                                                                                                                                                                                                                                                                                                                  |
+| --- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | App stack                  | **Expo (React Native) + TypeScript + Expo Router**. One app for Android, iOS and web (`react-native-web`). SDK version: chosen in step 0.2 (rule in that step), pinned, and recorded here with the reason.                                                                                                                                              |
+| D2  | Styling                    | **React Native Reusables (shadcn port) on NativeWind v4 (Tailwind 3.4)**, exactly as DESIGN.md §10. All lengths in rem, `1rem = 16px`.                                                                                                                                                                                                                  |
+| D3  | State / data               | Zustand for UI state. **Offline-first**: words, lessons and SRS in `expo-sqlite` through **Drizzle ORM** (typed schema, generated migrations). Web support is checked in step 0.4; fallback is IndexedDB on web behind the same `core` interface. Local-only until sign-in exists; then sync to Supabase, each row has `updatedAt`, newest change wins. |
+| D4  | Backend                    | **Supabase**: Postgres, row-level security, Edge Functions. Config in `supabase/`.                                                                                                                                                                                                                                                                      |
+| D4a | AI                         | **Gemini API**, called only from Edge Functions; key stored as a Supabase secret. Flash for normalising and checking, Flash for stories too (switch to Pro only if stories read badly). `packages/core` defines the request/response types, so the provider can be swapped.                                                                             |
+| D5  | Auth                       | **Guest first.** Google sign-in (Supabase) is optional and turns on sync of words, lessons and history. On first sign-in, local data uploads. The extension always needs sign-in.                                                                                                                                                                       |
+| D6  | Logo                       | Direction **B, Sheriff badge**                                                                                                                                                                                                                                                                                                                          |
+| D7  | App name                   | **Daily Chunk**                                                                                                                                                                                                                                                                                                                                         |
+| D8  | Languages                  | Target German; native Russian, English. UI language follows native by default.                                                                                                                                                                                                                                                                          |
+| D9  | Repo                       | **Monorepo: npm workspaces + Nx** (Nx as task runner only, no `@nx/expo` plugin). Internal packages export TypeScript source (section 2b).                                                                                                                                                                                                              |
+| D10 | Component workshop         | **Storybook for web** (`@storybook/react-native-web-vite`). Every component and every screen has a story. No on-device Storybook.                                                                                                                                                                                                                       |
+| D11 | Tests                      | **One suite: Vitest.** Stories run as browser tests via the Storybook Vitest addon (interactions + accessibility). `packages/core` logic uses plain Vitest; coverage floor 80% for `core`. Fallback to Jest if the addon can't run the React Native web setup. No visual snapshots for now.                                                             |
+| D12 | Audio                      | TTS: device voices (`expo-speech`) first; Gemini TTS for story audio in phase 6, cached per lesson. Pronunciation: recording → Edge Function → Gemini returns transcript, score, words to fix (mocked until the backend exists). Dictation: `expo-speech-recognition` (German), Web Speech API on web.                                                  |
+| D13 | Browser extension          | After the core loop. **WXT** + small React popup in `apps/extension`. Saves the selected word, its sentence and the page link to today's list; the app shows them on Home to confirm. Requires sign-in.                                                                                                                                                 |
+| D14 | Hosting and deploys        | **EAS** (Expo Application Services): Hosting for web, Build for the Android APK, Update for over-the-air JS updates. Storybook is also tried on EAS Hosting; **fallback: GitHub Pages** (one Storybook from `main`, PRs reviewed locally). Supabase deploys from `main` (backend phase). Extension zip uploaded by hand later. Details in section 2c.   |
+| D15 | Running on the phone       | Expo Go until a native library is needed (dictation on Home), then a development build.                                                                                                                                                                                                                                                                 |
+| D16 | UI strings                 | **i18next + react-i18next** in `packages/i18n` (EN/RU, incl. Russian plural forms), `expo-localization` for the device language.                                                                                                                                                                                                                        |
+| D17 | Mocks                      | `src/mocks/` uses the real `packages/core` types, one file per feature (`words.ts`, `lesson.ts`, `stats.ts`…), RU and EN copy inside each object.                                                                                                                                                                                                       |
+| D18 | Edge Function import proof | Moved from phase 0 to step 5.1.                                                                                                                                                                                                                                                                                                                         |
 
 ## 2a. Languages: built to extend
 
 v1 ships one target language (German) and two native languages (Russian, English). Nothing outside `packages/languages/` may hard-code German, Russian or English.
 
 **Three separate language settings**
+
 - `targetLang`: what you learn (v1: `de`)
 - `nativeLang`: translations, hints, explanations (v1: `ru`, `en`)
 - `uiLang`: app interface strings (v1: `en`, `ru`; defaults to `nativeLang`)
 
 **Language packs** (`packages/languages/<code>/`)
-- *Target pack* (`de`): grammatical genders and their articles (`masc` → der, `fem` → die, `neut` → das, `plural` → die … Pl.), which parts of speech show a gender chip, how a noun is displayed (article + capitalised noun), accepted typing alternatives (ae/oe/ue/ss → ä/ö/ü/ß), TTS voice options, grammar-tip rules used in feedback (e.g. an + dem = am).
-- *Native pack* (`ru`, `en`): name, font needs (Cyrillic → Russo One for display, Pixelify Sans for pixel UI; Plex covers both). See DESIGN.md §5.1.
-- *UI strings* (`packages/i18n/en.json`, `ru.json`): every visible string, including Chunk's lines (EN and RU versions of each).
+
+- _Target pack_ (`de`): grammatical genders and their articles (`masc` → der, `fem` → die, `neut` → das, `plural` → die … Pl.), which parts of speech show a gender chip, how a noun is displayed (article + capitalised noun), accepted typing alternatives (ae/oe/ue/ss → ä/ö/ü/ß), TTS voice options, grammar-tip rules used in feedback (e.g. an + dem = am).
+- _Native pack_ (`ru`, `en`): name, font needs (Cyrillic → Russo One for display, Pixelify Sans for pixel UI; Plex covers both). See DESIGN.md §5.1.
+- _UI strings_ (`packages/i18n/en.json`, `ru.json`): every visible string, including Chunk's lines (EN and RU versions of each).
 
 **What this changes in the design**
+
 - Article colour tokens stay as designed, but code uses them through **semantic gender roles** (`gender-masc`, `gender-fem`, `gender-neut`, `gender-plural`). The German pack maps them to der/die/das. A future language with 2 genders (French, Spanish) uses only masc/fem; one with none (English) hides the chip. Always show the article word with the colour, as the design system requires.
 - Task 6 "RU → DE" becomes **"native → target"**, labelled from the pair (`RU → DE`, `EN → DE`).
 - The Account rows "Native language" and "German level" become "Native language" and "<target> level"; Settings gets "App language".
@@ -88,6 +92,7 @@ docs/progress.md     step status and results (written by the agent)
 Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/theme/`, `src/components/ui/`, `src/components/`, `src/features/`, `src/mocks/`.
 
 **Sharing code without "invisible types":**
+
 - Each package's `package.json` points `exports` at its TypeScript source (`"exports": { ".": "./src/index.ts" }`). No build step for packages.
 - Every consumer lists what it imports (`"@daily-chunk/core": "*"`).
 - One `tsconfig.base.json` at the root, extended by every project. No hand-written `paths` aliases.
@@ -97,6 +102,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 ## 2c. CI / CD
 
 **CI (GitHub Actions, every PR, merge blocked until green):** all through `nx affected`
+
 - `prettier --check`
 - `lint`, including the design rule (no hex / px under `src/`, DESIGN.md §10.4; from step 1.1)
 - `typecheck`
@@ -108,6 +114,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 **Branch protection on `main`:** PR required, CI green required, no approval required (the owner can't approve their own PR), no direct pushes. Applied with `gh` by the owner's go (step 0.6).
 
 **CD:**
+
 - Design phase: Storybook preview link per PR (EAS Hosting) or, on fallback, Storybook from `main` on GitHub Pages
 - After the design phase: web app preview link per PR, production web on merge to `main` (EAS Hosting)
 - Android: every merge to `main` publishes an EAS Update. A new APK (EAS Build, internal distribution) only when a native library is added or Expo is upgraded; the PR says so.
@@ -116,6 +123,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 ## 2d. How we work
 
 ### Roles
+
 - **Owner**: answers questions, does learning tasks, checks results, says "open the PRs", always merges.
 - **Agent**: builds one step at a time, verifies it, records results in `docs/progress.md`. Never pushes, opens PRs or merges unless the owner says so in chat.
 
@@ -134,6 +142,7 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 9. **Phase report** when the phase has no startable step: add a "Phase N report" section to `docs/progress.md` with a table of steps, status, branch, and one line each; then a list "Owner actions" (in order) and "Questions". Then stop the loop.
 
 **Stop rules (set the step to `BLOCKED`, write the question in `docs/progress.md` with 1–2 options and a recommendation, then go on to the next step that doesn't depend on it):**
+
 - anything in CLAUDE.md "Stop and ask the user" (missing token, DESIGN.md conflict, rule that can't be followed)
 - a `Done when` command still fails after 3 fix attempts
 - a library or version can't do what the step needs
@@ -142,6 +151,7 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 **Never (in loop mode):** push, open a PR, merge, change GitHub settings, change `DESIGN.md`, edit an open learning task's files, skip the reviewer, mark `DONE` without evidence, add AI attribution anywhere.
 
 ### Standard Done (applies to every step)
+
 - `npm ci` exits 0 from a clean checkout of the branch
 - `npx prettier --check .` exits 0
 - `npx nx run-many -t lint typecheck test` exits 0 (only the targets that exist at that point)
@@ -151,9 +161,11 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 - `docs/progress.md` updated with evidence
 
 ### Step format (section 6)
+
 Each step has: **Branch**, **Goal** (SMART: specific result, measurable by `Done when`, achievable in one branch, relevant to the phase, time-boxed to one loop iteration), **Depends on**, **Scope**, **Not in scope**, **Done when** (checkable commands or files), **Owner** (what the owner does or checks, if anything).
 
 ### Learning
+
 - Concepts are explained in chat when they first come up, plus a short note in `docs/learn/<topic>.md` in the same branch.
 - Learning tasks live in `docs/tasks/NN-<topic>.md`: why it matters, files to touch, steps, hints, "done when". The agent writes the task file; the owner does it on their own branch `task/NN-<topic>` and says "check"; the agent reviews it. While a task is open, the agent doesn't edit its files and keeps working elsewhere.
   1. Structure: import a type from `@daily-chunk/core` into the app (written in step 0.2)
@@ -164,24 +176,25 @@ Each step has: **Branch**, **Goal** (SMART: specific result, measurable by `Done
   6. Auth: Google sign-in and a protected route (written in step 5.7)
 
 ### PRs
+
 After a phase report, the owner reviews `docs/progress.md` and the branches. When the owner says "open the PRs", the agent pushes the stacked branches and opens one PR per step, in order, each based on the previous step's branch (the first on `main`). PR description: what changed and why, short. The owner merges in order; after each merge the agent retargets the next PR to `main` if GitHub didn't.
 
 ## 3. Design conflicts (canvas vs. design system)
 
 Split rule: content/logic → canvas, visuals → `DESIGN.md`. "System" below means the original `design/system/` files.
 
-| Topic | Kind | System says | Canvas shows | Use |
-| --- | --- | --- | --- | --- |
-| Name | content | Daily Wort | Daily Chunk | **Daily Chunk** (resolved: `design/system/` renamed) |
-| Navigation items | content | Tabs WORDS · LEARN · REVIEW · ME | Tabs HOME · LESSONS · SCORE · STATS + burger menu (Account, Lessons, Review, Word bank, Boss round, Settings, Help) | Canvas (resolved: `design/system/` updated) |
-| Tab bar look | visual | 56px + safe area, labels pixel 22px / 2px spacing, active yellow, others `ink-muted`, badge pink fill | min 60px, labels 18px, active also has a 3px yellow inset top bar | System (keep the yellow top bar as the active marker: it doesn't contradict the system) |
-| Review (S10) mechanic | logic | Swipe flashcards (right = knew, left = again) | der/die/das picker with interval feedback ("NEXT REVIEW IN 14 DAYS" / "BACK TO 1 DAY") | Canvas; swipe flashcards can come later as a second review mode |
-| Home main CTA | content | START LESSON | CHECK MY WORDS → Confirm (which has START LESSON) | Canvas |
-| Tutor quote box | visual | padding 24/14/14, text pixel 24/26 | padding 22/14/12, text 23px / 1.1 | System |
-| Section labels | visual | `label` 24px / 2px spacing | 20–22px | System type scale |
-| Flashcard audio | visual | 48px cyan-outline audio button in the card footer | LISTEN button under the card | **Resolved 2026-11-06:** canvas placement (under the card), secondary `Button` style |
-| Flashcard border | visual | 2px `line` | 2px `line` + `shadow-hard` | Same in both |
-| Tablet / desktop | visual | Rail 240px, 720px lesson column, 1200px page, 12-col grid, display sizes grow | Not drawn | System (phase 6) |
+| Topic                 | Kind    | System says                                                                                           | Canvas shows                                                                                                        | Use                                                                                     |
+| --------------------- | ------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Name                  | content | Daily Wort                                                                                            | Daily Chunk                                                                                                         | **Daily Chunk** (resolved: `design/system/` renamed)                                    |
+| Navigation items      | content | Tabs WORDS · LEARN · REVIEW · ME                                                                      | Tabs HOME · LESSONS · SCORE · STATS + burger menu (Account, Lessons, Review, Word bank, Boss round, Settings, Help) | Canvas (resolved: `design/system/` updated)                                             |
+| Tab bar look          | visual  | 56px + safe area, labels pixel 22px / 2px spacing, active yellow, others `ink-muted`, badge pink fill | min 60px, labels 18px, active also has a 3px yellow inset top bar                                                   | System (keep the yellow top bar as the active marker: it doesn't contradict the system) |
+| Review (S10) mechanic | logic   | Swipe flashcards (right = knew, left = again)                                                         | der/die/das picker with interval feedback ("NEXT REVIEW IN 14 DAYS" / "BACK TO 1 DAY")                              | Canvas; swipe flashcards can come later as a second review mode                         |
+| Home main CTA         | content | START LESSON                                                                                          | CHECK MY WORDS → Confirm (which has START LESSON)                                                                   | Canvas                                                                                  |
+| Tutor quote box       | visual  | padding 24/14/14, text pixel 24/26                                                                    | padding 22/14/12, text 23px / 1.1                                                                                   | System                                                                                  |
+| Section labels        | visual  | `label` 24px / 2px spacing                                                                            | 20–22px                                                                                                             | System type scale                                                                       |
+| Flashcard audio       | visual  | 48px cyan-outline audio button in the card footer                                                     | LISTEN button under the card                                                                                        | **Resolved 2026-11-06:** canvas placement (under the card), secondary `Button` style    |
+| Flashcard border      | visual  | 2px `line`                                                                                            | 2px `line` + `shadow-hard`                                                                                          | Same in both                                                                            |
+| Tablet / desktop      | visual  | Rail 240px, 720px lesson column, 1200px page, 12-col grid, display sizes grow                         | Not drawn                                                                                                           | System (phase 6)                                                                        |
 
 Rule for building a screen: take the structure, copy and states from its `.dc.html`, then restyle every element with the matching token or component from `DESIGN.md`, not the inline px values in the canvas file.
 
@@ -189,34 +202,35 @@ Rule for building a screen: take the structure, copy and states from its `.dc.ht
 
 Expo Router file routes. Tab screens live in `app/(tabs)/`; the lesson flow is a stack in `app/lesson/`.
 
-| Design file | Canvas title | Route | Interactive bits in the design |
-| --- | --- | --- | --- |
-| `Main.dc.html` | S1 Home · Add words | `/(tabs)/index` | textarea, dictate button, word count "MIN 3", "5 DUE FOR REVIEW" link, boss progress (5 segments) |
-| `Confirm.dc.html` | S2 Confirm words | `/confirm` | editable rows (chip + word + forms + RU), plural-normalised notice (dashed orange) |
-| `Flashcards.dc.html` | S3 Task 1 · Flashcards | `/lesson/flashcards` | tap to flip (front/back), LISTEN, AGAIN / KNEW IT |
-| `Listen.dc.html` | S4 Task 2 · Listen & shadow | `/lesson/listen` | 2-step indicator, speed 0.75×, pause, record repeat |
-| `Read.dc.html` | S5 Task 3 · Read the story | `/lesson/read` | RU ON/OFF toggle, tap an underlined word → popover card |
-| `Record.dc.html` | S6 Task 4 · Read aloud | `/lesson/record` | play recording, score 86%, retry-word chips, tutor verdict |
-| `GapFill.dc.html` | S7 Task 5 · Gap fill | `/lesson/gap-fill` | part A article pick (3 options), part B word pick (2×2), ✓/✗ states |
-| `Translate.dc.html` | S8 Task 6 · native → target (RU/EN → DE) | `/lesson/translate` | textarea, voice answer, "USE:" chips, correction with diff |
-| `Done.dc.html` | S9 Lesson done | `/lesson/done` | 3 stat tiles (XP, streak, accuracy), tutor quote, words added to review |
-| `Review.dc.html` | S10 Review | `/review` | der/die/das picker, feedback line, NEXT CARD |
-| `WordBank.dc.html` | S11 Word bank | `/word-bank` | 4 counters, search, NEW/LEARNING/LEARNED tabs, article filter, 5-pip SRS stage |
-| `Test.dc.html` | S12 Boss round | `/boss` | lives (3 hearts), score, 3-part stepper, sentence builder tiles (add/remove) |
-| `Settings.dc.html` | S13 Settings | `/settings` | Chunk mode radio (Full/Mild/Quiet), digest time, word-of-the-moment switch, language & voice rows |
-| `Notifications.dc.html` | Push & home widgets | (native) | 2 push templates, small widgets (word, streak), medium widget (today) |
-| `Menu.dc.html` | Burger menu (open) | drawer | 312px drawer, dim overlay, profile row, 7 items with badges, log out, version |
-| `Account.dc.html` | My account | `/account` | profile card, native language, level, daily goal radio (3/5/10/15), plan, export, recordings, delete account |
-| `Lessons.dc.html` | Tab · Lessons | `/(tabs)/lessons` | today card (START ▶), boss locked card, past lessons list with score colour |
-| `Score.dc.html` | Tab · Score | `/(tabs)/score` | rank card, progress to next rank, 8-rank ladder, 3 badges |
-| `Stats.dc.html` | Tab · Stats | `/(tabs)/stats` | WEEK/MONTH tabs, bar chart, article accuracy bars, 3 summary tiles |
-| `Logo.dc.html` | Logo · 3 directions | — | reference only; build app icon + `Logo` component from direction B |
+| Design file             | Canvas title                             | Route                | Interactive bits in the design                                                                               |
+| ----------------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `Main.dc.html`          | S1 Home · Add words                      | `/(tabs)/index`      | textarea, dictate button, word count "MIN 3", "5 DUE FOR REVIEW" link, boss progress (5 segments)            |
+| `Confirm.dc.html`       | S2 Confirm words                         | `/confirm`           | editable rows (chip + word + forms + RU), plural-normalised notice (dashed orange)                           |
+| `Flashcards.dc.html`    | S3 Task 1 · Flashcards                   | `/lesson/flashcards` | tap to flip (front/back), LISTEN, AGAIN / KNEW IT                                                            |
+| `Listen.dc.html`        | S4 Task 2 · Listen & shadow              | `/lesson/listen`     | 2-step indicator, speed 0.75×, pause, record repeat                                                          |
+| `Read.dc.html`          | S5 Task 3 · Read the story               | `/lesson/read`       | RU ON/OFF toggle, tap an underlined word → popover card                                                      |
+| `Record.dc.html`        | S6 Task 4 · Read aloud                   | `/lesson/record`     | play recording, score 86%, retry-word chips, tutor verdict                                                   |
+| `GapFill.dc.html`       | S7 Task 5 · Gap fill                     | `/lesson/gap-fill`   | part A article pick (3 options), part B word pick (2×2), ✓/✗ states                                          |
+| `Translate.dc.html`     | S8 Task 6 · native → target (RU/EN → DE) | `/lesson/translate`  | textarea, voice answer, "USE:" chips, correction with diff                                                   |
+| `Done.dc.html`          | S9 Lesson done                           | `/lesson/done`       | 3 stat tiles (XP, streak, accuracy), tutor quote, words added to review                                      |
+| `Review.dc.html`        | S10 Review                               | `/review`            | der/die/das picker, feedback line, NEXT CARD                                                                 |
+| `WordBank.dc.html`      | S11 Word bank                            | `/word-bank`         | 4 counters, search, NEW/LEARNING/LEARNED tabs, article filter, 5-pip SRS stage                               |
+| `Test.dc.html`          | S12 Boss round                           | `/boss`              | lives (3 hearts), score, 3-part stepper, sentence builder tiles (add/remove)                                 |
+| `Settings.dc.html`      | S13 Settings                             | `/settings`          | Chunk mode radio (Full/Mild/Quiet), digest time, word-of-the-moment switch, language & voice rows            |
+| `Notifications.dc.html` | Push & home widgets                      | (native)             | 2 push templates, small widgets (word, streak), medium widget (today)                                        |
+| `Menu.dc.html`          | Burger menu (open)                       | drawer               | 312px drawer, dim overlay, profile row, 7 items with badges, log out, version                                |
+| `Account.dc.html`       | My account                               | `/account`           | profile card, native language, level, daily goal radio (3/5/10/15), plan, export, recordings, delete account |
+| `Lessons.dc.html`       | Tab · Lessons                            | `/(tabs)/lessons`    | today card (START ▶), boss locked card, past lessons list with score colour                                  |
+| `Score.dc.html`         | Tab · Score                              | `/(tabs)/score`      | rank card, progress to next rank, 8-rank ladder, 3 badges                                                    |
+| `Stats.dc.html`         | Tab · Stats                              | `/(tabs)/stats`      | WEEK/MONTH tabs, bar chart, article accuracy bars, 3 summary tiles                                           |
+| `Logo.dc.html`          | Logo · 3 directions                      | —                    | reference only; build app icon + `Logo` component from direction B                                           |
 
 ## 5. Component inventory
 
 Each component ships with a meta and a story. Names match the design system where one exists. Base pieces come from React Native Reusables in `src/components/ui/`; DESIGN.md §9 maps each app component to its base and tokens. Every component ships a meta file next to it (`<Name>.meta.ts`, DESIGN.md §14).
 
 **Primitives**
+
 - `Screen`: scanline background, safe-area padding (`pt-screen-top px-gutter pb-screen-bottom`), optional tab bar slot
 - `Text` with `variant` (the type scale in DESIGN.md §5.2), picks the Cyrillic display/pixel font from `uiLang`
 - `GlitchTitle`: Bungee with `3px 0 pink, -3px 0 cyan` text shadow
@@ -224,6 +238,7 @@ Each component ships with a meta and a story. Names match the design system wher
 - `PressableFocus`: wraps every control with the 2px cyan focus ring + 48px minimum target
 
 **Design-system components** (`design/system/components/*.md`)
+
 - `Button`: primary (yellow, hard shadow, pressed = translate 4px + no shadow), secondary (cyan outline), ghost, danger outline (pink, used for AGAIN)
 - `ArticleChip`: tag, plural (dashed), picker with answered states
 - `WordCard`: flip card, front/back
@@ -234,6 +249,7 @@ Each component ships with a meta and a story. Names match the design system wher
 - `TabBar`: 4 tabs (canvas version); desktop rail in phase 6
 
 **App components found in the screens**
+
 - `TopBar` (back/close/menu + right label), `HeaderStats` (XP + streak), `LogoBadge`
 - `SectionLabel` ("01 / ADD TODAY'S WORDS", pink)
 - `ListGroup` + `ListRow` (2px `line` border, 52px rows, cyan value + ›)
@@ -253,10 +269,11 @@ Phase goal: a monorepo where the Expo app runs on web and Android, styled with t
 Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` until the owner acts), and the phase report is in `docs/progress.md`.
 
 #### 0.1 Workspace and shared packages
+
 - **Branch:** `chore/workspace`
 - **Goal:** One `npm ci` installs the whole repo, and `nx run-many -t lint typecheck` passes for three empty shared packages.
 - **Depends on:** —
-- **Scope:** root `package.json` (`"private": true`, `"workspaces": ["apps/*", "packages/*"]`, `engines.node` ≥ 24), `.nvmrc` (24), `nx.json` (task runner only; cacheable `lint`, `typecheck`, `test`; no Nx plugins), `tsconfig.base.json` (`strict: true`, `noUncheckedIndexedAccess: true`, `moduleResolution: "bundler"`), Prettier (`.prettierrc`, `.prettierignore`), ESLint flat config (`eslint.config.mjs` with `typescript-eslint`), `packages/core`, `packages/languages`, `packages/i18n`: each with `package.json` (`name: @daily-chunk/<name>`, `exports: { ".": "./src/index.ts" }`, scripts `typecheck: tsc --noEmit`, `lint: eslint .`), `tsconfig.json` extending the base, `src/index.ts` with `export {};`. `.gitignore` covers `node_modules`, `dist`, `.nx`, `storybook-static`. `docs/learn/monorepo-workspaces-nx.md`.
+- **Scope:** root `package.json` (`"private": true`, `"workspaces": ["apps/*", "packages/*"]`, `engines.node` ≥ 24), `.nvmrc` (24), `nx.json` (task runner only; cacheable `lint`, `typecheck`, `test`; no Nx plugins), `tsconfig.base.json` (`strict: true`, `noUncheckedIndexedAccess: true`, `moduleResolution: "bundler"`), Prettier (`.prettierrc`; `.prettierignore` must list `DESIGN.md` and `design/`: they only change with the owner's approval, never by formatting), ESLint flat config (`eslint.config.mjs` with `typescript-eslint`), `packages/core`, `packages/languages`, `packages/i18n`: each with `package.json` (`name: @daily-chunk/<name>`, `exports: { ".": "./src/index.ts" }`, scripts `typecheck: tsc --noEmit`, `lint: eslint .`), `tsconfig.json` extending the base, `src/index.ts` with `export {};`. `.gitignore` covers `node_modules`, `dist`, `.nx`, `storybook-static`. `docs/learn/monorepo-workspaces-nx.md`.
 - **Not in scope:** the Expo app, any domain types, i18next.
 - **Done when:**
   - `npm ci` exits 0
@@ -267,6 +284,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** nothing.
 
 #### 0.2 Expo app with Expo Router
+
 - **Branch:** `chore/expo-app`
 - **Goal:** `apps/app` is an Expo Router app on a pinned SDK that exports for web and Android and runs through Nx.
 - **Depends on:** 0.1
@@ -290,6 +308,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** open the app in Expo Go on the A54 (`npx expo start` → scan the QR code) and see the placeholder. Start learning task 1 whenever you like.
 
 #### 0.3 Theme: NativeWind, React Native Reusables, fonts
+
 - **Branch:** `chore/theme-setup`
 - **Goal:** The app renders DESIGN.md tokens (colours, fonts, rem spacing) on web and Android, and we know whether rem breakpoints work on native.
 - **Depends on:** 0.2
@@ -310,6 +329,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** open `/dev/theme-check` in Expo Go and confirm colours and fonts look right; answer the Q1 question if one was raised.
 
 #### 0.4 Web storage check (expo-sqlite + Drizzle)
+
 - **Branch:** `chore/web-storage-check`
 - **Goal:** Know, with evidence, whether `expo-sqlite` + Drizzle can save and read a row on web (dev server and exported build) and on Android export, so D3 can be confirmed or switched to the fallback.
 - **Depends on:** 0.3
@@ -326,6 +346,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** read `docs/learn/storage-on-web.md`; answer the question if raised.
 
 #### 0.5 Storybook and Vitest
+
 - **Branch:** `chore/storybook-vitest`
 - **Goal:** `nx run-many -t test` runs plain Vitest tests in the packages and a NativeWind-styled story as a browser test, and `build-storybook` produces a static site.
 - **Depends on:** 0.3 (not 0.4)
@@ -345,6 +366,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** run `npm run storybook -w @daily-chunk/app` and open the check story (optional).
 
 #### 0.6 CI on GitHub Actions
+
 - **Branch:** `chore/ci`
 - **Goal:** A CI workflow that runs the section 2c checks on every PR, verified locally now and on GitHub after the owner pushes.
 - **Depends on:** 0.5
@@ -360,6 +382,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** say "open the PRs" (or push these branches); see CI go green on GitHub; read the protection command and say "apply it". The agent then runs it and sets the step to `DONE`.
 
 #### 0.7 EAS project and hosted Storybook
+
 - **Branch:** `chore/eas`
 - **Goal:** Storybook is live at a public URL from `main`, with per-PR preview links if EAS Hosting supports a Storybook folder, otherwise via GitHub Pages.
 - **Depends on:** 0.5; the owner's Expo login for the EAS part
@@ -378,6 +401,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Owner:** create an account at https://expo.dev/signup; run `! npx eas-cli login` in the Claude session; create a token at https://expo.dev/settings/access-tokens and add it to GitHub → repo Settings → Secrets and variables → Actions → New repository secret, name `EXPO_TOKEN`. For the Pages fallback: GitHub → Settings → Pages → Source: "GitHub Actions".
 
 #### 0.8 Phase 0 wrap-up
+
 - **Branch:** `chore/phase-0-wrap-up`
 - **Goal:** CLAUDE.md lists the real commands, and the phase report tells the owner exactly what to check and do.
 - **Depends on:** 0.1–0.5 `DONE`; 0.6, 0.7 `DONE` or `WAITING-OWNER`
@@ -391,20 +415,20 @@ Phase goal: every component the core loop (Home → Done) needs exists with meta
 
 Every component step: **Done when** = component + `.meta.ts` + `.stories.tsx` with stories for each variant and state; story tests assert role, accessibility label and state; meta check passes; a Playwright screenshot of the story at 390 px wide is compared with the matching element in its `.dc.html` and every difference is either a DESIGN.md rule (named) or fixed; Standard Done. Spec sources: DESIGN.md §9 + `design/system/components/<Name>.md`.
 
-| Step | Branch | Goal (SMART) | Depends on |
-| --- | --- | --- | --- |
-| 1.1 | `chore/design-guards` | Lint fails on any hex/px under `src/` (DESIGN.md §10.4); `ComponentMeta` type in `src/components/meta.ts` (§14); a meta-check script fails when a component has no meta or names an unknown token. Proven by fixture tests that fail on purpose. Both added to CI. | phase 0 |
-| 1.2 | `feat/i18n-setup` | `packages/i18n` with i18next + react-i18next + `expo-localization`, `en.json`/`ru.json`, `useUiLang()`; Russian plural test (1/2/5 words) passes. Delete the 0.5 check story. | 1.1 |
-| 1.3 | `feat/text-primitive` | `Text` with every §5.3 variant; picks Cyrillic display/pixel fonts from `uiLang`; story shows all variants in EN and RU. Writes learning task 2. | 1.2 |
-| 1.4 | `feat/layout-primitives` | `Screen` (safe area + scanlines), `HardShadow` (native block / web `boxShadow`), `PressableFocus` (2px cyan ring, 2px offset, ≥48px target). | 1.3 |
-| 1.5 | `feat/icons` | `Icon` with the 17 stroke icons from the screens, `currentColor`, label required when used alone. | 1.4 |
-| 1.6 | `feat/button` | React Native Reusables `button` restyled per §9.1: primary, secondary, ghost, danger; pressed state. | 1.5 |
-| 1.7 | `feat/article-chip` | `packages/languages/de` maps gender roles → article words; `ArticleChip` tag / plural (dashed) / picker with answered ✓/✗ states. | 1.6 |
-| 1.8 | `feat/word-card` | Controlled `WordCard` (`isFlipped` + `onFlip`), no flip animation under reduced motion. | 1.7 |
-| 1.9 | `feat/lesson-stepper-tutor-quote` | `LessonStepper` (N segments + label + XP), `TutorQuote` (start/pass/fail). | 1.6 |
-| 1.10 | `feat/gap-fill-record-button` | `GapFill` (blank + `OptionGrid`, sentence-build variant), `RecordButton` (80/64, idle/recording/done, text alternative). | 1.7 |
-| 1.11 | `feat/app-chrome` | `TopBar`, `HeaderStats`, `LogoBadge`, `SectionLabel`, `StatTile`, `TabBar`. | 1.6 |
-| 1.12 | `chore/phase-1-review` | Phase report; status `WAITING-OWNER` until the owner reviews the kit in Storybook and says OK. | 1.1–1.11 |
+| Step | Branch                            | Goal (SMART)                                                                                                                                                                                                                                                       | Depends on |
+| ---- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| 1.1  | `chore/design-guards`             | Lint fails on any hex/px under `src/` (DESIGN.md §10.4); `ComponentMeta` type in `src/components/meta.ts` (§14); a meta-check script fails when a component has no meta or names an unknown token. Proven by fixture tests that fail on purpose. Both added to CI. | phase 0    |
+| 1.2  | `feat/i18n-setup`                 | `packages/i18n` with i18next + react-i18next + `expo-localization`, `en.json`/`ru.json`, `useUiLang()`; Russian plural test (1/2/5 words) passes. Delete the 0.5 check story.                                                                                      | 1.1        |
+| 1.3  | `feat/text-primitive`             | `Text` with every §5.3 variant; picks Cyrillic display/pixel fonts from `uiLang`; story shows all variants in EN and RU. Writes learning task 2.                                                                                                                   | 1.2        |
+| 1.4  | `feat/layout-primitives`          | `Screen` (safe area + scanlines), `HardShadow` (native block / web `boxShadow`), `PressableFocus` (2px cyan ring, 2px offset, ≥48px target).                                                                                                                       | 1.3        |
+| 1.5  | `feat/icons`                      | `Icon` with the 17 stroke icons from the screens, `currentColor`, label required when used alone.                                                                                                                                                                  | 1.4        |
+| 1.6  | `feat/button`                     | React Native Reusables `button` restyled per §9.1: primary, secondary, ghost, danger; pressed state.                                                                                                                                                               | 1.5        |
+| 1.7  | `feat/article-chip`               | `packages/languages/de` maps gender roles → article words; `ArticleChip` tag / plural (dashed) / picker with answered ✓/✗ states.                                                                                                                                  | 1.6        |
+| 1.8  | `feat/word-card`                  | Controlled `WordCard` (`isFlipped` + `onFlip`), no flip animation under reduced motion.                                                                                                                                                                            | 1.7        |
+| 1.9  | `feat/lesson-stepper-tutor-quote` | `LessonStepper` (N segments + label + XP), `TutorQuote` (start/pass/fail).                                                                                                                                                                                         | 1.6        |
+| 1.10 | `feat/gap-fill-record-button`     | `GapFill` (blank + `OptionGrid`, sentence-build variant), `RecordButton` (80/64, idle/recording/done, text alternative).                                                                                                                                           | 1.7        |
+| 1.11 | `feat/app-chrome`                 | `TopBar`, `HeaderStats`, `LogoBadge`, `SectionLabel`, `StatTile`, `TabBar`.                                                                                                                                                                                        | 1.6        |
+| 1.12 | `chore/phase-1-review`            | Phase report; status `WAITING-OWNER` until the owner reviews the kit in Storybook and says OK.                                                                                                                                                                     | 1.1–1.11   |
 
 ### Phase 2: core-loop screen stories
 
@@ -412,29 +436,29 @@ Phase goal: the 9 core-loop screens exist as stories with mock data, matching th
 
 Every screen step: **Done when** = screen story in EN and RU; Playwright screenshot at 390×844 next to the `.dc.html` screenshot in `docs/progress.md`; every difference is a named DESIGN.md rule or fixed; no strings outside `packages/i18n`; Standard Done.
 
-| Step | Branch | Goal (SMART) | Depends on |
-| --- | --- | --- | --- |
-| 2.1 | `feat/core-domain-types` | `Word`, `Lesson`, `ReviewLog`, `Profile` types in `packages/core` (translations per native language); type tests. Needs learning task 1 checked. | phase 1, task 1 |
-| 2.2 | `feat/mocks` | `src/mocks/` per D17 with the exact demo copy (Bahnhof, Fahrkarte, verspätet, Gleis; lesson 13; 1240 XP; streak 12/13; "Der letzte Zug") + EN twin, typed by `core`. | 2.1 |
-| 2.3 | `feat/home-confirm-stories` | Home and Confirm screen stories. | 2.2 |
-| 2.4 | `feat/flashcards-listen-stories` | Flashcards and Listen screen stories. | 2.2 |
-| 2.5 | `feat/read-record-stories` | Read (with `WordPopover`) and Record screen stories. | 2.2 |
-| 2.6 | `feat/gapfill-translate-stories` | GapFill and Translate screen stories. | 2.2 |
-| 2.7 | `feat/done-story` | Done screen story; phase report. | 2.3–2.6 |
+| Step | Branch                           | Goal (SMART)                                                                                                                                                         | Depends on      |
+| ---- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| 2.1  | `feat/core-domain-types`         | `Word`, `Lesson`, `ReviewLog`, `Profile` types in `packages/core` (translations per native language); type tests. Needs learning task 1 checked.                     | phase 1, task 1 |
+| 2.2  | `feat/mocks`                     | `src/mocks/` per D17 with the exact demo copy (Bahnhof, Fahrkarte, verspätet, Gleis; lesson 13; 1240 XP; streak 12/13; "Der letzte Zug") + EN twin, typed by `core`. | 2.1             |
+| 2.3  | `feat/home-confirm-stories`      | Home and Confirm screen stories.                                                                                                                                     | 2.2             |
+| 2.4  | `feat/flashcards-listen-stories` | Flashcards and Listen screen stories.                                                                                                                                | 2.2             |
+| 2.5  | `feat/read-record-stories`       | Read (with `WordPopover`) and Record screen stories.                                                                                                                 | 2.2             |
+| 2.6  | `feat/gapfill-translate-stories` | GapFill and Translate screen stories.                                                                                                                                | 2.2             |
+| 2.7  | `feat/done-story`                | Done screen story; phase report.                                                                                                                                     | 2.3–2.6         |
 
 ### Phase 3: core loop in the app
 
 Phase goal: on the A54 and on web, the owner can add 3+ words, confirm them, finish all 6 tasks, and see them scheduled for review, with data surviving an app restart.
 
-| Step | Branch | Goal (SMART) | Done when (besides Standard Done) | Depends on |
-| --- | --- | --- | --- | --- |
-| 3.1 | `feat/navigation-shell` | `(tabs)` layout with `TabBar`, burger `Drawer`, lesson stack; leaving a lesson asks first. Writes learning task 3. | Each tab and drawer item opens its route in a web e2e check; the leave prompt appears on back. | phase 2 |
-| 3.2 | `feat/storage` | Storage interface in `core` + Drizzle setup (or the 0.4 fallback). Writes learning task 5 (the `words` table is the owner's). | Store a profile row and read it after reload on web; Android export passes. | 3.1 |
-| 3.3 | `feat/srs-scheduler` | SRS in `core`: 1, 3, 7, 14, 30 days; wrong → 1; correct at 30 → learned; XP and streak rules. | Vitest table tests for every transition; `core` coverage ≥ 80%. | 2.1 |
-| 3.4 | `feat/ai-mocks` | AI request/response types in `core` + mock implementations (normalise, story, gap sentences, translation check, pronunciation), all taking `{ targetLang, nativeLang }`. | Type tests; mocks return the demo content. | 2.2 |
-| 3.5 | `feat/home-screen` | Home works with real storage. Writes learning task 4. Switch to a development build when dictation is added. | Typed words appear on Confirm; dev build APK installs (owner). | 3.2, 3.4 |
-| 3.6–3.13 | `feat/<screen>-screen` | One step per screen in order: Confirm, Flashcards, Listen, Read, Record, GapFill, Translate, Done. Answer checking accepts ae/oe/ue/ss from the target pack. | The screen's interactive bits (section 4) work in a web e2e check; state saved where the screen saves it. | previous step |
-| 3.14 | `chore/phase-3-review` | Web app preview per PR replaces Storybook previews; phase report. | Full loop e2e on web passes; owner runs it on the A54. | 3.13 |
+| Step     | Branch                  | Goal (SMART)                                                                                                                                                             | Done when (besides Standard Done)                                                                         | Depends on    |
+| -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ------------- |
+| 3.1      | `feat/navigation-shell` | `(tabs)` layout with `TabBar`, burger `Drawer`, lesson stack; leaving a lesson asks first. Writes learning task 3.                                                       | Each tab and drawer item opens its route in a web e2e check; the leave prompt appears on back.            | phase 2       |
+| 3.2      | `feat/storage`          | Storage interface in `core` + Drizzle setup (or the 0.4 fallback). Writes learning task 5 (the `words` table is the owner's).                                            | Store a profile row and read it after reload on web; Android export passes.                               | 3.1           |
+| 3.3      | `feat/srs-scheduler`    | SRS in `core`: 1, 3, 7, 14, 30 days; wrong → 1; correct at 30 → learned; XP and streak rules.                                                                            | Vitest table tests for every transition; `core` coverage ≥ 80%.                                           | 2.1           |
+| 3.4      | `feat/ai-mocks`         | AI request/response types in `core` + mock implementations (normalise, story, gap sentences, translation check, pronunciation), all taking `{ targetLang, nativeLang }`. | Type tests; mocks return the demo content.                                                                | 2.2           |
+| 3.5      | `feat/home-screen`      | Home works with real storage. Writes learning task 4. Switch to a development build when dictation is added.                                                             | Typed words appear on Confirm; dev build APK installs (owner).                                            | 3.2, 3.4      |
+| 3.6–3.13 | `feat/<screen>-screen`  | One step per screen in order: Confirm, Flashcards, Listen, Read, Record, GapFill, Translate, Done. Answer checking accepts ae/oe/ue/ss from the target pack.             | The screen's interactive bits (section 4) work in a web e2e check; state saved where the screen saves it. | previous step |
+| 3.14     | `chore/phase-3-review`  | Web app preview per PR replaces Storybook previews; phase report.                                                                                                        | Full loop e2e on web passes; owner runs it on the A54.                                                    | 3.13          |
 
 ### Phase 4: the other screens
 
@@ -446,16 +470,16 @@ One step per screen, each with its new components story-first (same Done as phas
 
 Phase goal: words are normalised and lessons generated by Gemini through Supabase, and a signed-in user's data syncs between web and phone.
 
-| Step | Goal (SMART) | Done when |
-| --- | --- | --- |
-| 5.1 | Local Supabase (CLI) + a test Edge Function that imports a `core` type through the Deno import map (D18). | `supabase functions serve` + `curl` returns the typed response; `deno check` passes. |
-| 5.2 | Schema + row-level security migrations; CI runs them against local Supabase. | Migration test: a user can't read another user's rows. |
-| 5.3 | `normalise` Edge Function (Gemini Flash), replacing its mock. | Contract test with recorded Gemini responses; app uses it behind the same `core` interface. |
-| 5.4 | `story` + gap sentences + native sentences function. | Same as 5.3. |
-| 5.5 | Translation check function. | Same as 5.3. |
-| 5.6 | Pronunciation score function. | Same as 5.3. |
-| 5.7 | Google sign-in, guest → account upload. Writes learning task 6. | Sign in on web; local words appear in Postgres. |
-| 5.8 | Sync (`updatedAt`, newest wins). | Edit on web → appears on the phone after sync, and the reverse. |
+| Step | Goal (SMART)                                                                                              | Done when                                                                                   |
+| ---- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 5.1  | Local Supabase (CLI) + a test Edge Function that imports a `core` type through the Deno import map (D18). | `supabase functions serve` + `curl` returns the typed response; `deno check` passes.        |
+| 5.2  | Schema + row-level security migrations; CI runs them against local Supabase.                              | Migration test: a user can't read another user's rows.                                      |
+| 5.3  | `normalise` Edge Function (Gemini Flash), replacing its mock.                                             | Contract test with recorded Gemini responses; app uses it behind the same `core` interface. |
+| 5.4  | `story` + gap sentences + native sentences function.                                                      | Same as 5.3.                                                                                |
+| 5.5  | Translation check function.                                                                               | Same as 5.3.                                                                                |
+| 5.6  | Pronunciation score function.                                                                             | Same as 5.3.                                                                                |
+| 5.7  | Google sign-in, guest → account upload. Writes learning task 6.                                           | Sign in on web; local words appear in Postgres.                                             |
+| 5.8  | Sync (`updatedAt`, newest wins).                                                                          | Edit on web → appears on the phone after sync, and the reverse.                             |
 
 ### Phase 6: extension, device features, larger screens
 
@@ -466,6 +490,7 @@ Phase goal: words are normalised and lessons generated by Gemini through Supabas
 7.1 reduced motion (no flip, no XP count-up) · 7.2 contrast check (`line-strong` never for text) · 7.3 screen reader pass + ≥48px targets on every screen · 7.4 UI language EN/RU switch check · 7.5 full flow once with native = RU and once with native = EN. Each step: Done when written before the phase starts.
 
 ## 7. Out of scope for the first version
+
 - Payments ("FREE · UPGRADE" row is a placeholder)
 - Export to CSV / Anki (row present, action later)
 - Help & feedback content
