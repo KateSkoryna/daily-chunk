@@ -111,7 +111,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 - `expo export --platform web`
 - backend phase: migrations checked against a local Supabase
 
-**Branch protection on `main`:** PR required, CI green required, no approval required (the owner can't approve their own PR), no direct pushes. Applied with `gh` by the owner's go (step 0.6).
+**Branch protection on `main`:** PR required, CI green required, no approval required (the owner can't approve their own PR), no direct pushes, no force pushes, no deletion, rules apply to admins too. **Applied 2026-11-06** without the CI check; step 0.6 adds the required CI check.
 
 **CD:**
 
@@ -372,14 +372,14 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Depends on:** 0.5
 - **Scope:**
   - `.github/workflows/ci.yml`: on `pull_request` and `push` to `main`; Node from `.nvmrc`; `npm ci`; Nx cache; `npx playwright install --with-deps chromium`; `prettier --check`; `nx affected -t lint typecheck test` (base `origin/main`); `nx run app:export:web`.
-  - The branch-protection command, written but **not run**, in `docs/progress.md`: `gh api -X PUT repos/KateSkoryna/daily-chunk/branches/main/protection` with: required status check = the CI job name, `required_pull_request_reviews` with 0 approvals, `enforce_admins: true`, no force pushes, plus a one-line explanation of each field.
+  - Branch protection on `main` already exists (PR required, 0 approvals, admins included, no force pushes or deletion). Write, but **don't run**, the command that adds only the CI job as a required status check, in `docs/progress.md`: `gh api -X PATCH repos/KateSkoryna/daily-chunk/branches/main/protection/required_status_checks` with `strict: true` and `contexts: ["<CI job name>"]`, plus a one-line explanation. If GitHub answers 404 because no checks are set yet, the command is instead a `PUT` on `.../branches/main/protection` with the current rules unchanged plus `required_status_checks`. Before writing it, check the current rules with `gh api repos/KateSkoryna/daily-chunk/branches/main/protection`.
   - `docs/learn/ci-github-actions.md`.
 - **Not in scope:** deploy jobs (0.7), meta check and design lint (1.1), Supabase checks.
 - **Done when:**
   - `npx --yes actionlint` (or the `actionlint` binary) reports no errors on `ci.yml`
   - Every command in `ci.yml` run locally in the same order exits 0 (recorded)
   - Status `WAITING-OWNER` with the actions below
-- **Owner:** say "open the PRs" (or push these branches); see CI go green on GitHub; read the protection command and say "apply it". The agent then runs it and sets the step to `DONE`.
+- **Owner:** say "open the PRs" (or push these branches); see CI go green on GitHub; read the required-check command and say "apply it". The agent then runs it and sets the step to `DONE`.
 
 #### 0.7 EAS project and hosted Storybook
 
