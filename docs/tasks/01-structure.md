@@ -16,7 +16,7 @@
    `LanguagePair = { targetLang: 'de'; nativeLang: 'ru' | 'en' }`
 2. Re-export it from `packages/core/src/index.ts`.
 3. In `apps/app/package.json`, add `"@daily-chunk/core": "*"` to `dependencies`, then run `npm install` in the repo root.
-4. In `apps/app/app/index.tsx`, import the type from `@daily-chunk/core` and use it: make a `const pair: LanguagePair = { targetLang: 'de', nativeLang: 'ru' }` and show `pair.nativeLang` in the screen.
+4. In `apps/app/app/index.tsx` (a placeholder with a title, a line of text and a button to the theme check), import the type from `@daily-chunk/core` and use it: make a `const pair: LanguagePair = { targetLang: 'de', nativeLang: 'ru' }` and show `pair.nativeLang` in a new `<Text>` under "Placeholder home screen". Copy the classes of the existing `<Text>` lines; they come from `DESIGN.md`, so don't add colours or sizes of your own.
 5. Run `npx nx run @daily-chunk/app:typecheck`. It must pass.
 6. Break it on purpose: change `nativeLang` to `'fr'`. Run typecheck again and read the error: it should say `'fr'` is not assignable to `'ru' | 'en'`. Change it back.
 7. Optional experiment: remove the line from step 3 and run typecheck again. Note what happens, then put it back. The rule stays: every package a project imports is listed in its own `package.json`.
