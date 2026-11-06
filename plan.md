@@ -125,7 +125,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 ### Roles
 
 - **Owner**: answers questions, does learning tasks, checks results, says "open the PRs", always merges.
-- **Agent**: builds one step at a time, verifies it, records results in `docs/progress.md`. Never pushes, opens PRs or merges unless the owner says so in chat.
+- **Agent**: builds one step at a time, verifies it, records results in `docs/progress.md`. **Never commits, pushes, opens PRs or merges unless the owner says so in chat.** Every step stops for the owner's review first.
 
 ### Running a phase with `/loop`
 
@@ -133,13 +133,14 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 
 1. **Read** `CLAUDE.md`, this file, `docs/progress.md`, and the memory index. Read `DESIGN.md` before any UI step.
 2. **Pick** the first step of phase N in section 6 whose status in `docs/progress.md` is `TODO` and whose `Depends on` steps are all `DONE` (or `WAITING-OWNER` if the step says that's enough). If no step can start: write the phase report (step 9) and end the loop.
-3. **Branch** from the branch of the previous step in the phase (branches are stacked: 0.2 starts from 0.1's branch). The first step of a phase starts from `main`. Use the branch name in the step.
+3. **Branch** from the branch of the previous step in the phase (branches are stacked: 0.2 starts from 0.1's branch, which exists because the owner had 0.1 committed). The first step of a phase starts from `main`. Use the branch name in the step. If the previous step is `WAITING-REVIEW` (uncommitted), don't start: end the loop.
 4. **Set** the step to `IN-PROGRESS` in `docs/progress.md`.
 5. **Build** only what the step's `Scope` lists. Don't touch `Not in scope` items, open learning-task files, or `DESIGN.md`.
 6. **Verify** every item in the step's `Done when` plus the Standard Done list below. Run each command and record the command and result (exit code, key output line, URL or file) under the step in `docs/progress.md`.
 7. **Review**: start a reviewer subagent with a fresh context (`Agent`, general-purpose). Give it the step text, the diff (`git diff <base>...HEAD`) and this checklist: tests/lint/typecheck pass; design rules and metas (CLAUDE.md); language rules and no hard-coded strings; no AI attribution; scope respected; every `Done when` item has evidence. Fix every finding, re-run verification, and record "review: N findings, all fixed".
-8. **Commit** with clear names (CLAUDE.md git rules), then set the step to `DONE` (or `WAITING-OWNER` with the exact owner action) and commit `docs/progress.md`. End the iteration.
-9. **Phase report** when the phase has no startable step: add a "Phase N report" section to `docs/progress.md` with a table of steps, status, branch, and one line each; then a list "Owner actions" (in order) and "Questions". Then stop the loop.
+8. **Stop for review. Do not commit.** Leave all changes (including `docs/progress.md`) uncommitted in the working tree on the step's branch. Set the step to `WAITING-REVIEW` (or `WAITING-OWNER` with the exact owner action) and end the loop with a short message: what changed, how to see the diff (`git status`, `git diff`), what to say next. **One step per loop run.**
+9. **After the owner's OK** ("approved", "commit"): fix any review comments, commit with clear names (CLAUDE.md git rules), set the step to `DONE`, commit `docs/progress.md`. The owner then starts the next step with `/loop run plan.md phase <N>`.
+10. **Phase report** when the phase has no startable step: add a "Phase N report" section to `docs/progress.md` with a table of steps, status, branch, and one line each; then a list "Owner actions" (in order) and "Questions". Then stop the loop.
 
 **Stop rules (set the step to `BLOCKED`, write the question in `docs/progress.md` with 1–2 options and a recommendation, then go on to the next step that doesn't depend on it):**
 
@@ -148,7 +149,7 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 - a library or version can't do what the step needs
 - the step needs the owner (login, secret, device check, push)
 
-**Never (in loop mode):** push, open a PR, merge, change GitHub settings, change `DESIGN.md`, edit an open learning task's files, skip the reviewer, mark `DONE` without evidence, add AI attribution anywhere.
+**Never (in loop mode):** commit before the owner's OK, push, open a PR, merge, change GitHub settings, change `DESIGN.md`, edit an open learning task's files, skip the reviewer, mark `DONE` without evidence, add AI attribution anywhere.
 
 ### Standard Done (applies to every step)
 
@@ -405,7 +406,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Branch:** `chore/phase-0-wrap-up`
 - **Goal:** CLAUDE.md lists the real commands, and the phase report tells the owner exactly what to check and do.
 - **Depends on:** 0.1–0.5 `DONE`; 0.6, 0.7 `DONE` or `WAITING-OWNER`
-- **Scope:** fill the "Commands" section of `CLAUDE.md` (install, start, web, android, typecheck, lint, test, storybook, build-storybook, export, deploy) with the exact commands that were run in this phase; update CLAUDE.md "Status"; write the phase report (2d step 9).
+- **Scope:** fill the "Commands" section of `CLAUDE.md` (install, start, web, android, typecheck, lint, test, storybook, build-storybook, export, deploy) with the exact commands that were run in this phase; update CLAUDE.md "Status"; write the phase report (2d step 10).
 - **Done when:** every command listed in CLAUDE.md runs and exits 0 (except deploy, which needs the owner's login); phase report exists.
 - **Owner:** read the phase report, do the owner actions, say "open the PRs", merge in order. Say "check" when learning task 1 is done.
 

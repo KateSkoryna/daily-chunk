@@ -1,0 +1,7 @@
+DESIGN.md
+design/
+node_modules/
+dist/
+.nx/
+storybook-static/
+package-lock.json

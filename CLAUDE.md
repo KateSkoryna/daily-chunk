@@ -55,7 +55,7 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 
 - Every component and screen gets a story (`*.stories.tsx`) next to its meta. Stories are the component tests.
 - Phases run step by step with `/loop run plan.md phase <N>` following `plan.md` §2d: pick the next `TODO` step, build only its scope, prove every "Done when" item, record evidence in `docs/progress.md`.
-- Never push, open a PR or merge unless the user says so in chat. The user always merges.
+- Never commit, push, open a PR or merge unless the user says so in chat. Each step is left uncommitted for the user's review; commit only after their OK. The user always merges.
 - One step per branch. Before handing a step to the user: run tests, then a reviewer subagent with a fresh context checks tests/lint/typecheck, design rules + metas, language rules, and a browser run against the `.dc.html`. Fix its findings first.
 - When a learning task in `docs/tasks/` is open, tell the user, don't touch its files, keep building other parts. Review it when the user says "check".
 - Explain new concepts in chat when they first come up and add a short `docs/learn/<topic>.md` note in the same branch.
