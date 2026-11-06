@@ -5,3 +5,5 @@ dist/
 .nx/
 storybook-static/
 package-lock.json
+.expo/
+expo-env.d.ts
