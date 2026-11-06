@@ -47,7 +47,7 @@ v1 is for the owner's daily use and as a portfolio piece. Test device: Samsung A
 | D16 | UI strings                 | **i18next + react-i18next** in `packages/i18n` (EN/RU, incl. Russian plural forms), `expo-localization` for the device language.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | D17 | Mocks                      | `src/mocks/` uses the real `packages/core` types, one file per feature (`words.ts`, `lesson.ts`, `stats.ts`…), RU and EN copy inside each object.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | D18 | Edge Function import proof | Moved from phase 0 to step 5.1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| D19 | Dev environment            | **Docker** so any developer can run the project with only Docker installed: `Dockerfile` + `compose.yml` (dev server, web, checks), plus a `.devcontainer` for VS Code / Cursor. Scope: dev server, web, Storybook (step 0.5), checks. Not covered: Android emulator and iOS (not possible in Docker on Mac); phone builds stay on EAS. The phone connects to the dev server by QR code over Wi-Fi (`HOST_IP`) or `--tunnel`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| D19 | Local backend              | The backend runs locally with the **Supabase CLI** (`npx supabase start`), which creates its own Docker containers, so Docker Desktop must be installed from phase 5 on; or in a Supabase cloud project. Decided in step 5.1. The app itself never runs in Docker: `npm start` on the laptop.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## 2a. Languages: built to extend
 
@@ -268,7 +268,7 @@ Every step follows section 2d (loop protocol, Standard Done). Status lives in `d
 
 Phase goal: a monorepo where the Expo app runs on web and Android, styled with the DESIGN.md theme, with Storybook, Vitest, CI and a hosted Storybook, so phase 1 can build components story-first.
 
-Phase done when: steps 0.1–0.7 (including 0.2b) are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` until the owner acts), and the phase report is in `docs/progress.md`.
+Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` until the owner acts), and the phase report is in `docs/progress.md`.
 
 #### 0.1 Workspace and shared packages
 
@@ -308,30 +308,6 @@ Phase done when: steps 0.1–0.7 (including 0.2b) are `DONE` (0.6 and 0.7 may be
   - D1 lists the pinned versions with reasons and links
   - `docs/tasks/01-structure.md` exists and `docs/progress.md` says "Learning task 1 is open"
 - **Owner:** open the app in Expo Go on the A54 (`npx expo start` → scan the QR code) and see the placeholder. Start learning task 1 whenever you like.
-
-#### 0.2b Docker dev environment
-
-- **Branch:** `chore/docker`
-- **Goal:** On a machine with only Docker installed, `docker compose up` starts the dev server (web at http://localhost:8081, QR code for a phone) and `docker compose run --rm check` runs the repo checks, with nothing taken from the host's Node or `node_modules`.
-- **Depends on:** 0.2 (merged or committed on its branch)
-- **Scope:**
-  - `Dockerfile`: `node:24` base (Debian slim), repo at `/workspace`, `npm ci` from `package.json` + `package-lock.json` first for layer caching.
-  - `compose.yml`:
-    - service `dev`: runs `npm start`, publishes port 8081, bind-mounts the repo, and keeps `node_modules` (root and `apps/app`) in named volumes so the host's copy is never used; env `REACT_NATIVE_PACKAGER_HOSTNAME=${HOST_IP:-localhost}`, `EXPO_NO_TELEMETRY=1`, `CI=1`.
-    - service `check` (profile `check`): runs `npx prettier --check . && npx nx run-many -t lint typecheck && npx nx run @daily-chunk/app:export:web`.
-  - `.dockerignore` (`node_modules`, `.nx`, `dist`, `.expo`, `.git`).
-  - `.devcontainer/devcontainer.json` using the same Dockerfile, forwarding 8081, with the ESLint and Prettier VS Code extensions.
-  - `README.md`: a "Run with Docker" section: `docker compose up`; for a phone on Mac/Windows `HOST_IP=$(ipconfig getifaddr en0) docker compose up` (Linux: `hostname -I`); the `--tunnel` fallback; how to run the checks; what Docker does not cover (emulators, iOS, EAS).
-  - `docs/learn/docker-dev-environment.md` (image vs container, bind mount vs volume, why the phone needs `HOST_IP`).
-- **Not in scope:** Storybook and Playwright in the image (step 0.5 adds them), CI changes (step 0.6 reuses the image), production images, EAS inside Docker.
-- **Done when:**
-  - `docker compose build` exits 0
-  - `docker compose run --rm check` exits 0
-  - fresh-clone proof: `git clone` of the branch into an empty scratchpad folder, then `docker compose run --rm check` there exits 0 (no host `node_modules`, no `.nvmrc` use)
-  - `docker compose up -d dev`, then `curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/status` returns `200` and `curl -s -H 'Accept: text/html' http://localhost:8081/` returns HTML containing `Daily Chunk`; then `docker compose down`
-  - `HOST_IP=<this machine's LAN IP> docker compose up -d dev`, then `curl -s -H 'expo-platform: android' http://localhost:8081/` contains that IP; then `docker compose down`
-  - `npx prettier --check .` exits 0
-- **Owner:** have Docker Desktop running; run `docker compose up`, open http://localhost:8081, and (optional) scan the QR code from `docker compose logs dev` with Expo Go. For a phone: `HOST_IP=$(ipconfig getifaddr en0) docker compose up`.
 
 #### 0.3 Theme: NativeWind, React Native Reusables, fonts
 
@@ -379,7 +355,6 @@ Phase done when: steps 0.1–0.7 (including 0.2b) are `DONE` (0.6 and 0.7 may be
 - **Scope:**
   - `@storybook/react-native-web-vite` in `apps/app/.storybook/` with NativeWind working in stories, global decorator that loads `global.css` and the fonts.
   - Storybook Vitest addon with Playwright Chromium (headless) and the a11y addon; `test` script in `apps/app` runs story tests.
-  - Docker: add Playwright's browsers and Storybook's port to the image from step 0.2b; `docker compose run --rm check` also runs `test`.
   - Vitest in `packages/*` (`test` script, `passWithNoTests` where empty). In `packages/languages`: `export const supportedTargetLangs = ['de'] as const;` plus one test; in `apps/app` one Vitest test that imports it from `@daily-chunk/languages` (cross-package proof; not `core`, which belongs to learning task 1).
   - One throwaway check story `apps/app/.storybook/checks/Theme.stories.tsx` (not under `src/components/`, so no meta): a `View` with `bg-primary p-gutter` and a pixel-font label; its play function asserts the computed background colour equals the `--primary` token and that the a11y check passes. Delete it in step 1.2.
   - Scripts: `storybook`, `build-storybook` (`storybook-static/`).
@@ -398,7 +373,6 @@ Phase done when: steps 0.1–0.7 (including 0.2b) are `DONE` (0.6 and 0.7 may be
 - **Goal:** A CI workflow that runs the section 2c checks on every PR, verified locally now and on GitHub after the owner pushes.
 - **Depends on:** 0.5
 - **Scope:**
-  - CI runs the checks through the same Docker image (`docker compose run --rm check`) so local and CI results match; if that is not workable, say why in `docs/progress.md`.
   - `.github/workflows/ci.yml`: on `pull_request` and `push` to `main`; Node from `.nvmrc`; `npm ci`; Nx cache; `npx playwright install --with-deps chromium`; `prettier --check`; `nx affected -t lint typecheck test` (base `origin/main`); `nx run app:export:web`.
   - Branch protection on `main` already exists (PR required, 0 approvals, admins included, no force pushes or deletion). Write, but **don't run**, the command that adds only the CI job as a required status check, in `docs/progress.md`: `gh api -X PATCH repos/KateSkoryna/daily-chunk/branches/main/protection/required_status_checks` with `strict: true` and `contexts: ["<CI job name>"]`, plus a one-line explanation. If GitHub answers 404 because no checks are set yet, the command is instead a `PUT` on `.../branches/main/protection` with the current rules unchanged plus `required_status_checks`. Before writing it, check the current rules with `gh api repos/KateSkoryna/daily-chunk/branches/main/protection`.
   - `docs/learn/ci-github-actions.md`.
@@ -498,16 +472,16 @@ One step per screen, each with its new components story-first (same Done as phas
 
 Phase goal: words are normalised and lessons generated by Gemini through Supabase, and a signed-in user's data syncs between web and phone.
 
-| Step | Goal (SMART)                                                                                              | Done when                                                                                   |
-| ---- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| 5.1  | Local Supabase (CLI) + a test Edge Function that imports a `core` type through the Deno import map (D18). | `supabase functions serve` + `curl` returns the typed response; `deno check` passes.        |
-| 5.2  | Schema + row-level security migrations; CI runs them against local Supabase.                              | Migration test: a user can't read another user's rows.                                      |
-| 5.3  | `normalise` Edge Function (Gemini Flash), replacing its mock.                                             | Contract test with recorded Gemini responses; app uses it behind the same `core` interface. |
-| 5.4  | `story` + gap sentences + native sentences function.                                                      | Same as 5.3.                                                                                |
-| 5.5  | Translation check function.                                                                               | Same as 5.3.                                                                                |
-| 5.6  | Pronunciation score function.                                                                             | Same as 5.3.                                                                                |
-| 5.7  | Google sign-in, guest → account upload. Writes learning task 6.                                           | Sign in on web; local words appear in Postgres.                                             |
-| 5.8  | Sync (`updatedAt`, newest wins).                                                                          | Edit on web → appears on the phone after sync, and the reverse.                             |
+| Step | Goal (SMART)                                                                                                                                                  | Done when                                                                                   |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 5.1  | Decide local (Supabase CLI, needs Docker Desktop) or cloud Supabase (D19); a test Edge Function that imports a `core` type through the Deno import map (D18). | `supabase functions serve` + `curl` returns the typed response; `deno check` passes.        |
+| 5.2  | Schema + row-level security migrations; CI runs them against local Supabase.                                                                                  | Migration test: a user can't read another user's rows.                                      |
+| 5.3  | `normalise` Edge Function (Gemini Flash), replacing its mock.                                                                                                 | Contract test with recorded Gemini responses; app uses it behind the same `core` interface. |
+| 5.4  | `story` + gap sentences + native sentences function.                                                                                                          | Same as 5.3.                                                                                |
+| 5.5  | Translation check function.                                                                                                                                   | Same as 5.3.                                                                                |
+| 5.6  | Pronunciation score function.                                                                                                                                 | Same as 5.3.                                                                                |
+| 5.7  | Google sign-in, guest → account upload. Writes learning task 6.                                                                                               | Sign in on web; local words appear in Postgres.                                             |
+| 5.8  | Sync (`updatedAt`, newest wins).                                                                                                                              | Edit on web → appears on the phone after sync, and the reverse.                             |
 
 ### Phase 6: extension, device features, larger screens
 
