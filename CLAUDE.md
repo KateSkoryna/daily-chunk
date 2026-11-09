@@ -65,6 +65,10 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 
 Not set up yet (phase 0). Fill this in once the project is created.
 
+## CI/CD and secrets
+
+Follow the global CI/CD and secrets rules; the reasoning is in `plan.md` §2c. The only secret so far is `EXPO_TOKEN` (GitHub secret, deploy step only).
+
 ## Git rules (must follow)
 
 - No AI attribution anywhere: no `Co-Authored-By`, "Generated with", or any Claude/AI mention in commits, branch names, PR titles or descriptions, or code.
