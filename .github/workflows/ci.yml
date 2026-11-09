@@ -12,34 +12,48 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  NX_BASE: ${{ github.event_name == 'pull_request' && 'origin/main' || github.event.before }}
+
 jobs:
-  ci:
-    name: ci
+  format:
+    name: format
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: npx prettier --check .
+
+  lint-typecheck:
+    name: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - run: npx nx affected -t lint typecheck --base="$NX_BASE" --head=HEAD
 
-      - uses: actions/setup-node@v4
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
         with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - run: npm ci
-
-      - uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
-          restore-keys: nx-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
-
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
       - run: npx playwright install --with-deps chromium
         working-directory: apps/app
+      - run: npx nx affected -t test --base="$NX_BASE" --head=HEAD
 
-      - run: npx prettier --check .
-
-      - run: npx nx affected -t lint typecheck test --base=${{ github.event_name == 'pull_request' && 'origin/main' || github.event.before }} --head=HEAD
-
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
       - run: npx nx run @daily-chunk/app:export:web
