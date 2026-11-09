@@ -5,7 +5,11 @@ const pair = (name) => ({
 });
 
 module.exports = {
-  content: ['./app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
+  content: [
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+    './.storybook/**/*.{ts,tsx}',
+  ],
   presets: [require('nativewind/preset')],
   theme: {
     screens: { tablet: '37.5rem', desktop: '64rem', wide: '90rem' },

@@ -16,14 +16,16 @@ npm start
 
 Scan the QR code with Expo Go (phone and laptop on the same Wi-Fi). If it can't connect, run `npx expo start --tunnel` inside `apps/app`.
 
-| Command                                  | What it does                               |
-| ---------------------------------------- | ------------------------------------------ |
-| `npm start`                              | Dev server, QR code for Expo Go            |
-| `npm run web`                            | Open the app in the browser                |
-| `npm run android`                        | Open on an Android emulator or device      |
-| `npx nx run-many -t lint typecheck`      | Lint and typecheck every project           |
-| `npx nx run @daily-chunk/app:export:web` | Build the web version into `apps/app/dist` |
-| `npm run format`                         | Format all files with Prettier             |
+| Command                                  | What it does                                                   |
+| ---------------------------------------- | -------------------------------------------------------------- |
+| `npm start`                              | Dev server, QR code for Expo Go                                |
+| `npm run web`                            | Open the app in the browser                                    |
+| `npm run android`                        | Open on an Android emulator or device                          |
+| `npm run storybook`                      | Open Storybook (component workshop) on port 6006               |
+| `npm test`                               | Run all tests (packages in Node, stories in headless Chromium) |
+| `npx nx run-many -t lint typecheck`      | Lint and typecheck every project                               |
+| `npx nx run @daily-chunk/app:export:web` | Build the web version into `apps/app/dist`                     |
+| `npm run format`                         | Format all files with Prettier                                 |
 
 ## Repo layout
 
