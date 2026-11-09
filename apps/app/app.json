@@ -44,6 +44,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "267ba1aa-9cca-4306-b902-3b622bba5748"
+      }
+    },
+    "owner": "civciv_katesko"
   }
 }
