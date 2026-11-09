@@ -10,16 +10,16 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ## Phase 0: project setup
 
-| Step                                                 | Status        | Branch                    |
-| ---------------------------------------------------- | ------------- | ------------------------- |
-| 0.1 Workspace and shared packages                    | DONE          | `chore/workspace`         |
-| 0.2 Expo app with Expo Router                        | DONE          | `chore/expo-app`          |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE          | `chore/theme-setup`       |
-| 0.4 Web storage check                                | DONE          | `chore/web-storage-check` |
-| 0.5 Storybook and Vitest                             | DONE          | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | WAITING-OWNER | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | TODO          | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO          | `chore/phase-0-wrap-up`   |
+| Step                                                 | Status         | Branch                    |
+| ---------------------------------------------------- | -------------- | ------------------------- |
+| 0.1 Workspace and shared packages                    | DONE           | `chore/workspace`         |
+| 0.2 Expo app with Expo Router                        | DONE           | `chore/expo-app`          |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE           | `chore/theme-setup`       |
+| 0.4 Web storage check                                | DONE           | `chore/web-storage-check` |
+| 0.5 Storybook and Vitest                             | DONE           | `chore/storybook-vitest`  |
+| 0.6 CI on GitHub Actions                             | WAITING-OWNER  | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | WAITING-REVIEW | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
@@ -204,3 +204,15 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Owner actions: (1) read `docs/learn/ci-github-actions.md`; (2) say "commit", then "open pr"; (3) watch the four jobs go green on the PR; (4) say "apply it".
 - Review: 0 blocking findings, 3 low notes, all fixed (`permissions: contents: read`; cancel-in-progress only for PRs; push base is `github.event.before`). actionlint passed (run by the owner).
 - Changed after the owner asked for separate checks: one job split into four parallel jobs (own machine each); `actionlint` still prints nothing; `nx affected` for lint, typecheck and test → "No tasks were run" for this docs and workflow only diff (expected).
+
+### 0.7 EAS project and hosted Storybook
+
+- Result: EAS Hosting accepts the static Storybook folder, so the EAS route is used (no GitHub Pages fallback). Storybook is live at https://daily-chunk--2076nn47rb.expo.app (a preview deployment). Uncommitted on `chore/eas`. Status `WAITING-REVIEW`; the CI deploy starts working once the owner adds `EXPO_TOKEN` (see owner actions).
+- Written: `apps/app/eas.json` (profiles `development`, `preview` with `buildType: apk`, `production`), the job `deploy-storybook` in `.github/workflows/ci.yml`, `docs/learn/eas.md`.
+- Check: `npx eas-cli deploy --help` (eas-cli 27.5.0, "in preview") has `--export-dir` (default `dist`), `--prod`, `--dry-run`, `--json`, `--non-interactive`, `--dev-domain`. So a folder can be deployed. Before login, `eas deploy --dry-run` stopped with "An Expo user account is required"; after login the real deploy below proved a plain static site is accepted.
+- Workflow (changed twice after the owner's questions: first to not spend Expo capacity on red code, then to the simplest best-practice form): the job `deploy-storybook` in `ci.yml` has `needs: [format, lint-typecheck, test, build]`, so it only starts when all four are green; it is not one of the required checks. It runs for pushes to `main` and for pull requests from this repository (forks are skipped). Security: the token is only in the token check and the deploy step (not in the install or the Storybook build, which run PR code); permissions are `contents: read`, plus `pull-requests: write` only on this job. Preview for PRs (one PR comment, edited on each push), `--prod` on pushes to `main`. Steps after the token check are skipped while `EXPO_TOKEN` is not set. The URL is read from the `url` field of the `--json` output (checked on the real deploy). Unlike a `workflow_run` workflow, it is testable on the PR itself once the token exists. The separate `storybook.yml` was removed.
+- Login and project (after the owner approved a device login in the browser): `npx eas-cli whoami` → `civciv_katesko` (owner of `civciv_katesko` and `civcivkateskos-team`). `npx eas-cli init --account civciv_katesko --non-interactive` → created `@civciv_katesko/daily-chunk` (https://expo.dev/accounts/civciv_katesko/projects/daily-chunk), project ID `267ba1aa-9cca-4306-b902-3b622bba5748`. The personal account was chosen as the default; say if the team account should own it. `app.json` gained `extra.eas.projectId` and `owner`. `eas init` also wrote an unwanted `extra.router` block (duplicate headers plus `asyncRoutes.web: true`); removed it by hand. `npx expo-doctor` → 20/20.
+- Deploy: `npx nx run @daily-chunk/app:build-storybook` → exit 0; `npx eas-cli@27.5.0 deploy --export-dir storybook-static --non-interactive --json` → exit 0, `url` https://daily-chunk--2076nn47rb.expo.app; `curl -s -o /dev/null -w '%{http_code}'` → `200`; page title "storybook - Storybook". Dashboard: https://expo.dev/projects/267ba1aa-9cca-4306-b902-3b622bba5748/hosting/deployments
+- Verification run: `actionlint .github/workflows/*.yml` → no output (passes); `npx --yes eas-cli whoami` → "Not logged in" before the owner's login (now `civciv_katesko`, see above).
+- Owner actions: (1) say "commit", then "open pr", and merge (this puts `projectId` and the workflow on `main`); (2) after the merge, create a token at https://expo.dev/settings/access-tokens and add it as the repository secret `EXPO_TOKEN` (GitHub → Settings → Secrets and variables → Actions); the next PR then gets a preview link and `main` a production deploy; (3) optional: open the Storybook link.
+- Review: 0 blocking findings, 5 medium/low, all fixed: the secret is only given to the token check and the deploy step (not the whole job); the deploy step fails if no URL is found; the PR comment is updated instead of repeated (`--edit-last --create-if-none`); `eas-cli` pinned to 27.5.0 (the version the flags were checked on); `actionlint` result recorded; owner order changed so `eas init` comes before the token.
