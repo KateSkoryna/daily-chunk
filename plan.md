@@ -102,7 +102,7 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 
 ## 2c. CI / CD
 
-**CI (GitHub Actions, every PR, merge blocked until green):** all through `nx affected`
+**CI (GitHub Actions, every PR, merge blocked until green):** four parallel jobs in `.github/workflows/ci.yml` (`format`, `lint-typecheck`, `test`, `build`), sharing the setup action `.github/actions/setup`. Checks go through `nx affected`. Changed 2026-11-09 from one job: separate jobs show in the PR exactly what failed, run in parallel on their own machines, and one failure no longer hides the others.
 
 - `prettier --check`
 - `lint`, including the design rule (no hex / px under `src/`, DESIGN.md §10.4; from step 1.1)
@@ -112,9 +112,14 @@ Inside `apps/app/`: `app/` (routes), `global.css`, `tailwind.config.js`, `src/th
 - `expo export --platform web`
 - backend phase: migrations checked against a local Supabase
 
-**Branch protection on `main`:** PR required, CI green required, no approval required (the owner can't approve their own PR), no direct pushes, no force pushes, no deletion, rules apply to admins too. **Applied 2026-11-06** without the CI check; step 0.6 adds the required CI check.
+**Branch protection on `main`:** PR required, CI green required, no approval required (the owner can't approve their own PR), no direct pushes, no force pushes, no deletion, rules apply to admins too. **Applied 2026-11-06** without the CI check; step 0.6 adds the four CI jobs (`format`, `lint-typecheck`, `test`, `build`) as required checks. Deploy jobs are never required.
 
-**CD:**
+**CD:** deploys are jobs in `ci.yml` with `needs:` on the four check jobs. Changed 2026-11-09 (was a separate `storybook.yml`, then a `workflow_run` workflow). Why:
+
+- A deploy must start only when every check is green, so hosting capacity is never spent on code that fails. A separate workflow starts at the same time as CI and does not wait for it.
+- `workflow_run` could wait for CI, but it runs only from the file on `main` (so it cannot be tested on the PR), and GitHub's security guidance warns against giving it secrets while it builds pull request code.
+- `needs:` is simpler, shows the whole flow on one page, and is testable on the PR itself.
+- Security rules for every deploy job: run only for pushes to `main` and for PRs from this repository (never forks); the secret is given only to the steps that need it, never to install or build steps that run PR code; permissions are `contents: read` plus `pull-requests: write` only on the job that comments.
 
 - Design phase: Storybook preview link per PR (EAS Hosting) or, on fallback, Storybook from `main` on GitHub Pages
 - After the design phase: web app preview link per PR, production web on merge to `main` (EAS Hosting)
@@ -391,7 +396,7 @@ Phase done when: steps 0.1–0.7 are `DONE` (0.6 and 0.7 may be `WAITING-OWNER` 
 - **Scope:**
   - Without login (do first): `apps/app/eas.json` (profiles `development`, `preview`, `production`; Android `buildType: apk` for `preview`), `docs/learn/eas.md` (what EAS Hosting / Build / Update are, how a deploy works).
   - Check `npx eas-cli deploy --help` for a way to deploy a given folder (e.g. an export-dir option). Record the result.
-  - If supported: a workflow `.github/workflows/storybook.yml` that builds Storybook and runs `eas deploy` with `EXPO_TOKEN`: preview deploy on PRs (comment the URL on the PR), `--prod` on `main`.
+  - If supported: a job `deploy-storybook` in `.github/workflows/ci.yml` (`needs` the four check jobs, see section 2c) that builds Storybook and runs `eas deploy` with `EXPO_TOKEN`: preview deploy on PRs (comment the URL on the PR), `--prod` on `main`.
   - If not supported: the same workflow deploys `storybook-static` to GitHub Pages on `main` with `actions/upload-pages-artifact` + `actions/deploy-pages`; note in D14 "Storybook on GitHub Pages".
   - After the owner logs in: `npx eas-cli init` (writes `projectId` into the app config), one manual `eas deploy` of `storybook-static`, record the URL.
 - **Not in scope:** web app deploys (after phase 2), EAS Build/Update runs (phase 3).

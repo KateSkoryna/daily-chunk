@@ -11,7 +11,7 @@
 **Where in the repo:**
 
 - `apps/app/eas.json`: build profiles.
-- `.github/workflows/storybook.yml`: builds Storybook and deploys `storybook-static` with `eas deploy`. A pull request gets a preview link as a comment; `main` gets the production deploy. It does nothing until the secret `EXPO_TOKEN` exists.
+- `.github/workflows/ci.yml`, job `deploy-storybook`: runs only after the four check jobs are green (`needs`), so Expo capacity is never spent on code that fails. It builds Storybook and deploys `storybook-static` with `eas deploy`. A pull request gets a preview link as one comment; a push to `main` gets the production deploy. Fork PRs are skipped, and it does nothing until the secret `EXPO_TOKEN` exists. The token is given only to the check and deploy steps, never to the install or build.
 - `apps/app/app.json` gets `extra.eas.projectId` from `npx eas-cli init` (needs your login).
 
 **Login and token:** `eas login` is for you at the terminal. CI cannot type a password, so it uses `EXPO_TOKEN`, a secret key from https://expo.dev/settings/access-tokens stored as a GitHub secret.
