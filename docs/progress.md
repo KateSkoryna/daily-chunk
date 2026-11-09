@@ -10,16 +10,16 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ## Phase 0: project setup
 
-| Step                                                 | Status         | Branch                    |
-| ---------------------------------------------------- | -------------- | ------------------------- |
-| 0.1 Workspace and shared packages                    | DONE           | `chore/workspace`         |
-| 0.2 Expo app with Expo Router                        | DONE           | `chore/expo-app`          |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE           | `chore/theme-setup`       |
-| 0.4 Web storage check                                | DONE           | `chore/web-storage-check` |
-| 0.5 Storybook and Vitest                             | WAITING-REVIEW | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | TODO           | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | TODO           | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
+| Step                                                 | Status        | Branch                    |
+| ---------------------------------------------------- | ------------- | ------------------------- |
+| 0.1 Workspace and shared packages                    | DONE          | `chore/workspace`         |
+| 0.2 Expo app with Expo Router                        | DONE          | `chore/expo-app`          |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE          | `chore/theme-setup`       |
+| 0.4 Web storage check                                | DONE          | `chore/web-storage-check` |
+| 0.5 Storybook and Vitest                             | DONE          | `chore/storybook-vitest`  |
+| 0.6 CI on GitHub Actions                             | WAITING-OWNER | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | TODO          | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | TODO          | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
@@ -170,3 +170,37 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - For step 0.6: Nx caches the `test` target and the browser version is not part of the cache key. A cache hit skips the browser run, so CI must install Chromium (`npx playwright install --with-deps chromium`) before `nx affected -t test`, and the cache should be cleared when Playwright is upgraded.
   - Playwright's Chromium was downloaded to the local cache (`npx playwright install chromium`); CI (step 0.6) must install it too.
 - Owner actions: run `npm run storybook` and open "Checks / Theme" (optional); look at `docs/learn/storybook-and-vitest.md`.
+
+### 0.6 CI on GitHub Actions
+
+- Result: `.github/workflows/ci.yml` (four parallel jobs `format`, `lint-typecheck`, `test`, `build`, on `pull_request` and push to `main`) with the shared setup in `.github/actions/setup/action.yml` and `docs/learn/ci-github-actions.md`. Uncommitted on `chore/ci`. Status `WAITING-OWNER`.
+- Evidence (every command of `ci.yml`, run locally in the same order, all finished without errors):
+  - `npm ci` → ok; `npx playwright install --with-deps chromium` (in `apps/app`) → ok; `npx prettier --check .` → "All matched files use Prettier code style!"
+  - `npx nx affected -t lint typecheck test --base=origin/main --head=HEAD` → "No tasks were run" (only `.github/` and docs changed, so nothing is affected; expected). Full run instead: `npx nx run-many -t lint typecheck test --skip-nx-cache` → "Successfully ran targets lint, typecheck, test for 4 projects"
+  - `npx nx run @daily-chunk/app:export:web --skip-nx-cache` → "Successfully ran target"
+- `actionlint .github/workflows/ci.yml` (installed with Homebrew, run by the owner) → printed nothing, no errors. (`npx --yes actionlint` does not exist on npm; the binary download by the agent was blocked, so the owner ran it.)
+- Notes: on a push to `main` the base is the commit before the push (`github.event.before`) (affected has no PR base there). The `ci.yml` actions are pinned to major versions (`@v4`).
+- Required check (not run). Current rules checked with `gh api repos/KateSkoryna/daily-chunk/branches/main/protection`: no `required_status_checks` yet, so a `PATCH` would answer 404; a `PUT` with the current rules unchanged plus the check is needed. After the first green run on GitHub, the owner says "apply it" and the agent runs:
+
+  ```
+  gh api -X PUT repos/KateSkoryna/daily-chunk/branches/main/protection --input - <<'JSON'
+  {
+    "required_status_checks": { "strict": true, "contexts": ["format", "lint-typecheck", "test", "build"] },
+    "enforce_admins": true,
+    "required_pull_request_reviews": { "required_approving_review_count": 0, "dismiss_stale_reviews": false, "require_code_owner_reviews": false },
+    "restrictions": null,
+    "allow_force_pushes": false,
+    "allow_deletions": false,
+    "required_linear_history": false,
+    "block_creations": false,
+    "required_conversation_resolution": false,
+    "lock_branch": false
+  }
+  JSON
+  ```
+
+  It keeps PR required, 0 approvals, admins enforced, no force pushes or deletion, and adds only "the four CI jobs must be green and the branch up to date".
+
+- Owner actions: (1) read `docs/learn/ci-github-actions.md`; (2) say "commit", then "open pr"; (3) watch the four jobs go green on the PR; (4) say "apply it".
+- Review: 0 blocking findings, 3 low notes, all fixed (`permissions: contents: read`; cancel-in-progress only for PRs; push base is `github.event.before`). actionlint passed (run by the owner).
+- Changed after the owner asked for separate checks: one job split into four parallel jobs (own machine each); `actionlint` still prints nothing; `nx affected` for lint, typecheck and test → "No tasks were run" for this docs and workflow only diff (expected).

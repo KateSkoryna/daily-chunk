@@ -1,0 +1,19 @@
+name: Setup
+description: Install Node, dependencies and restore the Nx cache
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - run: npm ci
+      shell: bash
+
+    - uses: actions/cache@v4
+      with:
+        path: .nx/cache
+        key: nx-${{ github.job }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+        restore-keys: nx-${{ github.job }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
