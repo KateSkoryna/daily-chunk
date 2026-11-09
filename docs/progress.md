@@ -10,16 +10,16 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ## Phase 0: project setup
 
-| Step                                                 | Status | Branch                    |
-| ---------------------------------------------------- | ------ | ------------------------- |
-| 0.1 Workspace and shared packages                    | DONE   | `chore/workspace`         |
-| 0.2 Expo app with Expo Router                        | DONE   | `chore/expo-app`          |
-| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE   | `chore/theme-setup`       |
-| 0.4 Web storage check                                | DONE   | `chore/web-storage-check` |
-| 0.5 Storybook and Vitest                             | TODO   | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | TODO   | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | TODO   | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO   | `chore/phase-0-wrap-up`   |
+| Step                                                 | Status         | Branch                    |
+| ---------------------------------------------------- | -------------- | ------------------------- |
+| 0.1 Workspace and shared packages                    | DONE           | `chore/workspace`         |
+| 0.2 Expo app with Expo Router                        | DONE           | `chore/expo-app`          |
+| 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE           | `chore/theme-setup`       |
+| 0.4 Web storage check                                | DONE           | `chore/web-storage-check` |
+| 0.5 Storybook and Vitest                             | WAITING-REVIEW | `chore/storybook-vitest`  |
+| 0.6 CI on GitHub Actions                             | TODO           | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | TODO           | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
@@ -146,3 +146,27 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - Not tested on a device: native SQLite on the A54 (the web check and Android export cannot show it).
 - Review: 0 blocking findings, 3 low/medium notes. Fixed: GitHub Pages wording softened; Chromium-only caveat added to the learn note and findings. The color-scheme dev error stays a separate out-of-scope finding.
 - Owner actions: read `docs/learn/storage-on-web.md`. No question raised for this step.
+
+### 0.5 Storybook and Vitest
+
+- Result: Storybook 10.6.6 (`@storybook/react-native-web-vite`) with NativeWind works on web. `nx run-many -t test` runs plain Vitest tests in the packages, a cross-package test in the app, and a NativeWind-styled story as a headless-Chromium test with the accessibility check on. `build-storybook` produces a static site. Uncommitted on `chore/storybook-vitest`.
+- Evidence:
+  - `npx nx run-many -t test --skip-nx-cache` → exit 0, 4 projects: `languages` 1 test passed; `core` and `i18n` pass with no tests; `app` 2 files passed (the cross-package `unit` test importing `supportedTargetLangs` from `@daily-chunk/languages`, and the `storybook` project running `Checks/Theme › PrimarySurfaceUsesPrimaryToken` in Chromium)
+  - negative check 1: expected token changed to `--secondary` → the story test fails (`expected 'rgb(255, 210, 63)' to be 'rgb(37, 30, 72)'`); reverted
+  - negative check 2 (accessibility): adding an unnamed `<Pressable accessibilityRole="button" />` → the story test fails with `button-name` from axe; reverted. See the caveat below.
+  - `npx nx run @daily-chunk/app:build-storybook` → exit 0, `apps/app/storybook-static/index.html` exists (about 8 MB, six font files bundled, git-ignored); the built site served locally renders the story: background `rgb(255, 210, 63)`, label font `VT323_400Regular` loaded, no page errors
+  - Storybook dev server (port 6007, then stopped): the story rendered with `bg-primary` applied and no console errors
+  - `npx nx run-many -t lint typecheck`, `npx prettier --check .`, `npx expo-doctor` (20/20), web export and Android export → all exit 0
+- Problems found and fixed on the way (details for the next step that adds components):
+  - NativeWind's `wrap-jsx` only registers `View`/`Text` for `className` when `NODE_ENV !== 'test'`, and Vitest sets it to `test`, so story tests rendered with no styles. Fix: `vitest.config.mts` sets `process.env.NODE_ENV = 'development'` (it applies to the whole Vitest process, including the `unit` project). (Overriding it with `define` or `esbuild` options did not help; the dependency pre-bundler reads the real variable.)
+  - ESLint scanned the generated `storybook-static/` output; now ignored in `apps/app/eslint.config.mjs`.
+  - Not needed, so removed again: `css: true` in the Vitest config and a `vitest.setup.ts` (Storybook 10.3+ applies the add-on annotations itself; the accessibility check was re-verified without it).
+- Readability (owner is new to this): the check story uses three named `step()` calls (shown in Storybook's Interactions panel: read the box's real colour, read the `--primary` token colour, check both are equal) and the helper is named `colourPaintedFromToken`; no comments in code (project rule); `docs/learn/storybook-and-vitest.md` has a line-by-line section. Re-verified after the change: tests pass, the `--secondary` negative check still fails, the three step names appear in the Interactions panel (headless Chromium on a Storybook dev server on port 6007, stopped afterwards).
+- Kept (minimal): `.storybook/main.ts` (`jsxImportSource: 'nativewind'`), `preview.tsx` (global CSS, fonts loader, dark background, `a11y: { test: 'error' }`), `fonts.ts`, `vite-env.d.ts`, `checks/Theme.stories.tsx` (delete in step 1.2); `postcss.config.js`; `.storybook` added to the Tailwind `content` list (the rest of `tailwind.config.js` is unchanged); `tsconfig.json` includes `.storybook`; `vitest.config.mts` with `unit` and `storybook` projects (`.mts` avoids Vite's warning about ESM syntax in a CommonJS package); root scripts `storybook` and `test`, README rows; `packages/*` `test` scripts (`vitest run --passWithNoTests`); `packages/languages` exports `supportedTargetLangs`; `@daily-chunk/languages` added to the app's dependencies.
+- Caveats:
+  - In one trial the accessibility check did not flag text with the same colour as its background (`text-primary` on `bg-primary`), so colour contrast may not be enforced yet. Needs a closer look when real components exist (phase 1, and the contrast pass in phase 7).
+  - The Storybook `vite-tsconfig-paths` plugin prints a Vite notice that Vite 8 supports tsconfig paths natively; harmless, comes from the framework.
+  - A local command wrapper in the owner's shell rewrites `vitest` calls to a tool that hides results and writes a `.vitest/` folder into the project; the agent bypassed it with `rtk proxy`. Not a project file.
+  - For step 0.6: Nx caches the `test` target and the browser version is not part of the cache key. A cache hit skips the browser run, so CI must install Chromium (`npx playwright install --with-deps chromium`) before `nx affected -t test`, and the cache should be cleared when Playwright is upgraded.
+  - Playwright's Chromium was downloaded to the local cache (`npx playwright install chromium`); CI (step 0.6) must install it too.
+- Owner actions: run `npm run storybook` and open "Checks / Theme" (optional); look at `docs/learn/storybook-and-vitest.md`.
