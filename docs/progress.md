@@ -173,7 +173,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 
 ### 0.6 CI on GitHub Actions
 
-- Result: `.github/workflows/ci.yml` (one job named `ci`, on `pull_request` and push to `main`) and `docs/learn/ci-github-actions.md`. Uncommitted on `chore/ci`. Status `WAITING-OWNER`.
+- Result: `.github/workflows/ci.yml` (four parallel jobs `format`, `lint-typecheck`, `test`, `build`, on `pull_request` and push to `main`) with the shared setup in `.github/actions/setup/action.yml` and `docs/learn/ci-github-actions.md`. Uncommitted on `chore/ci`. Status `WAITING-OWNER`.
 - Evidence (every command of `ci.yml`, run locally in the same order, all finished without errors):
   - `npm ci` → ok; `npx playwright install --with-deps chromium` (in `apps/app`) → ok; `npx prettier --check .` → "All matched files use Prettier code style!"
   - `npx nx affected -t lint typecheck test --base=origin/main --head=HEAD` → "No tasks were run" (only `.github/` and docs changed, so nothing is affected; expected). Full run instead: `npx nx run-many -t lint typecheck test --skip-nx-cache` → "Successfully ran targets lint, typecheck, test for 4 projects"
@@ -185,7 +185,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   ```
   gh api -X PUT repos/KateSkoryna/daily-chunk/branches/main/protection --input - <<'JSON'
   {
-    "required_status_checks": { "strict": true, "contexts": ["ci"] },
+    "required_status_checks": { "strict": true, "contexts": ["format", "lint-typecheck", "test", "build"] },
     "enforce_admins": true,
     "required_pull_request_reviews": { "required_approving_review_count": 0, "dismiss_stale_reviews": false, "require_code_owner_reviews": false },
     "restrictions": null,
@@ -199,7 +199,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   JSON
   ```
 
-  It keeps PR required, 0 approvals, admins enforced, no force pushes or deletion, and adds only "`ci` must be green and the branch up to date".
+  It keeps PR required, 0 approvals, admins enforced, no force pushes or deletion, and adds only "the four CI jobs must be green and the branch up to date".
 
-- Owner actions: (1) read `docs/learn/ci-github-actions.md`; (2) say "commit", then "open pr"; (3) watch the `ci` job go green on the PR; (4) say "apply it".
+- Owner actions: (1) read `docs/learn/ci-github-actions.md`; (2) say "commit", then "open pr"; (3) watch the four jobs go green on the PR; (4) say "apply it".
 - Review: 0 blocking findings, 3 low notes, all fixed (`permissions: contents: read`; cancel-in-progress only for PRs; push base is `github.event.before`). actionlint passed (run by the owner).
+- Changed after the owner asked for separate checks: one job split into four parallel jobs (own machine each); `actionlint` still prints nothing; `nx affected` for lint, typecheck and test → "No tasks were run" for this docs and workflow only diff (expected).
