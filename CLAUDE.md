@@ -71,7 +71,7 @@ Run from the repo root.
 | `npm start`                                                       | Expo dev server, QR code for Expo Go                                           |
 | `npm run web`                                                     | Run the app in the browser                                                     |
 | `npm run android`                                                 | Run on an Android device or emulator                                           |
-| `npx nx run-many -t lint typecheck`                               | Lint and typecheck every project                                               |
+| `npx nx run-many -t lint typecheck check-meta`                    | Lint, typecheck and component meta check for every project                     |
 | `npm test`                                                        | All tests: packages in Node, stories in headless Chromium (needs Playwright)   |
 | `npm run storybook`                                               | Storybook dev server on port 6006                                              |
 | `npx nx run @daily-chunk/app:build-storybook`                     | Build Storybook into `apps/app/storybook-static`                               |

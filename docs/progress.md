@@ -255,3 +255,33 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - The dev route and the home placeholder contain hard-coded English until i18n exists (steps 1.2 and 3.5).
 - Safari support for `COEP: credentialless` (web SQLite) is unconfirmed; only matters if iOS web is a target.
 - The owner's shell wrapper `rtk` hides Vitest output and creates a `.vitest/` folder; the agent bypasses it with `rtk proxy`. Not a project problem.
+
+## Phase 1: design system (theme primitives + core-loop components)
+
+| Step | Status         | Branch                            |
+| ---- | -------------- | --------------------------------- |
+| 1.1  | WAITING-REVIEW | `chore/design-guards`             |
+| 1.2  | TODO           | `feat/i18n-setup`                 |
+| 1.3  | TODO           | `feat/text-primitive`             |
+| 1.4  | TODO           | `feat/layout-primitives`          |
+| 1.5  | TODO           | `feat/icons`                      |
+| 1.6  | TODO           | `feat/button`                     |
+| 1.7  | TODO           | `feat/article-chip`               |
+| 1.8  | TODO           | `feat/word-card`                  |
+| 1.9  | TODO           | `feat/lesson-stepper-tutor-quote` |
+| 1.10 | TODO           | `feat/gap-fill-record-button`     |
+| 1.11 | TODO           | `feat/app-chrome`                 |
+| 1.12 | TODO           | `chore/phase-1-review`            |
+
+### 1.1 Design guards (lint rule, ComponentMeta, meta check)
+
+- Result: the lint fails on hex, `rgb()` and px values under `apps/app/src/`; `ComponentMeta` and the token lists exist; `npm run check-meta` fails when a component has no meta or a meta names an unknown token. Both run in CI. Uncommitted on `chore/design-guards`. Status `WAITING-REVIEW`.
+- Added: `apps/app/eslint.design-rules.mjs` (used by `eslint.config.mjs`, scope `src/**/*.{ts,tsx}`), `src/components/tokens.ts` (token lists), `src/components/meta.ts` (`ComponentMeta`, DESIGN.md §14.2), `scripts/check-component-meta.mjs` and `scripts/check-meta.mjs`, script `check-meta` in `apps/app/package.json`, `check-meta` cached in `nx.json`, `check-meta` added to the `lint-typecheck` job in `ci.yml`, `docs/learn/design-guards.md`, tests `tests/design-guards.test.ts` and `tests/design-tokens.test.ts` with fixtures in `tests/fixtures/meta-check/`.
+- Evidence:
+  - Fixture tests that fail on purpose (all pass, meaning the guards fail on bad input): hex colour, short hex in a `className`, hex as JSX text, `rgb()`, `rgba()`, px in a string, px in a template string, all rejected in `src/`; `#123` in prose is rejected too (it is a valid colour), words like `#added`, `#a11y`, `&#8212;`, `#1` pass; the same code outside `src/` is allowed; token classes and rem values pass. Meta check: a valid meta, nested folders and ignored files (stories, tests, specs, `index.tsx`) pass; a component without a meta file, a meta without a component, a meta with unknown token names (`hot-pink`, `huge-title`), a meta with values (`#FFD23F`, `1.5rem`) and a token group that is not an array all fail.
+  - Real files: a temporary `src/components/Temp.tsx` with `'#FFD23F'` and `'width: 24px'` → `eslint src` reports 2 errors (hex, px); with no `Temp.meta.ts`, `npm run check-meta` exits non-zero; both pass again after the file was removed.
+  - `npx nx run-many -t lint typecheck check-meta test --skip-nx-cache` → "Successfully ran targets lint, typecheck, check-meta, test for 4 projects" (app: 3 unit test files, 28 tests, plus the Storybook story test); `npx prettier --check .` → clean; `actionlint .github/workflows/*.yml` → no output.
+  - `tests/design-tokens.test.ts` compares `tokens.ts` with `tailwind.config.js` in both directions (colours, font sizes, spacing, max widths, radius, border width, durations); a mutation check (adding a fake `bogus-size` token) made it fail. `shadow-hard` and `shadow-hard-lg` have no config entry (the `HardShadow` component draws them), so they are exempt.
+- Review: 0 blocking findings, 7 notes. Fixed: JSX text is linted; the hex pattern needs exactly 3, 4, 6 or 8 digits and is not preceded by a word character, `&` or `#`; the meta check scans all of `src/` (not only `src/components/`); orphan meta files and token groups of the wrong shape are reported; more fixtures (nested, ignored files, orphan, bad shape); the token test checks both directions; `.vitest/` added to `apps/app/.gitignore`. Not changed: `hsl()` and `oklch()` are not linted (DESIGN.md §10.4 names only hex, `rgb()` and px); `ComponentMeta` types `spacing` and `other` as the token unions where DESIGN.md §14.2 says `string[]`: stricter on purpose (§14.3 wants wrong names to fail type-checking); DESIGN.md is not changed without the owner's approval, so §14.2 still shows `string[]`.
+- Caveats: the lint rule does not catch bare numbers (`{ width: 24 }`); there are no real components yet, so the meta check passes on an empty folder; the check relies on Node 24 reading `.meta.ts` files directly (type stripping), so meta files must stay free of type-only syntax that Node cannot erase (plain `satisfies` and `import type` are fine).
+- Owner actions: read `docs/learn/design-guards.md`. Question: say if DESIGN.md §14.2 should show the stricter `spacing` and `other` types (the agent will not change DESIGN.md without your OK).
