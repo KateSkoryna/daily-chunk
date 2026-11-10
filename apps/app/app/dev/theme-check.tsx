@@ -1,7 +1,12 @@
+import { useTranslation, useAppLanguage } from '@daily-chunk/i18n';
 import { rem } from 'nativewind';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 export default function ThemeCheck() {
+  const { t } = useTranslation();
+  const { appLanguage, setAppLanguage } = useAppLanguage();
+  const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
+
   return (
     <ScrollView
       className="flex-1 bg-background"
@@ -55,6 +60,31 @@ export default function ThemeCheck() {
         <Text className="font-content-semibold text-body text-foreground">
           font-content-semibold Bahnhof
         </Text>
+      </View>
+
+      <View className="gap-2 border border-border bg-card p-gutter">
+        <Text
+          testID="app-language"
+          className="font-pixel text-label text-foreground"
+        >
+          appLanguage: {appLanguage}
+        </Text>
+        <Text
+          testID="words-due"
+          className="font-content text-body text-card-foreground"
+        >
+          {t('home.wordsDue', { count: 5 })}
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.appLanguage')}
+          onPress={() => setAppLanguage(otherAppLanguage)}
+          className="min-h-touch justify-center bg-secondary px-4"
+        >
+          <Text className="font-pixel text-label text-secondary-foreground">
+            {t(`language.${otherAppLanguage}`)}
+          </Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
