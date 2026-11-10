@@ -2,7 +2,7 @@
 
 Mobile-first vocabulary trainer. **v1: target language German; native language Russian or English.** Must stay open to more languages (rules below). The user adds the words they met today; the app normalises them and runs a 6-task lesson (flashcards → listen & shadow → read story → read aloud → gap fill → RU→DE), then spaced repetition and a Boss round every 5th lesson. A tutor character, "Chunk", speaks in short dry one-liners.
 
-**Status:** decisions confirmed (`plan.md` §2), phase 0 (project setup) built; phase 1 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Step status and results: `docs/progress.md`. Don't start a phase until the user asks.
+**Status:** decisions confirmed (`plan.md` §2), phase 0 (project setup) built, phase 1 (design system) in progress. Current step: `docs/progress.md`. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Step status and results: `docs/progress.md`. Don't start a phase until the user asks.
 
 ## Index
 
@@ -36,6 +36,7 @@ apps/app/                Expo app + Storybook (.storybook/)
   app/                   Expo Router routes: (tabs)/, lesson/, review, word-bank, boss, settings, account
   global.css             CSS variables from DESIGN.md §10.1
   tailwind.config.js     theme from DESIGN.md §10.2
+  scripts/               meta check (`check-meta`)
   src/theme/             fonts, HardShadow, Scanlines
   src/components/ui/     React Native Reusables components, restyled per DESIGN.md §9
   src/components/        primitives + app components (see plan.md §5)
@@ -73,6 +74,7 @@ Run from the repo root.
 | `npm run android`                                                 | Run on an Android device or emulator                                           |
 | `npx nx run-many -t lint typecheck check-meta`                    | Lint, typecheck and component meta check for every project                     |
 | `npm test`                                                        | All tests: packages in Node, stories in headless Chromium (needs Playwright)   |
+| `cd apps/app && npm run check-meta`                               | Component meta check only                                                      |
 | `npm run storybook`                                               | Storybook dev server on port 6006                                              |
 | `npx nx run @daily-chunk/app:build-storybook`                     | Build Storybook into `apps/app/storybook-static`                               |
 | `npx nx run @daily-chunk/app:export:web`                          | Build the web app into `apps/app/dist`                                         |
@@ -111,6 +113,8 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 - **Before building a screen or a new component:** read the existing metas and reuse a component whose `useWhen` fits. Make a new one only when none fits.
 - **Follow `aiHints`:** never use a component in a way its `avoidWhen` or `invalid` lists.
 - Metas name tokens (`primary`, `label`), never values. Use gender roles, not articles. No user-visible copy.
+- Any `.tsx` under `apps/app/src/` needs `<Name>.meta.ts` next to it (stories, tests, specs and `index.tsx` are exempt). Token names must come from `apps/app/src/components/tokens.ts`; when `DESIGN.md` and `tailwind.config.js` change a token, update `tokens.ts` in the same branch.
+- `npm run check-meta` (in `apps/app`, also in CI) fails on a missing meta or an unknown token name. Meta files must be plain TypeScript Node 24 can read directly (`import type` and `satisfies` are fine).
 - If a usage rule isn't clear from `DESIGN.md`, the component specs or the screens, **stop and ask the user**. Don't invent it.
 
 ## Language rules (must follow)
@@ -130,7 +134,7 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 
 **Before any UI work** (a screen, component, style or layout), read `DESIGN.md` and use only what it defines:
 
-- Only the tokens and classes from `DESIGN.md` (`bg-primary`, `text-label`, `px-gutter`, `border-field`…). No hex, `rgb()`, px or one-off value in code. All lengths in rem.
+- Only the tokens and classes from `DESIGN.md` (`bg-primary`, `text-label`, `px-gutter`, `border-field`…). No hex, `rgb()`, px or one-off value in code (`npm run lint` fails on hex, `rgb()` and px under `src/`; never silence it with `eslint-disable`, use a token or ask). All lengths in rem.
 - Only the semantic and domain tokens in components, never palette names.
 - Typography only through `Text` `variant`; shadows only through `HardShadow`; focus only through `PressableFocus`; screen padding and scanlines only through `Screen`.
 - shadcn / React Native Reusables components are restyled once in `src/components/ui/` as `DESIGN.md` §9 says, never per screen.
