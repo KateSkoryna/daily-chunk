@@ -34,7 +34,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: npx nx affected -t lint typecheck --base="$NX_BASE" --head=HEAD
+      - run: npx nx affected -t lint typecheck check-meta --base="$NX_BASE" --head=HEAD
 
   test:
     name: test

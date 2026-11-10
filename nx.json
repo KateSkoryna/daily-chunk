@@ -3,6 +3,7 @@
   "targetDefaults": {
     "lint": { "cache": true },
     "typecheck": { "cache": true },
+    "check-meta": { "cache": true },
     "test": { "cache": true }
   },
   "defaultBase": "main"
