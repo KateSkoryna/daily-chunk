@@ -17,9 +17,9 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 0.3 Theme: NativeWind, React Native Reusables, fonts | DONE           | `chore/theme-setup`       |
 | 0.4 Web storage check                                | DONE           | `chore/web-storage-check` |
 | 0.5 Storybook and Vitest                             | DONE           | `chore/storybook-vitest`  |
-| 0.6 CI on GitHub Actions                             | WAITING-OWNER  | `chore/ci`                |
-| 0.7 EAS project and hosted Storybook                 | WAITING-REVIEW | `chore/eas`               |
-| 0.8 Phase 0 wrap-up                                  | TODO           | `chore/phase-0-wrap-up`   |
+| 0.6 CI on GitHub Actions                             | DONE           | `chore/ci`                |
+| 0.7 EAS project and hosted Storybook                 | DONE           | `chore/eas`               |
+| 0.8 Phase 0 wrap-up                                  | WAITING-REVIEW | `chore/phase-0-wrap-up`   |
 
 <!-- Per step, add a section below:
 ### 0.N <title>
@@ -204,6 +204,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Owner actions: (1) read `docs/learn/ci-github-actions.md`; (2) say "commit", then "open pr"; (3) watch the four jobs go green on the PR; (4) say "apply it".
 - Review: 0 blocking findings, 3 low notes, all fixed (`permissions: contents: read`; cancel-in-progress only for PRs; push base is `github.event.before`). actionlint passed (run by the owner).
 - Changed after the owner asked for separate checks: one job split into four parallel jobs (own machine each); `actionlint` still prints nothing; `nx affected` for lint, typecheck and test → "No tasks were run" for this docs and workflow only diff (expected).
+- Applied on the owner's "apply it" (2026-11-09), after the four jobs were green on `main`: `gh api -X PUT repos/KateSkoryna/daily-chunk/branches/main/protection` with the body above. Read back with `gh api repos/KateSkoryna/daily-chunk/branches/main/protection`: required checks `format`, `lint-typecheck`, `test`, `build` (`strict: true`), `enforce_admins: true`, 0 required approvals, no force pushes, no deletions. `deploy-storybook` is not required. Status `DONE`.
 
 ### 0.7 EAS project and hosted Storybook
 
@@ -216,3 +217,41 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Verification run: `actionlint .github/workflows/*.yml` → no output (passes); `npx --yes eas-cli whoami` → "Not logged in" before the owner's login (now `civciv_katesko`, see above).
 - Owner actions: (1) say "commit", then "open pr", and merge (this puts `projectId` and the workflow on `main`); (2) after the merge, create a token at https://expo.dev/settings/access-tokens and add it as the repository secret `EXPO_TOKEN` (GitHub → Settings → Secrets and variables → Actions); the next PR then gets a preview link and `main` a production deploy; (3) optional: open the Storybook link.
 - Review: 0 blocking findings, 5 medium/low, all fixed: the secret is only given to the token check and the deploy step (not the whole job); the deploy step fails if no URL is found; the PR comment is updated instead of repeated (`--edit-last --create-if-none`); `eas-cli` pinned to 27.5.0 (the version the flags were checked on); `actionlint` result recorded; owner order changed so `eas init` comes before the token.
+- Closed after the merge (PR #10): the run on `main` finished green, all five jobs `success` (`format`, `lint-typecheck`, `test`, `build`, `deploy-storybook`). Production Storybook https://daily-chunk.expo.app → `curl` `200`, title "storybook - Storybook". The PR preview comment with a working link was seen by the owner on PR #10. Status `DONE`.
+
+### 0.8 Phase 0 wrap-up
+
+- Result: `CLAUDE.md` "Commands" is filled with the real commands and "Status" says phase 0 is built; the phase report is below. Uncommitted on `chore/phase-0-wrap-up`. Status `WAITING-REVIEW`.
+- Evidence (run from the repo root, exit codes): `npm ci` 0; `npx prettier --check .` 0; `npx nx run-many -t lint typecheck --skip-nx-cache` 0; `npm test` 0; `npx nx run @daily-chunk/app:build-storybook --skip-nx-cache` 0; `npx nx run @daily-chunk/app:export:web --skip-nx-cache` 0; `npx expo export --platform android` (output to a temporary folder) 0. Long-running commands: `npm run storybook` (port 6011) and `npx expo start --web` (port 8091) both answered `200` and were stopped; `npm start` and `npm run android` are the same Expo server and need a phone or emulator, checked by the owner in step 0.2. The deploy command needs the owner's login and was run in step 0.7.
+- Also done here: `docs/progress.md` statuses brought up to date (0.5 and 0.7 `DONE`).
+- Review: 0 blocking findings, 2 low notes, nothing to fix. Note 1: `npm start` and `npm run android` were not run here (they need a phone or emulator); the owner can confirm them on the A54. Note 2: "open pr" is the right wording because the earlier steps are already merged.
+
+## Phase 0 report
+
+| Step | Status         | Branch                    | In one line                                                                                          |
+| ---- | -------------- | ------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 0.1  | DONE           | `chore/workspace`         | npm workspaces + Nx, packages `core`, `languages`, `i18n` exporting TypeScript source                |
+| 0.2  | DONE           | `chore/expo-app`          | Expo SDK 58 app with Expo Router, runs on the owner's phone in Expo Go                               |
+| 0.3  | DONE           | `chore/theme-setup`       | NativeWind with the DESIGN.md tokens, six fonts, dark app shell, rem set to 16                       |
+| 0.4  | DONE           | `chore/web-storage-check` | `expo-sqlite` + Drizzle work on web with the COOP/COEP headers; D3 confirmed                         |
+| 0.5  | DONE           | `chore/storybook-vitest`  | Storybook 10 + Vitest (Node and browser projects), a theme smoke story, a11y check on                |
+| 0.6  | DONE           | `chore/ci`                | CI as four parallel jobs, green on GitHub and required on `main`                                     |
+| 0.7  | DONE           | `chore/eas`               | EAS project linked, `deploy-storybook` job after the checks; production https://daily-chunk.expo.app |
+| 0.8  | WAITING-REVIEW | `chore/phase-0-wrap-up`   | real commands in `CLAUDE.md`, this report                                                            |
+
+### Owner actions (in order)
+
+1. Read this report; say "commit" and "open pr" for step 0.8, then merge.
+2. Learning task 1 (`docs/tasks/01-structure.md`) is open and yours; say "check" when it is done. Phase 1 should not need its files, but `apps/app/app/index.tsx` and `packages/core/src/**` stay yours until then.
+3. Optional: check the app once on the A54 after the latest changes (native SQLite is not tested yet: the web check and the Android export cannot show it).
+4. Optional: tell the agent if the Expo project should belong to the team account `civcivkateskos-team` instead of `civciv_katesko`.
+
+### Questions and open findings (decide before or during phase 1)
+
+- Web dev error "Cannot manually set color scheme, as dark mode is type 'media'" (step 0.4): likely from `userInterfaceStyle: "dark"` with NativeWind's default. Option A: `StyleSheet.setFlag('darkMode', 'class')` at startup (recommended). Option B: ignore it, because the exported build does not show it.
+- The accessibility check did not flag text with the same colour as its background (step 0.5), so contrast is not enforced by Storybook yet. Recommendation: add a real contrast story when the first Reusables component lands (step 1.6).
+- `app.json` still has the template's icon, splash and adaptive-icon background colours (hex). Needs the real brand assets; decide when the logo is ready.
+- `components.json` aliases need a `@/*` path in `tsconfig` when the first Reusables component is installed (step 1.6); the agent will add it then.
+- The dev route and the home placeholder contain hard-coded English until i18n exists (steps 1.2 and 3.5).
+- Safari support for `COEP: credentialless` (web SQLite) is unconfirmed; only matters if iOS web is a target.
+- The owner's shell wrapper `rtk` hides Vitest output and creates a `.vitest/` folder; the agent bypasses it with `rtk proxy`. Not a project problem.

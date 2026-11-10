@@ -2,7 +2,7 @@
 
 Mobile-first vocabulary trainer. **v1: target language German; native language Russian or English.** Must stay open to more languages (rules below). The user adds the words they met today; the app normalises them and runs a 6-task lesson (flashcards → listen & shadow → read story → read aloud → gap fill → RU→DE), then spaced repetition and a Boss round every 5th lesson. A tutor character, "Chunk", speaks in short dry one-liners.
 
-**Status:** decisions confirmed (`plan.md` §2), phase 0 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Step status and results: `docs/progress.md`. Don't start a phase until the user asks.
+**Status:** decisions confirmed (`plan.md` §2), phase 0 (project setup) built; phase 1 next. See `plan.md` for decisions, repo layout, CI/CD, how we work (§2d), phases and the screen/route map. Step status and results: `docs/progress.md`. Don't start a phase until the user asks.
 
 ## Index
 
@@ -63,7 +63,23 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 
 ## Commands
 
-Not set up yet (phase 0). Fill this in once the project is created.
+Run from the repo root.
+
+| Command                                                           | What it does                                                                   |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `npm ci`                                                          | Install exactly what `package-lock.json` says                                  |
+| `npm start`                                                       | Expo dev server, QR code for Expo Go                                           |
+| `npm run web`                                                     | Run the app in the browser                                                     |
+| `npm run android`                                                 | Run on an Android device or emulator                                           |
+| `npx nx run-many -t lint typecheck`                               | Lint and typecheck every project                                               |
+| `npm test`                                                        | All tests: packages in Node, stories in headless Chromium (needs Playwright)   |
+| `npm run storybook`                                               | Storybook dev server on port 6006                                              |
+| `npx nx run @daily-chunk/app:build-storybook`                     | Build Storybook into `apps/app/storybook-static`                               |
+| `npx nx run @daily-chunk/app:export:web`                          | Build the web app into `apps/app/dist`                                         |
+| `npx prettier --check .` / `npm run format`                       | Check / fix formatting                                                         |
+| `cd apps/app && npx eas-cli deploy --export-dir storybook-static` | Manual Storybook preview deploy (needs `eas login`); CI does this after checks |
+
+First time on a new machine: `cd apps/app && npx playwright install chromium`. CI runs the same checks as four parallel jobs (`format`, `lint-typecheck`, `test`, `build`) plus `deploy-storybook`.
 
 ## CI/CD and secrets
 
