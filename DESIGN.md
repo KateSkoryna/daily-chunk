@@ -458,6 +458,7 @@ const color = (name) => `hsl(var(--${name}) / <alpha-value>)`;
 const pair = (name) => ({ DEFAULT: color(name), foreground: color(`${name}-foreground`) });
 
 module.exports = {
+  darkMode: 'class',
   presets: [require('nativewind/preset')],
   theme: {
     screens: { tablet: '37.5rem', desktop: '64rem', wide: '90rem' },
@@ -549,6 +550,8 @@ module.exports = {
 ```
 
 `app.json`: `"userInterfaceStyle": "dark"`.
+
+`darkMode: 'class'` is there only so NativeWind's web startup doesn't throw `Cannot manually set color scheme, as dark mode is type 'media'`. The app has one theme and no `dark:` variants; the colours live in one `:root` block.
 
 ### 10.3 `components.json`
 
