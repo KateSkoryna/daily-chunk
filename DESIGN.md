@@ -307,7 +307,7 @@ Border colours: `border-border` (decorative), `border-input` (idle control), `bo
 
 ### 7.6 Scanlines
 
-The screen ground is `bg-background` plus a scanline overlay: a 1/16rem line of `ink` at 4% opacity every 0.25rem. The `Scanlines` component draws it. It's placed once in `Screen`, never per card.
+The screen ground is `bg-background` plus a scanline overlay: a 1/16rem line of `ink` at 5% opacity every 0.25rem (Tailwind's `opacity-5` / `/5`). The `Scanlines` component draws it. It's placed once in `Screen`, never per card.
 
 ---
 
