@@ -112,7 +112,7 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 - **Before building a screen or a new component:** read the existing metas and reuse a component whose `useWhen` fits. Make a new one only when none fits.
 - **Follow `aiHints`:** never use a component in a way its `avoidWhen` or `invalid` lists.
 - Metas name tokens (`primary`, `label`), never values. Use gender roles, not articles. No user-visible copy.
-- Any `.tsx` under `apps/app/src/` needs `<Name>.meta.ts` next to it (stories, tests, specs and `index.tsx` are exempt). Token names must come from `apps/app/src/components/tokens.ts`; when `DESIGN.md` and `tailwind.config.js` change a token, update `tokens.ts` in the same branch.
+- Any `.tsx` under `apps/app/src/` needs `<Name>.meta.ts` next to it (stories, tests, specs and `index.tsx` are exempt; a platform file such as `Name.web.tsx` shares the meta of `Name.tsx`). Token names must come from `apps/app/src/components/tokens.ts`; when `DESIGN.md` and `tailwind.config.js` change a token, update `tokens.ts` in the same branch.
 - `npm run check-meta` (in `apps/app`, also in CI) fails on a missing meta or an unknown token name. Meta files must be plain TypeScript Node 24 can read directly (`import type` and `satisfies` are fine).
 - If a usage rule isn't clear from `DESIGN.md`, the component specs or the screens, **stop and ask the user**. Don't invent it.
 
