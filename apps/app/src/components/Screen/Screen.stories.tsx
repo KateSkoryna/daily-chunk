@@ -3,12 +3,18 @@ import { View } from 'react-native';
 import { expect, within } from 'storybook/test';
 
 import { rootFontSizeInPixels, toRem } from '../../lib/browser-rem';
+import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { Text } from '../ui/text';
 import { Screen } from './Screen';
+import { screenMeta } from './Screen.meta';
 
 const meta = {
   title: 'Primitives/Screen',
   component: Screen,
+  tags: ['autodocs'],
+  parameters: {
+    docs: { description: { component: metaToMarkdown(screenMeta) } },
+  },
 } satisfies Meta<typeof Screen>;
 
 export default meta;
@@ -33,7 +39,8 @@ function ScreenWithContent() {
   );
 }
 
-export const WithContent: Story = {
+export const Default: Story = {
+  parameters: { controls: { disable: true } },
   render: () => <ScreenWithContent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -55,10 +62,11 @@ export const WithContent: Story = {
 };
 
 export const MobileWidth: Story = {
+  parameters: { controls: { disable: true } },
   globals: { viewport: { value: 'mobile1', isRotated: false } },
   render: () => <ScreenWithContent />,
   play: async (context) => {
     expect(window.innerWidth).toBeLessThan(600);
-    await WithContent.play!(context);
+    await Default.play!(context);
   },
 };

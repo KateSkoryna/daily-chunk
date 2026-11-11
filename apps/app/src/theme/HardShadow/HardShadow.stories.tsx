@@ -3,19 +3,26 @@ import { View } from 'react-native';
 import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
+import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { Text } from '../../components/ui/text';
 import { HardShadow } from './HardShadow';
+import { hardShadowMeta } from './HardShadow.meta';
 
 const meta = {
   title: 'Primitives/HardShadow',
   component: HardShadow,
+  tags: ['autodocs'],
+  parameters: {
+    docs: { description: { component: metaToMarkdown(hardShadowMeta) } },
+  },
 } satisfies Meta<typeof HardShadow>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const DefaultOffset: Story = {
+export const Default: Story = {
+  parameters: { controls: { disable: true } },
   render: () => (
     <View className="p-gutter">
       <HardShadow testID="hard-shadow">
