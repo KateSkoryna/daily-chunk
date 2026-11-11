@@ -5,6 +5,7 @@
   "dependencies": {
     "@daily-chunk/i18n": "*",
     "@daily-chunk/languages": "*",
+    "@daily-chunk/core": "*",
     "@expo-google-fonts/handjet": "^0.4.3",
     "@expo-google-fonts/ibm-plex-sans": "^0.4.1",
     "@expo-google-fonts/russo-one": "^0.4.1",
