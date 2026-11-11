@@ -175,7 +175,7 @@ Each style is one Tailwind `fontSize` entry (size + line height + letter spacing
 | `label` | pixel | 1.5 / 1.5 | tracking 0.125rem, uppercase | 01 / FLASHCARDS | Section labels, top bar |
 | `label-sm` | pixel | 1.25 / 1.25 | tracking 0.125rem, uppercase | 03 / READ THE STORY | Stepper label, tutor tab |
 | `ui` | pixel | 1.375 / 1.5625 | | 5 words due today | UI copy, tab labels |
-| `caption` | pixel | 1.125 / 1.25 | minimum pixel size | Tap to flip | Hints, metadata |
+| `caption` | pixel | 1.125 / 1.25 | | Tap to flip | Hints, metadata |
 | `word-xl` | content-semibold | 2.25 / 2.625 | | der Bahnhof | Flashcard front |
 | `word-l` | content-semibold | 1.375 / 1.75 | | die Bahnhöfe | Word in lists, plural |
 | `option` | content-semibold | 1.125 / 1.5 | | des Bahnhofs | Gap-fill options |
@@ -199,12 +199,16 @@ const textVariants = cva('text-foreground', {
       'display-xl': 'font-display text-display-xl uppercase desktop:text-display-xl-desktop',
       'display-l':  'font-display text-display-l uppercase desktop:text-display-l-desktop',
       'display-num':'font-display text-display-num text-primary',
+      'display-btn':'font-display text-display-btn uppercase',
+      'display-btn-sm':'font-display text-display-btn-sm uppercase',
       label:        'font-pixel text-label uppercase text-highlight',
       'label-sm':   'font-pixel text-label-sm uppercase text-highlight',
       ui:           'font-pixel text-ui',
       caption:      'font-pixel text-caption text-muted-foreground',
       'word-xl':    'font-content-semibold text-word-xl',
       'word-l':     'font-content-semibold text-word-l',
+      option:       'font-content-semibold text-option',
+      chip:         'font-content-semibold text-chip',
       reading:      'font-content text-reading',
       body:         'font-content text-body',
       'body-sm':    'font-content text-body-sm text-muted-foreground',
