@@ -2,7 +2,7 @@
 
 ## What it is
 
-`Icon` (`apps/app/src/components/Icon`) draws one of the app's 15 icons: back, close, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. You write `<Icon name="check" label="Correct" />`. The set and the style are in `DESIGN.md` §12: 24 grid, stroke 2, square caps, no fill; play and pause are the only filled icons.
+`Icon` (`apps/app/src/components/Icon`) draws one of the app's 14 icons: back, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. You write `<Icon name="check" label="Correct" />`. The set and the style are in `DESIGN.md` §12: 24 grid, stroke 2, square caps, no fill; play and pause are the only filled icons.
 
 ## How it is built
 

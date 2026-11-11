@@ -2,12 +2,9 @@ export const iconViewBox = '0 0 24 24';
 export const iconStrokeWidth = 2;
 export const iconSizeInRem = 1.5;
 
-const crossPaths = ['M4 4 L20 20 M20 4 L4 20'];
-
 export const iconShapes = {
   back: { paths: ['M15 3 L6 12 L15 21'] },
-  close: { paths: crossPaths },
-  cross: { paths: crossPaths },
+  cross: { paths: ['M4 4 L20 20 M20 4 L4 20'] },
   check: { paths: ['M5 13 L10 18 L19 7'] },
   play: { paths: ['M7 4 L20 12 L7 20 Z'], isFilled: true },
   pause: {
