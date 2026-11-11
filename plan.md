@@ -6,7 +6,7 @@ Status: **decisions confirmed, phase 0 next.** Progress per step: [`docs/progres
 
 A mobile-first vocabulary trainer. **v1: learn German, with Russian or English as the native language.** Built so more languages can be added later (see section 2a). The user types or dictates the words they met today; the app normalises them (dictionary form, article, plural, translation), the user confirms, and the app builds a 6-task lesson from them. Words then go into spaced repetition (1, 3, 7, 14, 30 days). Every 5th lesson unlocks a "Boss round" test. A tutor character ("Chunk") speaks in short, dry one-liners.
 
-Look: "Arcade Night": dark only, scanline ground, square corners, hard pink offset shadows, Bungee / VT323 / IBM Plex Sans. Full visual spec: [`DESIGN.md`](DESIGN.md).
+Look: "Arcade Night": dark only, scanline ground, square corners, hard pink offset shadows, Russo One / Handjet / IBM Plex Sans. Full visual spec: [`DESIGN.md`](DESIGN.md).
 
 ### Sources (copied into `design/`)
 
@@ -62,7 +62,7 @@ v1 ships one target language (German) and two native languages (Russian, English
 **Language packs** (`packages/languages/<code>/`)
 
 - _Target pack_ (`de`): grammatical genders and their articles (`masc` → der, `fem` → die, `neut` → das, `plural` → die … Pl.), which parts of speech show a gender chip, how a noun is displayed (article + capitalised noun), accepted typing alternatives (ae/oe/ue/ss → ä/ö/ü/ß), TTS voice options, grammar-tip rules used in feedback (e.g. an + dem = am).
-- _Native pack_ (`ru`, `en`): name, font needs (Cyrillic → Russo One for display, Pixelify Sans for pixel UI; Plex covers both). See DESIGN.md §5.1.
+- _Native pack_ (`ru`, `en`): name. No font needs: every font covers Latin and Cyrillic (DESIGN.md §5.1).
 - _UI strings_ (`packages/i18n/en.json`, `ru.json`): every visible string, including Chunk's lines (EN and RU versions of each).
 
 **What this changes in the design**
@@ -239,8 +239,8 @@ Each component ships with a meta and a story. Names match the design system wher
 **Primitives**
 
 - `Screen`: scanline background, safe-area padding (`pt-screen-top px-gutter pb-screen-bottom`), optional tab bar slot
-- `Text` with `variant` (the type scale in DESIGN.md §5.2), picks the Cyrillic display/pixel font from `appLanguage`
-- `GlitchTitle`: Bungee with `3px 0 pink, -3px 0 cyan` text shadow
+- `Text` with `variant` (the type scale in DESIGN.md §5.2)
+- `GlitchTitle`: the display font with `3px 0 pink, -3px 0 cyan` text shadow
 - `Icon`: inline stroke SVGs from the screens (`react-native-svg`): menu, back, close, mic, speaker, play, pause, stop, pencil, check, cross, home, book, trophy, chart, search, heart
 - `PressableFocus`: wraps every control with the 2px cyan focus ring + 48px minimum target
 
@@ -426,7 +426,7 @@ Every component step: **Done when** = component + `.meta.ts` + `.stories.tsx` wi
 | ---- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
 | 1.1  | `chore/design-guards`             | Lint fails on any hex/px under `src/` (DESIGN.md §10.4); `ComponentMeta` type in `src/components/meta.ts` (§14); a meta-check script fails when a component has no meta or names an unknown token. Proven by fixture tests that fail on purpose. Both added to CI. | phase 0    |
 | 1.2  | `feat/i18n-setup`                 | `packages/i18n` with i18next + react-i18next + `expo-localization`, `en.json`/`ru.json`, `useAppLanguage()`; Russian plural test (1/2/5 words) passes. Delete the 0.5 check story.                                                                                 | 1.1        |
-| 1.3  | `feat/text-primitive`             | `Text` with every §5.3 variant; picks Cyrillic display/pixel fonts from `appLanguage`; story shows all variants in EN and RU. Writes learning task 2.                                                                                                              | 1.2        |
+| 1.3  | `feat/text-primitive`             | `Text` with every §5.3 variant; story shows all variants in EN and RU. Writes learning task 2.                                                                                                                                                                     | 1.2        |
 | 1.4  | `feat/layout-primitives`          | `Screen` (safe area + scanlines), `HardShadow` (native block / web `boxShadow`), `PressableFocus` (2px cyan ring, 2px offset, ≥48px target).                                                                                                                       | 1.3        |
 | 1.5  | `feat/icons`                      | `Icon` with the 17 stroke icons from the screens, `currentColor`, label required when used alone.                                                                                                                                                                  | 1.4        |
 | 1.6  | `feat/button`                     | React Native Reusables `button` restyled per §9.1: primary, secondary, ghost, danger; pressed state.                                                                                                                                                               | 1.5        |

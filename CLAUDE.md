@@ -27,7 +27,7 @@ Design links: screens https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-60
 
 ## Stack (plan.md §2)
 
-Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
+Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Russo One, Handjet, IBM Plex Sans 400/600 (all cover Latin and Cyrillic).
 
 Layout:
 
@@ -156,7 +156,7 @@ The core principles, so they're never missed (values are in `DESIGN.md`):
 - Dark only. Square corners. Depth = hard offset shadow, never blur.
 - Colour jobs: yellow = the one primary action per screen; cyan = focus, inputs, correct; pink = section labels, record, wrong. Correct/wrong always with ✓/✗, never colour alone.
 - Gender colours always next to the written article; plural = dashed outline.
-- Fonts by job: display (Bungee; Russo One for Cyrillic) = titles, buttons, numbers; pixel (VT323; Pixelify Sans for Cyrillic) = UI labels; content (IBM Plex Sans) = every target-language word and every translation.
+- Fonts by job: display (Russo One) = titles, buttons, numbers; pixel (Handjet) = UI labels; content (IBM Plex Sans) = every target-language word and every translation.
 - Icons: inline stroke SVG, `currentColor`, no emoji.
 
 ## Accessibility (must follow)

@@ -48,20 +48,13 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['Bungee_400Regular', 'Bungee', 'system-ui', 'sans-serif'],
-        'display-cyrillic': [
+        display: [
           'RussoOne_400Regular',
           'Russo One',
           'system-ui',
           'sans-serif',
         ],
-        pixel: ['VT323_400Regular', 'VT323', 'ui-monospace', 'monospace'],
-        'pixel-cyrillic': [
-          'PixelifySans_400Regular',
-          'Pixelify Sans',
-          'ui-monospace',
-          'monospace',
-        ],
+        pixel: ['Handjet_400Regular', 'Handjet', 'ui-monospace', 'monospace'],
         content: [
           'IBMPlexSans_400Regular',
           'IBM Plex Sans',

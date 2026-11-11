@@ -149,19 +149,17 @@ The design's **secondary button** (cyan outline) is not shadcn's `secondary` fil
 
 | Token | Font | Job | Never for |
 | --- | --- | --- | --- |
-| `font-display` | Bungee 400 | Titles, buttons, numbers. Latin, unicase | Target-language words, Cyrillic (use `font-display-cyrillic`) |
-| `font-display-cyrillic` | Russo One 400 | Display text when `appLanguage = ru` | Target-language words |
-| `font-pixel` | VT323 400 | Labels, short UI copy, uppercase | Cyrillic (use `font-pixel-cyrillic`) |
-| `font-pixel-cyrillic` | Pixelify Sans 400 | Pixel UI when `appLanguage = ru` | |
+| `font-display` | Russo One 400 | Titles, buttons, numbers. Latin and Cyrillic | Target-language words |
+| `font-pixel` | Handjet 400 | Labels, short UI copy, uppercase. Latin and Cyrillic | |
 | `font-content` | IBM Plex Sans 400 | Sentences, translations, reading text | |
 | `font-content-semibold` | IBM Plex Sans 600 | Words, options, article chips | |
 
 **On native, a font family is a single font file.** React Native has no fallback chain, and `fontWeight` doesn't pick a file. So:
 - Each weight is its own family (`font-content` vs `font-content-semibold`). Don't combine `font-content` with `font-semibold`.
-- Display and pixel fonts for Cyrillic are chosen by `appLanguage`, not by fallback. The `Text` component picks `font-display` / `font-display-cyrillic` and `font-pixel` / `font-pixel-cyrillic` from i18n. Screens never decide this. Content text (IBM Plex Sans) covers Latin and Cyrillic, so it never switches.
+- Every family covers both Latin and Cyrillic, so no font depends on the app language and nothing switches fonts by language.
 - On web, the same classes get full fallback stacks (`tailwind.config.js`).
 
-Loaded with `@expo-google-fonts`: `Bungee_400Regular`, `RussoOne_400Regular`, `VT323_400Regular`, `PixelifySans_400Regular`, `IBMPlexSans_400Regular`, `IBMPlexSans_600SemiBold`.
+Loaded with `@expo-google-fonts`: `RussoOne_400Regular`, `Handjet_400Regular`, `IBMPlexSans_400Regular`, `IBMPlexSans_600SemiBold`.
 
 ### 5.2 Type scale
 
@@ -490,10 +488,8 @@ module.exports = {
         chart: { 1: color('chart-1'), 2: color('chart-2'), 3: color('chart-3'), 4: color('chart-4'), 5: color('chart-5') },
       },
       fontFamily: {
-        display: ['Bungee_400Regular', 'Bungee', 'system-ui', 'sans-serif'],
-        'display-cyrillic': ['RussoOne_400Regular', 'Russo One', 'system-ui', 'sans-serif'],
-        pixel: ['VT323_400Regular', 'VT323', 'ui-monospace', 'monospace'],
-        'pixel-cyrillic': ['PixelifySans_400Regular', 'Pixelify Sans', 'ui-monospace', 'monospace'],
+        display: ['RussoOne_400Regular', 'Russo One', 'system-ui', 'sans-serif'],
+        pixel: ['Handjet_400Regular', 'Handjet', 'ui-monospace', 'monospace'],
         content: ['IBMPlexSans_400Regular', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
         'content-semibold': ['IBMPlexSans_600SemiBold', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
       },
