@@ -1,13 +1,11 @@
 import '../global.css';
 
-import { Bungee_400Regular } from '@expo-google-fonts/bungee';
+import { Handjet_400Regular } from '@expo-google-fonts/handjet';
 import {
   IBMPlexSans_400Regular,
   IBMPlexSans_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-sans';
-import { PixelifySans_400Regular } from '@expo-google-fonts/pixelify-sans';
 import { RussoOne_400Regular } from '@expo-google-fonts/russo-one';
-import { VT323_400Regular } from '@expo-google-fonts/vt323';
 import {
   createI18n,
   defaultAppLanguage,
@@ -35,10 +33,8 @@ rem.set(16);
 
 export default function RootLayout() {
   const [areFontsLoaded, fontError] = useFonts({
-    Bungee_400Regular,
     RussoOne_400Regular,
-    VT323_400Regular,
-    PixelifySans_400Regular,
+    Handjet_400Regular,
     IBMPlexSans_400Regular,
     IBMPlexSans_600SemiBold,
   });

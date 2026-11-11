@@ -27,7 +27,7 @@ Design links: screens https://claude.ai/code/artifact/612f1a57-16a0-467d-87a6-60
 
 ## Stack (plan.md §2)
 
-Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Bungee, Russo One (Cyrillic display), VT323, Pixelify Sans, IBM Plex Sans 400/600.
+Monorepo: npm workspaces + Nx (task runner only). Expo (React Native) + TypeScript + Expo Router for Android, iOS and web. React Native Reusables (shadcn) on NativeWind v4, `react-native-svg` for icons, Zustand, `expo-sqlite` (offline-first). Storybook for web; Vitest for all tests. Backend: Supabase (Postgres, Google auth, Edge Functions) calling the Gemini API. Deploys: EAS (Hosting, Build, Update). Fonts: Russo One, Handjet, IBM Plex Sans 400/600 (all cover Latin and Cyrillic).
 
 Layout:
 
@@ -47,7 +47,7 @@ packages/core/           domain types, SRS, lesson generator, AI request/respons
 packages/languages/      language packs: de/ (target rules), ru/, en/ (native)
 packages/i18n/           EN / RU UI strings, incl. Chunk's lines
 supabase/                migrations, Edge Functions
-docs/learn/, docs/tasks/ learning notes and the owner's learning tasks
+docs/learn/               short learning notes per topic
 ```
 
 Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/languages/` and `packages/i18n/`; `src/components/` means `apps/app/src/components/`.
@@ -58,7 +58,6 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 - Phases run step by step with `/loop run plan.md phase <N>` following `plan.md` §2d: pick the next `TODO` step, build only its scope, prove every "Done when" item, record evidence in `docs/progress.md`.
 - Never commit, push, open a PR or merge unless the user says so in chat. Each step is left uncommitted for the user's review; commit only after their OK. The user always merges.
 - One step per branch. Before handing a step to the user: run tests, then a reviewer subagent with a fresh context checks tests/lint/typecheck, design rules + metas, language rules, and a browser run against the `.dc.html`. Fix its findings first.
-- When a learning task in `docs/tasks/` is open, tell the user, don't touch its files, keep building other parts. Review it when the user says "check".
 - Explain new concepts in chat when they first come up and add a short `docs/learn/<topic>.md` note in the same branch.
 - Shared packages export TypeScript source; every consumer lists the packages it imports in its `package.json`.
 
@@ -156,7 +155,7 @@ The core principles, so they're never missed (values are in `DESIGN.md`):
 - Dark only. Square corners. Depth = hard offset shadow, never blur.
 - Colour jobs: yellow = the one primary action per screen; cyan = focus, inputs, correct; pink = section labels, record, wrong. Correct/wrong always with ✓/✗, never colour alone.
 - Gender colours always next to the written article; plural = dashed outline.
-- Fonts by job: display (Bungee; Russo One for Cyrillic) = titles, buttons, numbers; pixel (VT323; Pixelify Sans for Cyrillic) = UI labels; content (IBM Plex Sans) = every target-language word and every translation.
+- Fonts by job: display (Russo One) = titles, buttons, numbers; pixel (Handjet) = UI labels; content (IBM Plex Sans) = every target-language word and every translation.
 - Icons: inline stroke SVG, `currentColor`, no emoji.
 
 ## Accessibility (must follow)

@@ -4,10 +4,6 @@ Written by the agent while running steps (plan.md §2d). The owner reads this to
 
 Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verified, uncommitted, waiting for the owner's OK) · `WAITING-OWNER` (needs an owner action) · `BLOCKED` (question below)
 
-## Open learning tasks
-
-- Task 1 (`docs/tasks/01-structure.md`): open
-
 ## Phase 0: project setup
 
 | Step                                                 | Status         | Branch                    |
@@ -56,7 +52,6 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - dev server (`expo start --web --port 8081`) → `curl` returned `200`; stopped afterwards (port closed)
   - `npx prettier --check .` → exit 0
   - D1 in `plan.md` lists the pinned versions with reasons and links
-  - `docs/tasks/01-structure.md` exists
 - Choices to review:
   - Template demo code, assets and `reactCompiler` experiment removed; routes are in `apps/app/app/` (the template used `src/app/`) to match the planned layout.
   - `apps/app/tsconfig.json` extends the root base and `expo/tsconfig.base` (no `@/*` path aliases).
@@ -64,11 +59,9 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - `.prettierignore` also skips `.expo/` and `expo-env.d.ts` (generated).
   - `app.json` still has the template's icon and splash colours (`#E6F4FE`, `#208AEF`). The real icon and splash need values from `DESIGN.md` and the logo; to be decided when the app icon is built.
 - Review: 0 blocking findings, 4 low/info. Fixed: stale Expo Go wording in the 0.2 scope text; task 1 "Done when" now matches the real TypeScript error. Noted for later: `app.json` has `userInterfaceStyle: "automatic"` but the design is dark only (set `"dark"` when the icon and splash are built); Metro may need a `metro.config.js` (`watchFolders`) if it can't resolve `@daily-chunk/core` once task 1 is done (export and typecheck can't show this).
-- Learning task 1 is open: `docs/tasks/01-structure.md`. The agent doesn't edit its files (`packages/core/src/**`, `apps/app/app/index.tsx`, the `@daily-chunk/core` line in `apps/app/package.json`).
 - Owner actions:
   - If Expo Go from the Play Store is installed, uninstall it first (it only opens SDK 58).
   - Install [Expo Go 57.0.9](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk) on the A54 (allow "install unknown apps"), run `npm start` in the repo root (phone and laptop on the same Wi-Fi), scan the QR code with Expo Go. If it can't connect, run `npx expo start --tunnel` in `apps/app` instead, and check that "Daily Chunk" shows.
-  - Start learning task 1 whenever you like, and say "check" when done.
 
 #### 0.2 follow-up: switch to SDK 58 (uncommitted)
 
@@ -124,7 +117,7 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Question 2: owner accepted the recommendation, **option 1**: leave the web `<body>` transparent; the `Screen` component (step 1.4) owns the full-screen background.
 - Note: `expo export --platform android` writes into the same `dist` folder as the web export and replaces it; always rebuild the web export before serving `dist`.
 - Dark app shell (owner saw a light app): the navigation theme's default background (`rgb(242, 242, 242)`) was drawn over the dark root. `app/_layout.tsx` now wraps the `Stack` in `ThemeProvider` with `DarkTheme` and a `transparent` background, inside a `View className="flex-1 bg-background"`, plus `StatusBar style="light"`. Evidence: headless Chromium at 390x844 on `/` and `/dev/theme-check` → only `rgb(18, 14, 36)` full-screen layer, no light layer; lint, typecheck and web export exit 0. Not yet seen on a device.
-- Home placeholder (owner's request, after seeing an empty-looking screen): `app/index.tsx` had an uncoloured `<Text>`, black on the dark background. It is rewritten with DESIGN.md classes only: title (`font-display text-display-xl text-foreground`), a muted line, and a yellow `bg-primary` link button (`min-h-touch`, 48px) to `/dev/theme-check`. This file is reserved for learning task 1, so the task file `docs/tasks/01-structure.md` step 4 now says to add `pair.nativeLanguage` as a new `<Text>` on this screen. Evidence: headless Chromium at 390x844: title colour `rgb(243, 239, 230)`, font Bungee, button `rgb(255, 210, 63)`, 48px high, click opens `/dev/theme-check` which shows `rem: 16`; no console errors; screenshot checked; lint, typecheck, Prettier, web export exit 0. Hard-coded English text on this placeholder is temporary until the i18n step (1.2) and Home (3.5).
+- Home placeholder (owner's request, after seeing an empty-looking screen): `app/index.tsx` had an uncoloured `<Text>`, black on the dark background. It is rewritten with DESIGN.md classes only: title (`font-display text-display-xl text-foreground`), a muted line, and a yellow `bg-primary` link button (`min-h-touch`, 48px) to `/dev/theme-check`. Evidence: headless Chromium at 390x844: title colour `rgb(243, 239, 230)`, font Bungee, button `rgb(255, 210, 63)`, 48px high, click opens `/dev/theme-check` which shows `rem: 16`; no console errors; screenshot checked; lint, typecheck, Prettier, web export exit 0. Hard-coded English text on this placeholder is temporary until the i18n step (1.2) and Home (3.5).
 
 ### 0.4 Web storage check (expo-sqlite + Drizzle)
 
@@ -242,9 +235,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 ### Owner actions (in order)
 
 1. Read this report; say "commit" and "open pr" for step 0.8, then merge.
-2. Learning task 1 (`docs/tasks/01-structure.md`) is open and yours; say "check" when it is done. Phase 1 should not need its files, but `apps/app/app/index.tsx` and `packages/core/src/**` stay yours until then.
-3. Optional: check the app once on the A54 after the latest changes (native SQLite is not tested yet: the web check and the Android export cannot show it).
-4. Optional: tell the agent if the Expo project should belong to the team account `civcivkateskos-team` instead of `civciv_katesko`.
+2. Optional: check the app once on the A54 after the latest changes (native SQLite is not tested yet: the web check and the Android export cannot show it).
+3. Optional: tell the agent if the Expo project should belong to the team account `civcivkateskos-team` instead of `civciv_katesko`.
 
 ### Questions and open findings (decide before or during phase 1)
 
@@ -261,8 +253,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | Step | Status         | Branch                            |
 | ---- | -------------- | --------------------------------- |
 | 1.1  | DONE           | `chore/design-guards`             |
-| 1.2  | WAITING-REVIEW | `feat/i18n-setup`                 |
-| 1.3  | TODO           | `feat/text-primitive`             |
+| 1.2  | DONE           | `feat/i18n-setup`                 |
+| 1.3  | WAITING-REVIEW | `feat/text-primitive`             |
 | 1.4  | TODO           | `feat/layout-primitives`          |
 | 1.5  | TODO           | `feat/icons`                      |
 | 1.6  | TODO           | `feat/button`                     |
@@ -306,6 +298,36 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   - Plurals use `Intl.PluralRules`; Hermes on Android supports it (not yet run on the A54 in this step).
   - Storybook is empty until step 1.3 adds the first component story; the theme smoke story is gone as planned. `passWithNoTests: true` in `apps/app/vitest.config.mts` covers the whole run and could hide a broken stories glob later: remove it in step 1.3, when the first story exists.
   - `deploy-storybook` builds and deploys an empty Storybook for this one step (acceptable).
-  - The dev route and the Home placeholder still have hard-coded English labels (Home is reserved for learning task 1).
+  - The dev route and the Home placeholder still have hard-coded English labels.
 - Review: 0 blocking findings, 1 medium and 4 low, all fixed: a failed `changeLanguage` no longer leaves a blank screen (the error is swallowed and the app renders in English); a test now checks that every Russian plural key has the four forms (one, few, many, other) and every English one has two; a hook test reads the language right after a switch (the `language` vs `resolvedLanguage` regression); `react` is a peer dependency of `@daily-chunk/i18n`; the `passWithNoTests` note above.
 - Owner actions: read `docs/learn/i18n.md`; read `packages/i18n/src/locales/ru.json` and tell the agent if a Russian line should change; optional: on the A54 open `/dev/theme-check` and check that the language follows the phone and the button switches it.
+
+### 1.3 Text primitive
+
+- Result: `Text` (`apps/app/src/components/ui/text.tsx`) with all 16 type-scale variants (owner chose option A: the 12 in the `DESIGN.md` §5.3 example plus `display-btn`, `display-btn-sm`, `option`, `chip` from §5.2), built with cva. The first component story exists (`Primitives/Text`, English and Russian) and `passWithNoTests` is removed from `apps/app/vitest.config.mts`.
+- Font change (owner's decision during review, `DESIGN.md` §5.1 and §10.2 changed with explicit approval): Russo One (display), Handjet (pixel) and IBM Plex Sans 400/600 (content), replacing Bungee, VT323 and Pixelify Sans. All of them cover Latin and Cyrillic (checked against the Google Fonts CSS: Bungee and VT323 have no Cyrillic; Russo One, Handjet, IBM Plex Sans have it), so there is no font swap by language any more: no `font-display-cyrillic` / `font-pixel-cyrillic`, no `nativeFontScripts` in `packages/languages`, and `Text` does not read the app language. 3 families in 4 font files, down from 5 families in 6 files. Reason: the owner did not like Pixelify Sans (the digit 5 looks like an S) and wanted fewer fonts.
+- Added: `src/components/ui/text.tsx`, `text.meta.ts`, `text.stories.tsx`; `src/lib/utils.ts` (`cn` = clsx + tailwind-merge, configured with our text sizes); `src/mocks/type-specimens.ts`; `tests/class-names.test.ts`; `docs/learn/text-variants.md`. Dependencies: `class-variance-authority` 0.7.1, `clsx` 2.1.1, `tailwind-merge` 2.6.1 (2.x on purpose: NativeWind 4 uses Tailwind 3, tailwind-merge 3 is for Tailwind 4), `@expo-google-fonts/handjet`; removed `@expo-google-fonts/bungee`, `vt323`, `pixelify-sans`. Changed: `tailwind.config.js` `fontFamily` (4 entries), `app/_layout.tsx` and `.storybook/fonts.ts` (4 fonts loaded), the font lines in the dev route `app/dev/theme-check.tsx`, and the font mentions in `CLAUDE.md` and `plan.md`.
+- Decisions: after the review the owner approved two `DESIGN.md` updates: the §5.3 example now lists all 16 variants, and the `caption` row in §5.2 no longer says "minimum pixel size". The owner also removed the separate learning tasks: `docs/tasks/` is deleted and the rules about them are removed from `CLAUDE.md` and `plan.md` (§2d, the step texts); only `docs/learn/` stays. Variants and defaults agreed with the owner (16 variants; no text shadow on `display-xl` for now; default colours as in §5.3, `foreground` for the four extra variants); fonts as above. `Text` sets no heading role by itself. Storybook has no i18n provider: a global app-language decorator was built and then removed (owner's call: `Text` does not read the language, and the stories get the language as a plain prop); add it back in the step of the first component that shows translated text.
+- Evidence:
+  - `npx nx run-many -t lint typecheck check-meta test --skip-nx-cache` → exit 0 for 4 projects (app: 55 tests, of which 2 are the `Text` stories in headless Chromium; i18n: 14; languages: 1). `npm run check-meta` passes with `text.meta.ts`. `npx prettier --check .` → exit 0.
+  - Story tests (play functions, Chromium), both languages: for all 16 variants the computed font family is the expected face (Russo One for the 5 display variants, Handjet for the 4 pixel variants, IBM Plex Sans 600 / 400 for the content variants) and the size in rem matches `DESIGN.md` §5.2 (14 variants; `display-xl` and `display-l` are skipped because the test browser is desktop width, where they correctly switch to their desktop size); `label` and `label-sm` tracking is 0.125rem; colour relations: `label` = `label-sm`, `caption` = `body-sm`, `body` = `chip`, and `label`, `display-num`, `caption` differ from `body`. Sizes are in rem because the px lint applies to stories. Proof the tests are not vacuous (done before the font change with the then Cyrillic swap): with the Russian display family deliberately set back to the Latin one the Russian story failed (`expected 'Bungee_400Regular…' to contain 'RussoOne_400Regular'`).
+  - `tests/class-names.test.ts` (23 tests): `cn` keeps `text-label text-highlight`, keeps `desktop:text-display-xl-desktop`, lets a later colour, family or size win, and keeps every text size in `tailwind.config.js` next to a colour (one test per size, so a new desktop size is covered).
+  - `npx nx run @daily-chunk/app:build-storybook` → exit 0; `npx nx run @daily-chunk/app:export:web` → exit 0; `npx expo export --platform android` → exit 0; `npm ci --dry-run` → exit 0.
+  - App in a real browser (Expo dev server, `/dev/theme-check`, headless Chromium): exactly 4 font faces loaded (`RussoOne_400Regular`, `Handjet_400Regular`, `IBMPlexSans_400Regular`, `IBMPlexSans_600SemiBold`), no console or page errors, the new font lines render.
+  - Comparison with the screens (Playwright at 390 px, computed styles, story vs `.dc.html`): size, line height and tracking match: `display-xl` vs the `Main` title 2.875rem / 2.875rem; `display-btn` vs the `Confirm` button 1.25rem; `display-num` vs `Done` "+140" 1.625rem; `label-sm` vs the `Flashcards` label 1.25rem, tracking 0.125rem, pink. Differences, all explained: font families (the screens use Bungee and VT323; `DESIGN.md` §5.1 now says Russo One and Handjet, owner's decision); the screen title has a pink/cyan text shadow (decided: not in `Text`; see Questions); button and tile text is dark on yellow in the screens, but the colour is the parent's job (`Button` in 1.6, `StatTile` in 1.11 through `TextClassContext`); screens write the text in capitals, `Text` uses `uppercase`.
+  - Screenshots at 390 px, English and Russian, looked right.
+- Problems found and fixed on the way:
+  - `tailwind-merge` takes `text-label` for a text colour and drops it next to `text-highlight`. Fixed by telling it our text sizes (`src/lib/utils.ts`), guarded by `tests/class-names.test.ts`.
+  - `text.meta.ts` could not import the token list: meta files are read by plain Node, which needs file extensions. The 16 names are written out in the meta; `check-meta` and the type still reject a wrong name.
+  - The story asserted a title size, but the test browser is desktop width, where `display-xl` correctly becomes 4rem. Asserts moved to variants without a desktop size, and in rem, because the px lint applies to stories.
+  - The English story showed the Russian translation lines from the §5.2 samples. The English story now has English translations and the Russian story Russian ones.
+- Caveats:
+  - Web only: `Text` was not run on the A54 or an emulator. The Android bundle builds.
+  - Handjet looks small and thin at the `caption` (1.125rem) and `ui` (1.375rem) sizes in the design. If it feels too small on the phone, those sizes change in `DESIGN.md` §5.2 (owner decision).
+  - The specimen text in `src/mocks/type-specimens.ts` is the agent's wording: the Russian lines (translations of the §5.2 samples plus the specimen `Съешь ещё`) and the English translation lines of the English story (`body`, `body-sm`). Please read both.
+  - `Text` was written by hand in the style of the React Native Reusables `Text` (cva + `TextClassContext`), not generated with the Reusables CLI: it needs no Slot dependency and no config rewrite. The CLI is first used for `Button` in step 1.6, where the `@/` alias in `tsconfig` is also needed.
+  - The reference files in `design/system/` and the `.dc.html` screens still name Bungee and VT323; they are reference only and `DESIGN.md` wins.
+- Questions for the owner:
+  1. `GlitchTitle` (the pink/cyan shadow title, `plan.md` §5) is not in any Phase 1 step. It needs a shadow token in `DESIGN.md` first (`3px` is not allowed in code). Recommended: add a step after 1.11 and the token when you are ready.
+- Owner actions: read `docs/learn/text-variants.md`; read `src/mocks/type-specimens.ts` (the Russian and English translation lines); open Storybook (`npm run storybook`, `Primitives/Text`) in both languages; answer the question.
+- Review: first pass (before the font change) found 0 blocking, 0 medium, 4 low, all fixed (the story tests now cover all 16 variants, the cva export is renamed `textVariantStyles`, `cn` has a test for every size in `tailwind.config.js`; the finding about a parent overriding the Cyrillic swap no longer applies). Second pass after the font change (fresh reviewer): 0 blocking, 0 medium, 2 low. Fonts, `DESIGN.md` §5.1/§10.2, `tailwind.config.js`, `_layout.tsx` and the Storybook loader are consistent; no live leftovers of the old fonts; computed families and Cyrillic glyphs correct in both languages. Low 1: the `DESIGN.md` §5.2 `caption` row said "minimum pixel size", wording from the old fonts; the owner then approved dropping it (done). Low 2: `plan.md` phase 0 evidence still names Bungee; it is history of a finished step, left as it is.

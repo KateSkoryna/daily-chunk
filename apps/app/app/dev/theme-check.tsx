@@ -43,16 +43,16 @@ export default function ThemeCheck() {
 
       <View className="gap-2">
         <Text className="font-display text-display-btn text-foreground">
-          font-display Bungee
+          font-display Russo One
         </Text>
-        <Text className="font-display-cyrillic text-display-btn text-foreground">
-          font-display-cyrillic Привет
+        <Text className="font-display text-display-btn text-foreground">
+          font-display Привет
         </Text>
         <Text className="font-pixel text-label text-foreground">
-          font-pixel VT323
+          font-pixel Handjet
         </Text>
-        <Text className="font-pixel-cyrillic text-label text-foreground">
-          font-pixel-cyrillic Привет
+        <Text className="font-pixel text-label text-foreground">
+          font-pixel Привет
         </Text>
         <Text className="font-content text-body text-foreground">
           font-content Bahnhof

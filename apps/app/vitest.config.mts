@@ -10,7 +10,6 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   test: {
-    passWithNoTests: true,
     projects: [
       {
         test: {
