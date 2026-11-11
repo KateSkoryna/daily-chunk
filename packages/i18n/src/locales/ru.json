@@ -1,0 +1,15 @@
+{
+  "home": {
+    "wordsDue_one": "На сегодня {{count}} слово",
+    "wordsDue_few": "На сегодня {{count}} слова",
+    "wordsDue_many": "На сегодня {{count}} слов",
+    "wordsDue_other": "На сегодня {{count}} слова"
+  },
+  "settings": {
+    "appLanguage": "Язык приложения"
+  },
+  "language": {
+    "en": "English",
+    "ru": "Русский"
+  }
+}

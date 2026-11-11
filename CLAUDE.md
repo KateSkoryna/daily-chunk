@@ -119,13 +119,13 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 
 ## Language rules (must follow)
 
-- Three settings: `targetLang` (v1 `de`), `nativeLang` (`ru` | `en`), `uiLang` (`en` | `ru`, defaults to native).
+- Three settings: `targetLanguage` (v1 `de`), `nativeLanguage` (`ru` | `en`), `appLanguage` (`en` | `ru`, defaults to native).
 - No German/Russian/English logic outside `packages/languages/`. Articles, genders, noun display, typing alternatives (ae→ä…), grammar tips and TTS voices come from the target pack.
 - Components use semantic gender roles (`gender-masc/fem/neut/plural`), not `der/die/das`. The pack maps roles to article words and the design's article colours.
 - No user-visible string in components: everything goes through `packages/i18n/`.
 - Translations are stored per native language (`translations.ru`, `translations.en`). Never a `ru` field on its own.
 - Labels built from the pair, e.g. task 6 = `RU → DE` / `EN → DE`.
-- Every backend call passes `{ targetLang, nativeLang }`.
+- Every backend call passes `{ targetLanguage, nativeLanguage }`.
 - Full details: `plan.md` §2a.
 
 ## Design rules (mandatory, never violate)

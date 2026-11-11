@@ -1,0 +1,13 @@
+{
+  "home": {
+    "wordsDue_one": "{{count}} word is due today",
+    "wordsDue_other": "{{count}} words are due today"
+  },
+  "settings": {
+    "appLanguage": "App language"
+  },
+  "language": {
+    "en": "English",
+    "ru": "Русский"
+  }
+}

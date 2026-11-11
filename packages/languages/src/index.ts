@@ -1,1 +1,1 @@
-export { supportedTargetLangs } from './supported-target-langs';
+export { supportedTargetLanguages } from './supported-target-languages';

@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-native-web-vite';
 
 const config: StorybookConfig = {
-  stories: ['./checks/*.stories.tsx', '../src/**/*.stories.tsx'],
+  stories: ['../src/**/*.stories.tsx'],
   addons: ['@storybook/addon-a11y', '@storybook/addon-vitest'],
   framework: {
     name: '@storybook/react-native-web-vite',
