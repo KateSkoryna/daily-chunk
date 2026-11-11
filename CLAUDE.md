@@ -47,7 +47,7 @@ packages/core/           domain types, SRS, lesson generator, AI request/respons
 packages/languages/      language packs: de/ (target rules), ru/, en/ (native)
 packages/i18n/           EN / RU UI strings, incl. Chunk's lines
 supabase/                migrations, Edge Functions
-docs/learn/, docs/tasks/ learning notes and the owner's learning tasks
+docs/learn/               short learning notes per topic
 ```
 
 Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/languages/` and `packages/i18n/`; `src/components/` means `apps/app/src/components/`.
@@ -58,7 +58,6 @@ Paths in `DESIGN.md` like `src/languages/` and `src/i18n/` mean `packages/langua
 - Phases run step by step with `/loop run plan.md phase <N>` following `plan.md` §2d: pick the next `TODO` step, build only its scope, prove every "Done when" item, record evidence in `docs/progress.md`.
 - Never commit, push, open a PR or merge unless the user says so in chat. Each step is left uncommitted for the user's review; commit only after their OK. The user always merges.
 - One step per branch. Before handing a step to the user: run tests, then a reviewer subagent with a fresh context checks tests/lint/typecheck, design rules + metas, language rules, and a browser run against the `.dc.html`. Fix its findings first.
-- When a learning task in `docs/tasks/` is open, tell the user, don't touch its files, keep building other parts. Review it when the user says "check".
 - Explain new concepts in chat when they first come up and add a short `docs/learn/<topic>.md` note in the same branch.
 - Shared packages export TypeScript source; every consumer lists the packages it imports in its `package.json`.
 
