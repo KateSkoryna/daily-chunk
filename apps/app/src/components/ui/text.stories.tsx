@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { View } from 'react-native';
 import { expect, within } from 'storybook/test';
 
+import { toRem } from '../../lib/browser-rem';
 import { typeSpecimens } from '../../mocks/type-specimens';
 import { textVariants, type TextVariant } from '../tokens';
 import { Text } from './text';
@@ -57,13 +58,6 @@ const expectedVariantStyles = {
   TextVariant,
   { family: keyof typeof fontFamilyNames; sizeInRem: number | null }
 >;
-
-function toRem(lengthInPixels: string) {
-  const rootFontSize = parseFloat(
-    getComputedStyle(document.documentElement).fontSize,
-  );
-  return parseFloat(lengthInPixels) / rootFontSize;
-}
 
 async function expectVariantStyles(
   canvasElement: HTMLElement,

@@ -159,6 +159,24 @@ describe('component meta check (DESIGN.md §14)', () => {
     expect(problems).toEqual([]);
   });
 
+  it('lets a platform file share the meta of its base component', async () => {
+    const problems = await checkComponentMeta(
+      path.join(fixturesDirectory, 'platform-variant'),
+      tokensFile,
+    );
+    expect(problems).toEqual([]);
+  });
+
+  it('fails when a platform file has no base component', async () => {
+    const problems = await checkComponentMeta(
+      path.join(fixturesDirectory, 'platform-without-base'),
+      tokensFile,
+    );
+    expect(problems.join()).toContain(
+      'Solo.web.tsx: platform file has no base component',
+    );
+  });
+
   it('fails when a meta file has no component next to it', async () => {
     const problems = await checkComponentMeta(
       path.join(fixturesDirectory, 'orphan-meta'),

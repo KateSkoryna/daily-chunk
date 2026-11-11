@@ -1,11 +1,18 @@
 import { useTranslation, useAppLanguage } from '@daily-chunk/i18n';
 import { rem } from 'nativewind';
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+
+import { PressableFocus } from '../../src/components/PressableFocus/PressableFocus';
+import { Text as VariantText } from '../../src/components/ui/text';
+import { HardShadow } from '../../src/theme/HardShadow/HardShadow';
+import { Scanlines } from '../../src/theme/Scanlines/Scanlines';
 
 export default function ThemeCheck() {
   const { t } = useTranslation();
   const { appLanguage, setAppLanguage } = useAppLanguage();
   const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
+  const [pressStatus, setPressStatus] = useState('not pressed');
 
   return (
     <ScrollView
@@ -85,6 +92,41 @@ export default function ThemeCheck() {
             {t(`language.${otherAppLanguage}`)}
           </Text>
         </Pressable>
+      </View>
+
+      <View className="gap-4">
+        <Text className="font-display text-display-btn text-foreground">
+          Layout primitives
+        </Text>
+
+        <View className="h-flashcard overflow-hidden border border-border bg-background">
+          <Scanlines />
+          <VariantText variant="label" className="p-4">
+            Scanlines on bg-background
+          </VariantText>
+        </View>
+
+        <HardShadow className="self-start">
+          <View className="bg-primary px-6 py-4">
+            <VariantText
+              variant="display-btn"
+              className="text-primary-foreground"
+            >
+              HardShadow
+            </VariantText>
+          </View>
+        </HardShadow>
+
+        <PressableFocus
+          accessibilityRole="button"
+          accessibilityLabel="Hold me"
+          onPressIn={() => setPressStatus('pressed')}
+          onPressOut={() => setPressStatus('not pressed')}
+          className="items-center justify-center self-start bg-card px-6"
+        >
+          <VariantText variant="display-btn-sm">Hold me</VariantText>
+        </PressableFocus>
+        <VariantText variant="ui">press: {pressStatus}</VariantText>
       </View>
     </ScrollView>
   );

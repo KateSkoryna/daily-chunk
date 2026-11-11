@@ -2,6 +2,7 @@ import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+const platformSuffixPattern = /\.(web|native|ios|android)\.tsx$/;
 const ignoredComponentSuffixes = ['.stories.tsx', '.test.tsx', '.spec.tsx'];
 const ignoredComponentNames = ['index.tsx'];
 
@@ -20,6 +21,7 @@ function isComponentFile(filePath) {
   return (
     filePath.endsWith('.tsx') &&
     !ignoredComponentNames.includes(path.basename(filePath)) &&
+    !platformSuffixPattern.test(filePath) &&
     !ignoredComponentSuffixes.some((suffix) => filePath.endsWith(suffix))
   );
 }
@@ -39,6 +41,19 @@ function findOrphanMetaFiles(files) {
       (metaFile) => !files.includes(metaFile.replace(/\.meta\.ts$/, '.tsx')),
     )
     .map((metaFile) => `${metaFile}: meta file has no component next to it`);
+}
+
+function findPlatformFilesWithoutBase(files) {
+  return files
+    .filter((filePath) => platformSuffixPattern.test(filePath))
+    .filter(
+      (platformFile) =>
+        !files.includes(platformFile.replace(platformSuffixPattern, '.tsx')),
+    )
+    .map(
+      (platformFile) =>
+        `${platformFile}: platform file has no base component next to it`,
+    );
 }
 
 function findShapeProblems(metaFile, meta) {
@@ -72,7 +87,10 @@ export async function checkComponentMeta(sourceDirectory, tokensFile) {
   const knownTokens = await importModule(tokensFile);
   const files = await listFiles(sourceDirectory);
   const componentFiles = files.filter(isComponentFile);
-  const problems = findOrphanMetaFiles(files);
+  const problems = [
+    ...findOrphanMetaFiles(files),
+    ...findPlatformFilesWithoutBase(files),
+  ];
 
   for (const componentFile of componentFiles) {
     const metaFile = componentFile.replace(/\.tsx$/, '.meta.ts');
