@@ -3,6 +3,8 @@ import { rem } from 'nativewind';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
+import { Icon } from '../../src/components/Icon/Icon';
+import { iconNames } from '../../src/components/Icon/icon-shapes';
 import { PressableFocus } from '../../src/components/PressableFocus/PressableFocus';
 import { Text as VariantText } from '../../src/components/ui/text';
 import { HardShadow } from '../../src/theme/HardShadow/HardShadow';
@@ -127,6 +129,44 @@ export default function ThemeCheck() {
           <VariantText variant="display-btn-sm">Hold me</VariantText>
         </PressableFocus>
         <VariantText variant="ui">press: {pressStatus}</VariantText>
+      </View>
+
+      <View className="gap-4">
+        <Text className="font-display text-display-btn text-foreground">
+          Icons
+        </Text>
+        <View className="flex-row flex-wrap gap-4">
+          {iconNames.map((name) => (
+            <View key={name} className="items-center gap-1">
+              <Icon name={name} decorative className="text-foreground" />
+              <VariantText variant="caption">{name}</VariantText>
+            </View>
+          ))}
+        </View>
+        <View className="flex-row flex-wrap gap-4">
+          <View className="items-center gap-1">
+            <Icon name="check" label="Correct" className="text-success" />
+            <VariantText variant="caption">Correct (text-success)</VariantText>
+          </View>
+          <View className="items-center gap-1">
+            <Icon name="cross" label="Wrong" className="text-highlight" />
+            <VariantText variant="caption">Wrong (text-highlight)</VariantText>
+          </View>
+          <View className="items-center gap-1">
+            <Icon name="mic" label="Record" className="text-ring" />
+            <VariantText variant="caption">Record (text-ring)</VariantText>
+          </View>
+          <View className="items-center gap-1">
+            <Icon
+              name="speaker"
+              label="Listen"
+              className="text-muted-foreground"
+            />
+            <VariantText variant="caption">
+              Listen (text-muted-foreground)
+            </VariantText>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
