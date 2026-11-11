@@ -255,8 +255,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 1.1  | DONE           | `chore/design-guards`             |
 | 1.2  | DONE           | `feat/i18n-setup`                 |
 | 1.3  | DONE           | `feat/text-primitive`             |
-| 1.4  | WAITING-REVIEW | `feat/layout-primitives`          |
-| 1.5  | TODO           | `feat/icons`                      |
+| 1.4  | DONE           | `feat/layout-primitives`          |
+| 1.5  | WAITING-REVIEW | `feat/icons`                      |
 | 1.6  | TODO           | `feat/button`                     |
 | 1.7  | TODO           | `feat/article-chip`               |
 | 1.8  | TODO           | `feat/word-card`                  |
@@ -363,3 +363,25 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   1. None open. (`DESIGN.md` §7.6 was changed to 5% with the owner's approval.)
 - Owner actions: open Storybook (`npm run storybook`): `Primitives/PressableFocus` (press Tab, click and hold), `Primitives/HardShadow`, `Primitives/Screen`, `Primitives/Scanlines`; read `docs/learn/layout-primitives.md`; answer the question.
 - Review: first pass (before the phone tests) found 0 blocking, 1 medium, 4 low, all fixed (the `Pressed` story, a phone-width `Screen` story, the `HardShadow` and `PressableFocus` metas). Second pass over the later changes (views `Scanlines`, dev route, dependency removal): 0 blocking, 0 medium, 4 low. Fixed: the `Pressed` story is renamed `MouseDown` (it cannot tell the press path from focus); `Screen.meta.ts` no longer lists `foreground` (only `Scanlines` uses it); the learn note no longer guesses a cause. Noted as caveats: the line count follows the window height, not the container, and the phone `Scanlines` has no automated test.
+
+### 1.5 Icons
+
+- Result: `Icon` with 15 icons: back, close, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. Owner's decisions after the questions: 1A (the 13 icons the screens draw for the core loop, plus check and cross; the menu icons and stop, search, flip, plus, heart are added in the step that first needs them) and 2A (the `DESIGN.md` §12 style for every stroke icon, and play and pause filled).
+- Documents changed with the owner's approval: `DESIGN.md` §12 (the set of 15, "play and pause are the only filled icons", and the platform wording) and `plan.md` §5 and step 1.5 (the list of 15 instead of 17).
+- Added: `src/components/Icon` (`icon-shapes.ts` = the paths of all icons plus the constants viewBox 24, stroke 2 and size 1.5rem; `icon-props.ts` = the props type: either `label` or `decorative`; `Icon.web.tsx` = a plain `<svg>` for web and Storybook; `Icon.tsx` = `react-native-svg` for phones; `Icon.meta.ts`; `Icon.stories.tsx`), an "Icons" block in the dev route `app/dev/theme-check.tsx` (all 15 icons with names, and four labelled icons in solid colours), dependency `react-native-svg` 15.16.0 (`expo install`), `docs/learn/icons.md`.
+- How the colour works: the icon uses `currentColor`. On web it follows the CSS colour of the text around it. On phones nothing is inherited, so `Icon` merges the classes of `TextClassContext` (the context `Button` will use) with its own `className`, and `cssInterop` on `Svg` passes the colour from the class to the SVG's `color` prop (without it the icons were black on the phone, because react-native-svg does not read the colour from the style). Solid colours only.
+- Evidence:
+  - `npx nx run-many -t lint typecheck check-meta test --skip-nx-cache` → exit 0 for 4 projects (app: 67 tests, of which 3 are new `Icon` stories in headless Chromium; i18n: 14; languages: 1). `npx prettier --check .` → exit 0. `npm ci --dry-run` → exit 0.
+  - `npx nx run @daily-chunk/app:build-storybook` → exit 0; `npx nx run @daily-chunk/app:export:web` → exit 0; `npx expo export --platform android` → exit 0 (this bundles the phone `Icon.tsx` with `react-native-svg`).
+  - Story tests: `AllIcons`: 15 SVGs, each hidden from screen readers, exactly 1.5rem wide and high, and only play and pause are filled. `WithLabel`: the SVG has role `img` and the name "Correct", and its colour equals the `success` colour of a reference swatch. `ColourFromTextContext`: inside `TextClassContext` with `text-ring` the icon takes the `ring` colour.
+  - Comparison with the screens (a Playwright image with the screen's SVG and ours side by side, 13 icons): same shapes and proportions; the screens draw them at different view boxes (16, 20, 24) and sizes; ours are all on the 24 grid with stroke 2 at 1.5rem (`DESIGN.md` §12 wins). The screen's close X is drawn larger in its box; ours was widened from 58% to 67% of the grid to match.
+  - A Storybook story screenshot at 390 px shows all 15 icons with their names; no page errors.
+- Tested on the owner's A54 (Expo Go, `/dev/theme-check`): first the icons were black; after the `cssInterop` fix all draw and the coloured ones have their colours (owner confirmed). Still open: an icon inside a `Button` (step 1.6).
+- Caveats:
+  - `check` is the agent's own drawing (no screen has a check icon; the screens write the text character ✓), in the same style. `cross` and `close` share one shape; `cross` is the wrong-answer mark and `close` the dismiss control.
+  - `lock` is drawn but no Phase 1 component uses it yet (it is in the Lessons screen for locked lessons).
+  - `DESIGN.md` §12 says icons are rendered "inside a `touch` target"; `Icon` itself is 1.5rem and the target comes from `PressableFocus`.
+  - The screens hard-code a colour in two icons (`#2EE6D6`, `#FF3D8B`); ours always follow the text colour.
+- Questions for the owner: none open.
+- Owner actions: look at Storybook `Primitives/Icon`; read `docs/learn/icons.md`; tell me if you want a different check mark.
+- Review: fresh reviewer found 0 blocking, 0 medium, 3 low. Fixed: low 3 (the meta now lists `success` and `highlight`). Left on purpose: low 1 (`label=""` compiles; TypeScript cannot cheaply require a non-empty string); low 2 (the whole `TextClassContext` string, including font classes, is merged into the icon; harmless on web, unverified on a phone) goes to step 1.6: test `Button` + `Icon` on the A54, or filter the context to the colour class. The reviewer did not run the phone `Icon.tsx` and did not compare back, close, pencil, menu, book, lock and pause with the screens (the agent did, see above).

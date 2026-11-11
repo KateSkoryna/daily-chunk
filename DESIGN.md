@@ -580,7 +580,7 @@ Reduced motion (`useReducedMotion` / `prefers-reduced-motion`): no flip (swap fa
 
 ## 12. Icons
 
-Inline stroke SVG via `react-native-svg`: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set: play, mic, stop, back chevron, check, cross, flip, speaker, plus, search. No emoji.
+Inline SVG via `react-native-svg` on phones and a plain `<svg>` on web: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set (15): back, close, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. Play and pause are the only filled icons. No emoji.
 
 ---
 
