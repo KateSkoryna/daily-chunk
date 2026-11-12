@@ -1,4 +1,3 @@
-import { cva } from 'class-variance-authority';
 import { createContext, useContext } from 'react';
 import {
   Text as NativeText,
@@ -29,11 +28,6 @@ const variantClasses = {
   'body-sm': 'font-content text-body-sm text-muted-foreground',
 } satisfies Record<TextVariant, string>;
 
-const textVariantStyles = cva('text-foreground', {
-  variants: { variant: variantClasses },
-  defaultVariants: { variant: 'body' },
-});
-
 const TextClassContext = createContext<string | undefined>(undefined);
 
 type TextProps = NativeTextProps & {
@@ -46,11 +40,16 @@ function Text({ variant = 'body', className, ...props }: TextProps) {
 
   return (
     <NativeText
-      className={cn(textVariantStyles({ variant }), parentTextClass, className)}
+      className={cn(
+        'text-foreground',
+        variantClasses[variant],
+        parentTextClass,
+        className,
+      )}
       {...props}
     />
   );
 }
 
-export { Text, TextClassContext, textVariantStyles };
+export { Text, TextClassContext };
 export type { TextProps };
