@@ -343,8 +343,10 @@ When adding any shadcn component:
 | `default` pressed | | `translate-x-1 translate-y-1`, no shadow | |
 | `default` disabled | | `bg-popover`, no shadow | `text-muted-foreground` |
 | `secondary` | `h-control px-5` | transparent, `border-2 border-ring` (cyan) | `display-btn-sm`, `text-ring` |
-| `ghost` | `h-touch` | none | `label`, `text-muted-foreground` |
-| `destructive` | `h-control` | `bg-destructive` | `display-btn-sm`, `text-destructive-foreground` |
+| `ghost` | `h-touch px-5` | none | `label`, `text-muted-foreground` |
+| `destructive` | `h-control px-5` | `bg-destructive` | `display-btn-sm`, `text-destructive-foreground` |
+
+Disabled applies to every variant the same way: `bg-popover` fill, `text-muted-foreground` label, no shadow. On `secondary` the border also becomes `bg-popover`'s colour (`border-popover`), so a disabled button never keeps its cyan outline.
 
 Rule: one `default` button per screen.
 

@@ -6,6 +6,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Icon } from '../../src/components/Icon/Icon';
 import { iconNames } from '../../src/components/Icon/icon-shapes';
 import { PressableFocus } from '../../src/components/PressableFocus/PressableFocus';
+import { Button } from '../../src/components/ui/button';
 import { Text as VariantText } from '../../src/components/ui/text';
 import { HardShadow } from '../../src/theme/HardShadow/HardShadow';
 import { Scanlines } from '../../src/theme/Scanlines/Scanlines';
@@ -166,6 +167,30 @@ export default function ThemeCheck() {
               Listen (text-muted-foreground)
             </VariantText>
           </View>
+        </View>
+      </View>
+
+      <View className="gap-6">
+        <Text className="font-display text-display-btn text-foreground">
+          Buttons
+        </Text>
+        <Button>
+          <VariantText>Next</VariantText>
+        </Button>
+        <Button disabled>
+          <VariantText>Next</VariantText>
+        </Button>
+        <View className="flex-row flex-wrap items-center gap-4">
+          <Button variant="secondary">
+            <Icon name="speaker" decorative />
+            <VariantText>Listen</VariantText>
+          </Button>
+          <Button variant="ghost">
+            <VariantText>Skip</VariantText>
+          </Button>
+          <Button variant="destructive">
+            <VariantText>Delete</VariantText>
+          </Button>
         </View>
       </View>
     </ScrollView>
