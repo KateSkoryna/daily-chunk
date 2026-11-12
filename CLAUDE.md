@@ -108,7 +108,7 @@ Follow the global CI/CD and secrets rules; the reasoning is in `plan.md` §2c. T
 
 Every component has a meta file next to it: `<Name>.meta.ts` (format and example: `DESIGN.md` §14).
 
-- **Creating a component** (including one added from React Native Reusables): create its meta in the same commit. A component without a meta is not done.
+- **Creating a component** (written by hand or added from React Native Reusables): create its meta in the same commit. A component without a meta is not done.
 - **Changing a component** (props, variants, states, tokens, usage): update its meta in the same commit so they always match.
 - **Before building a screen or a new component:** read the existing metas and reuse a component whose `useWhen` fits. Make a new one only when none fits.
 - **Follow `aiHints`:** never use a component in a way its `avoidWhen` or `invalid` lists.
@@ -138,6 +138,7 @@ Every component has a meta file next to it: `<Name>.meta.ts` (format and example
 - Only the semantic and domain tokens in components, never palette names.
 - Typography only through `Text` `variant`; shadows only through `HardShadow`; focus only through `PressableFocus`; screen padding and scanlines only through `Screen`.
 - shadcn / React Native Reusables components are restyled once in `src/components/ui/` as `DESIGN.md` §9 says, never per screen.
+- Keep components simple and readable: a table of class strings per variant, the label style through `TextClassContext`, no helper layers. Use the React Native Reusables CLI only for components with real behaviour (`AlertDialog`, `Select`, `Switch`, `ToggleGroup`, `Tabs`: focus, keyboard, screen-reader roles, overlays). Write simple ones (`Button`, `Text`, chips, cards) by hand in the same style.
 - `design/system/` and `.dc.html` inline styles are reference only. If they differ from `DESIGN.md`, `DESIGN.md` wins.
 
 **Stop and ask the user. Never guess, invent or work around** when:

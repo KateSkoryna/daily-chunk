@@ -190,33 +190,30 @@ Tutor quote text = `label` with line height 1.625rem (`TutorQuote.md`).
 
 ### 5.3 Text component
 
-Use one `Text` from React Native Reusables, extended with a `variant` prop (cva). It owns family + size + colour defaults, so screens write `<Text variant="label">`, never `className="font-pixel text-label uppercase tracking-…"`.
+Use one `Text`, written in the style of React Native Reusables' `Text` and extended with a `variant` prop (a table of class strings, no helper library). It owns family + size + colour defaults, so screens write `<Text variant="label">`, never `className="font-pixel text-label uppercase tracking-…"`.
 
 ```tsx
-const textVariants = cva('text-foreground', {
-  variants: {
-    variant: {
-      'display-xl': 'font-display text-display-xl uppercase desktop:text-display-xl-desktop',
-      'display-l':  'font-display text-display-l uppercase desktop:text-display-l-desktop',
-      'display-num':'font-display text-display-num text-primary',
-      'display-btn':'font-display text-display-btn uppercase',
-      'display-btn-sm':'font-display text-display-btn-sm uppercase',
-      label:        'font-pixel text-label uppercase text-highlight',
-      'label-sm':   'font-pixel text-label-sm uppercase text-highlight',
-      ui:           'font-pixel text-ui',
-      caption:      'font-pixel text-caption text-muted-foreground',
-      'word-xl':    'font-content-semibold text-word-xl',
-      'word-l':     'font-content-semibold text-word-l',
-      option:       'font-content-semibold text-option',
-      chip:         'font-content-semibold text-chip',
-      reading:      'font-content text-reading',
-      body:         'font-content text-body',
-      'body-sm':    'font-content text-body-sm text-muted-foreground',
-    },
-  },
-  defaultVariants: { variant: 'body' },
-});
+const variantClasses = {
+  'display-xl':    'font-display text-display-xl uppercase desktop:text-display-xl-desktop',
+  'display-l':     'font-display text-display-l uppercase desktop:text-display-l-desktop',
+  'display-num':   'font-display text-display-num text-primary',
+  'display-btn':   'font-display text-display-btn uppercase',
+  'display-btn-sm':'font-display text-display-btn-sm uppercase',
+  label:           'font-pixel text-label uppercase text-highlight',
+  'label-sm':      'font-pixel text-label-sm uppercase text-highlight',
+  ui:              'font-pixel text-ui',
+  caption:         'font-pixel text-caption text-muted-foreground',
+  'word-xl':       'font-content-semibold text-word-xl',
+  'word-l':        'font-content-semibold text-word-l',
+  option:          'font-content-semibold text-option',
+  chip:            'font-content-semibold text-chip',
+  reading:         'font-content text-reading',
+  body:            'font-content text-body',
+  'body-sm':       'font-content text-body-sm text-muted-foreground',
+} satisfies Record<TextVariant, string>;
 ```
+
+The component sets `className={cn('text-foreground', variantClasses[variant], parentTextClass, className)}`: the variant first, then the parent's `TextClassContext` string, then the caller's classes (the last one wins).
 
 React Native Reusables' `TextClassContext` lets a parent (Button, Badge) set the text style of its children. Use it instead of passing text classes down.
 
@@ -326,9 +323,11 @@ Tabs: **HOME · LESSONS · SCORE · STATS**. Desktop home: 8 columns add-words +
 
 ## 9. Components
 
-Components from React Native Reusables live in `src/components/ui/` and are **owned code**: restyle them once there, never per screen. App components live in `src/components/` and are built from `ui/` pieces.
+Base components live in `src/components/ui/` and are **owned code**: style them once there, never per screen. App components live in `src/components/` and are built from `ui/` pieces.
 
-When adding any shadcn component:
+Components with real behaviour (dialogs, select, switch, toggle group, tabs: focus, keyboard, screen-reader roles, overlays) are added from React Native Reusables with its CLI. Simple ones (button, text, chips, cards) are written by hand in the same style: a table of class strings per variant and the label style through `TextClassContext`. Keep them short and readable.
+
+When adding a component from React Native Reusables (a hand-written one follows the same rules):
 1. Remove the `shadow-*` classes. Keep `rounded-*` (they render square).
 2. Set heights to `touch` / `control` / `button`.
 3. Make sure the focus ring uses `ring-ring`.
@@ -343,8 +342,10 @@ When adding any shadcn component:
 | `default` pressed | | `translate-x-1 translate-y-1`, no shadow | |
 | `default` disabled | | `bg-popover`, no shadow | `text-muted-foreground` |
 | `secondary` | `h-control px-5` | transparent, `border-2 border-ring` (cyan) | `display-btn-sm`, `text-ring` |
-| `ghost` | `h-touch` | none | `label`, `text-muted-foreground` |
-| `destructive` | `h-control` | `bg-destructive` | `display-btn-sm`, `text-destructive-foreground` |
+| `ghost` | `h-touch px-5` | none | `label`, `text-muted-foreground` |
+| `destructive` | `h-control px-5` | `bg-destructive` | `display-btn-sm`, `text-destructive-foreground` |
+
+Disabled applies to every variant the same way: `bg-popover` fill, `text-muted-foreground` label, no shadow. On `secondary` the border also becomes `bg-popover`'s colour (`border-popover`), so a disabled button never keeps its cyan outline.
 
 Rule: one `default` button per screen.
 
@@ -555,7 +556,7 @@ module.exports = {
 
 ### 10.3 `components.json`
 
-React Native Reusables uses the standard shadcn file. Point it at our paths: `"tailwind": { "css": "global.css", "baseColor": "neutral", "cssVariables": true }`, `"aliases": { "components": "@/components", "ui": "@/components/ui", "lib": "@/lib" }`. `baseColor` doesn't matter, because `global.css` above replaces the generated variables.
+React Native Reusables uses the standard shadcn file. Point it at our paths: `"tailwind": { "css": "global.css", "baseColor": "neutral", "cssVariables": true }`, `"aliases": { "components": "@/components", "ui": "@/components/ui", "lib": "@/lib", "utils": "@/lib/utils" }`. The CLI also requires `"style": "default"`, `"rsc": false`, `"tsx": true` and `"tailwind.config": "tailwind.config.js"`, otherwise it stops and asks to rewrite the file. `@/*` maps to `src/*` in `tsconfig.json`. `baseColor` doesn't matter, because `global.css` above replaces the generated variables.
 
 ### 10.4 Rules for code
 

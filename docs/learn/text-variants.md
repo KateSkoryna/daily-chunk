@@ -6,7 +6,7 @@
 
 ## How it is built
 
-- **cva** (`class-variance-authority`): a function that turns a variant name into a class string. One map, 16 variants, one place to change a style.
+- **A table of class strings** (`variantClasses`): one entry per variant, 16 in all, and `Text` picks the entry for its `variant`. One place to change a style. It is a plain object on purpose: no helper library for a lookup.
 - **`cn`** (`src/lib/utils.ts`): joins class names and lets a later class win over an earlier one (`clsx` + `tailwind-merge`). We told `tailwind-merge` our custom text sizes (`text-label`, `text-display-xl`...), otherwise it takes `text-label` for a colour and drops it. `tests/class-names.test.ts` guards this.
 - **`TextClassContext`**: a parent such as `Button` puts its text classes in the context, and every `Text` inside picks them up. This is how a button sets the label colour without passing classes down.
 
