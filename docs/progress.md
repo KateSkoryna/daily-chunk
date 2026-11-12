@@ -257,8 +257,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 1.3  | DONE           | `feat/text-primitive`             |
 | 1.4  | DONE           | `feat/layout-primitives`          |
 | 1.5  | DONE           | `feat/icons`                      |
-| 1.6  | WAITING-REVIEW | `feat/button`                     |
-| 1.7  | TODO           | `feat/article-chip`               |
+| 1.6  | DONE           | `feat/button`                     |
+| 1.7  | WAITING-REVIEW | `feat/article-chip`               |
 | 1.8  | TODO           | `feat/word-card`                  |
 | 1.9  | TODO           | `feat/lesson-stepper-tutor-quote` |
 | 1.10 | TODO           | `feat/gap-fill-record-button`     |
@@ -416,3 +416,32 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
   3. `plan.md` §5 lists a fifth look, "danger outline (pink, used for AGAIN)": the Flashcards screen has a 64px pink outline button, while `DESIGN.md` §9.1 defines `destructive` as a pink fill and 56px. Is AGAIN a new variant (outline, pink), or should `destructive` become the outline?
 - Owner actions: look at Storybook `Components/Button`; on the A54 open `/dev/theme-check` and look at the Buttons block, especially the speaker icon inside the secondary button (still open from 1.5: whether the whole `TextClassContext` string reaching the SVG is harmless on a phone) and the pressed move of the primary.
 - Review: fresh reviewer found 1 blocking, 3 medium, 4 low, 0 bugs in the look. Fixed: blocking (this section), medium 2 (unused `@rn-primitives/slot` removed). Medium 4 was then answered by the owner (same disabled look for every variant). Left as owner questions: medium 3, low 5. Low 6 and 7 are the device check above. Low 8 (disabled concept in the learn note) skipped.
+
+### 1.7 ArticleChip
+
+- Result: the German language pack and two components. `packages/languages/src/de` maps gender roles to article words (`masc` → der, `fem` → die, `neut` → das, `plural` → die), the plural tag label (`die · Pl.`) and the genders a picker offers (masc, fem, neut). `ArticleChip` shows one gender as a tag (`h-8 px-2.5`, `chip` text, `bg-gender-*` with `text-gender-foreground`; the plural is a dashed outline in the plural colour with the pack's label). `ArticlePicker` is a controlled radio group (`value`, `onSelect`, optional `correctAnswer`): open until `correctAnswer` is set, then locked and showing the result: the right pick gets the article fill, the cyan border and a check icon; a wrong pick gets the pink border and a cross icon while the right chip is filled.
+- Added: `packages/languages/src` (`gender.ts`, `target-language-pack.ts`, `de/index.ts`, `get-target-language-pack.ts`, tests), `ArticleChip` and `ArticlePicker` (component, meta, stories each), i18n keys `answer.correct` / `answer.wrong` (EN and RU) for the icon names, an app-language switch in the Storybook toolbar with an `I18nextProvider` in `.storybook/preview.tsx` (stories can now use `useTranslation`; the toolbar switch shows any story in Russian, so there is no separate Russian story), an "Articles" block in `app/dev/theme-check.tsx`, `docs/learn/language-packs.md`.
+- Decisions: components take a gender role and a `targetLanguage` and ask the pack for the article word, so no article is written in a component. The picker marks the choice with `aria-checked` (react-native-web does not turn `accessibilityState.checked` into `aria-checked` on a radio; the axe check in the stories caught it). The result is carried by an icon with a translated name, never by colour alone.
+- Evidence:
+  - `npx nx run-many -t lint typecheck check-meta test --skip-nx-cache` → exit 0 (languages: 5 tests, i18n: 14, app: 79 of which `ArticleChip` 2 stories and `ArticlePicker` 1 story is new, each with the axe accessibility check as an error). `npx prettier --check .` → exit 0.
+  - `build-storybook` → exit 0; `export:web` → exit 0.
+  - Story tests: `ArticleChip` `Default` label from the pack, height 2rem, padding 0.625rem, plural dashed 0.125rem with transparent fill and the others filled; `AllGenders` four chips, each 2rem high, three different fills. `ArticlePicker` `Default` three radios 3rem high, pressing one calls `onSelect` and checks it; with the controls set to an answer (`correctAnswer`) the same test checks that all radios are disabled, that the picked radio has an icon named "Correct" or "Wrong", and that a press does nothing. There are no `Correct` and `Wrong` stories (owner's decision: the `Default` controls show every state); the Overview of `ArticlePicker` is a text-only page (`docs.page` with `Title` and `Description`, generated from the meta, which describes the answered statuses); the live example is the `Default` story. CI only runs the unanswered state.
+- Questions for the owner:
+  1. `DESIGN.md` §9.2/§9.3 say the picker is built on `toggle-group` (Reusables). It is hand-written with `PressableFocus` and radio roles (three buttons need no roving focus; the rule in `CLAUDE.md` keeps the CLI for components with real behaviour). Confirm, or I switch to `toggle-group`.
+  2. The Confirm screen has a dashed grey "ADJ" chip for a word that is not a noun. `DESIGN.md` says dashed = plural only. Is it a fifth look (no gender), and should `ArticleChip` get it?
+  3. Picker answered states combine the spec (cyan border + check) with the screen (right chip filled): the right pick is filled and has the cyan border. Confirm.
+  4. The Notifications screen draws a smaller `das` tag (22px high, 13px text, 6px padding) in a widget. `DESIGN.md` and `ArticleChip.md` define only the 32px tag. Should the notification and widget use a smaller size (then `DESIGN.md` §9.3 needs the value), or the 32px chip?
+- 390 px comparison (reviewer, computed styles of the static Storybook vs `.dc.html`): identical to the screens: the three fills (der `#5AA9FF`, die `#FF6B6B`, das `#4ADE80`), the dark label, chip height 32px, Plex Sans 600 16px, the dashed plural (2px, plural colour), the picker's idle border and fill, the pink wrong pick, the filled right chip after a wrong answer. Differences, all explained:
+
+  | Item                    | Ours                           | Screen                         | Why                                                          |
+  | ----------------------- | ------------------------------ | ------------------------------ | ------------------------------------------------------------ |
+  | Tag width               | 45 to 47px (`die · Pl.` 80px)  | fixed 52px                     | `DESIGN.md` §9.3 `px-2.5`, `ArticleChip.md` "padding 0 10px" |
+  | Picker height           | 48px                           | 56px                           | §9.3 `h-touch`                                               |
+  | Picker text             | 16px                           | 20px                           | §9.3 `chip` style                                            |
+  | ✓ and ✗                 | icons with a translated name   | text characters                | `DESIGN.md` "no emoji", icons are inline SVG                 |
+  | Right pick when correct | article fill + cyan border     | article fill only              | `ArticleChip.md` (cyan border); owner question 3             |
+  | Notifications `das` tag | 32px high, 16px text, `px-2.5` | 22px high, 13px text, `px-1.5` | not defined in `DESIGN.md`: owner question 4                 |
+
+- Differences from the screens (`DESIGN.md` wins): the picker is `h-touch` (3rem) with `chip` text (1rem); the Review screen draws it 56px high with 20px text. Check and cross are icons, the screen writes ✓ and ✗ characters. Article words come from the pack. The screens' tag is 52px wide (fixed); ours is as wide as its text plus padding.
+- Owner actions: look at Storybook `Components/ArticleChip` and `Components/ArticlePicker` (try the App language switch in the toolbar); on the A54 open `/dev/theme-check` and look at the Articles block: the dashed plural outline and the check and cross icons in the picker.
+- Review: fresh reviewer found 0 blocking, 2 medium, 4 low. Fixed: medium 1 (the comparison above), medium 2 (owner question 4), low 3 (a `PickerGender` type without `plural`, used by the pack and the picker, so a plural choice cannot be written), low 4 (the `Default` story asserts the radiogroup and its name), low 5 (the demo remounts when the `value` control changes). Left: low 6 (a `Plural` story would repeat `AllGenders`). The reviewer agreed with the picker being hand-written (question 1), with deferring the ADJ chip (question 2) and with the cyan border (question 3). Not verified by anyone: the dashed plural outline and the picker icons on a phone (owner device check).
