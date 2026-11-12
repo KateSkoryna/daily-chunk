@@ -8,9 +8,11 @@ export const hardShadowMeta = {
   spec: 'DESIGN.md §7.4',
   props: {
     className: 'Extra classes for the wrapper; layout only',
+    isShadowHidden:
+      'Removes the shadow block, for example while the control is pressed or disabled',
     children: 'The element that casts the shadow',
   },
-  states: ['default'],
+  states: ['default', 'shadow-hidden'],
   relationships: {
     usedIn: ['Button', 'WordCard'],
   },

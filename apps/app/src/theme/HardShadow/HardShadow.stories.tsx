@@ -15,6 +15,14 @@ const meta = {
   parameters: {
     docs: { description: { component: metaToMarkdown(hardShadowMeta) } },
   },
+  args: { isShadowHidden: false },
+  argTypes: {
+    isShadowHidden: {
+      control: 'boolean',
+      description:
+        'Removes the shadow block. Buttons use it while pressed or disabled.',
+    },
+  },
 } satisfies Meta<typeof HardShadow>;
 
 export default meta;
@@ -22,10 +30,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => (
+  parameters: { controls: { include: ['isShadowHidden'] } },
+  render: ({ isShadowHidden }) => (
     <View className="p-gutter">
-      <HardShadow testID="hard-shadow">
+      <HardShadow testID="hard-shadow" isShadowHidden={isShadowHidden}>
         <View className="items-center justify-center bg-primary p-4">
           <Text variant="display-btn" className="text-primary-foreground">
             Next
@@ -34,8 +42,14 @@ export const Default: Story = {
       </HardShadow>
     </View>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const wrapper = await within(canvasElement).findByTestId('hard-shadow');
+
+    if (args.isShadowHidden) {
+      expect(wrapper.children).toHaveLength(1);
+      return;
+    }
+
     const block = wrapper.children[0] as HTMLElement;
     const element = wrapper.children[1] as HTMLElement;
     const blockBox = block.getBoundingClientRect();
