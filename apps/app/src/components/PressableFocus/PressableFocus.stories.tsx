@@ -3,21 +3,41 @@ import { View } from 'react-native';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
+import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { Text } from '../ui/text';
-import { PressableFocus } from './PressableFocus';
+import { PressableFocus, type PressableFocusProps } from './PressableFocus';
+import { pressableFocusMeta } from './PressableFocus.meta';
 
 const meta = {
   title: 'Primitives/PressableFocus',
   component: PressableFocus,
+  tags: ['autodocs'],
+  parameters: {
+    docs: { description: { component: metaToMarkdown(pressableFocusMeta) } },
+    controls: {
+      include: ['accessibilityRole', 'accessibilityLabel'],
+    },
+  },
   args: {
     accessibilityRole: 'button',
     accessibilityLabel: 'Next',
     onPress: fn(),
   },
+  argTypes: {
+    accessibilityRole: {
+      control: 'select',
+      options: ['button', 'link', 'tab'],
+      description: 'The role of the control.',
+    },
+    accessibilityLabel: {
+      control: 'text',
+      description: 'Required when the content is an icon only.',
+    },
+  },
   render: (args) => (
     <View className="items-start gap-4 p-gutter">
       <PressableFocus {...args}>
-        <Text variant="display-btn-sm">Next</Text>
+        <Text variant="display-btn-sm">{args.accessibilityLabel}</Text>
       </PressableFocus>
       <View testID="ring-colour" className="h-4 w-4 border-2 border-ring" />
     </View>
@@ -27,6 +47,12 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+function findControl(canvasElement: HTMLElement, args: PressableFocusProps) {
+  return within(canvasElement).findByRole(args.accessibilityRole ?? 'button', {
+    name: args.accessibilityLabel ?? undefined,
+  });
+}
 
 function waitForNextFrame() {
   return new Promise((resolve) => requestAnimationFrame(resolve));
@@ -38,11 +64,17 @@ function hasNoOutline(element: HTMLElement) {
   return style.outlineStyle === 'none' || Number(alpha ?? 1) === 0;
 }
 
-export const Idle: Story = {
-  play: async ({ canvasElement }) => {
-    const button = await within(canvasElement).findByRole('button', {
-      name: 'Next',
-    });
+export const Default: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The demo control has no look of its own, because PressableFocus draws none: only the 3rem touch target and, while it is focused or pressed, the cyan ring. Press Tab to see the ring from the keyboard. The real look comes from the component that wraps it, such as Button.',
+      },
+    },
+  },
+  play: async ({ canvasElement, args }) => {
+    const button = await findControl(canvasElement, args);
     const box = button.getBoundingClientRect();
 
     expect(toRem(box.height)).toBeGreaterThanOrEqual(3);
@@ -52,9 +84,18 @@ export const Idle: Story = {
 };
 
 export const Focused: Story = {
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Tab to the control: the ring is 0.125rem thick, 0.25rem outside the control, in the ring colour, and the browser outline is off.',
+      },
+    },
+  },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const button = await canvas.findByRole('button', { name: 'Next' });
+    const button = await findControl(canvasElement, args);
 
     await userEvent.tab();
     expect(button).toHaveFocus();
@@ -83,10 +124,19 @@ export const Focused: Story = {
   },
 };
 
-export const MouseDown: Story = {
-  play: async ({ canvasElement }) => {
+export const Pressed: Story = {
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Hold the mouse button: the same ring shows while the control is pressed, which is what a touch screen needs because a tap does not focus.',
+      },
+    },
+  },
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const button = await canvas.findByRole('button', { name: 'Next' });
+    const button = await findControl(canvasElement, args);
     const swatch = await canvas.findByTestId('ring-colour');
 
     await userEvent.pointer({ keys: '[MouseLeft>]', target: button });

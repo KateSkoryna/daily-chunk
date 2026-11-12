@@ -161,7 +161,7 @@ The owner starts a phase with `/loop run plan.md phase <N>`. Every loop iteratio
 - `npm ci` exits 0 from a clean checkout of the branch
 - `npx prettier --check .` exits 0
 - `npx nx run-many -t lint typecheck test` exits 0 (only the targets that exist at that point)
-- New components: meta + story + story tests (role, label, state); meta check passes (from step 1.1)
+- New components: meta + stories in the `CLAUDE.md` story pattern (`Default` with typed controls first, one story per state, `play` tests for role, label, state); meta check passes (from step 1.1)
 - New concept first used → `docs/learn/<topic>.md` (what it is, why we use it, where it lives in the repo; ≤ 40 lines)
 - Reviewer subagent run, all findings fixed
 - `docs/progress.md` updated with evidence
@@ -233,7 +233,7 @@ Each component ships with a meta and a story. Names match the design system wher
 - `Screen`: scanline background, safe-area padding (`pt-screen-top px-gutter pb-screen-bottom`), optional tab bar slot
 - `Text` with `variant` (the type scale in DESIGN.md §5.2)
 - `GlitchTitle`: the display font with `3px 0 pink, -3px 0 cyan` text shadow
-- `Icon`: inline SVGs (`react-native-svg` on phones, a plain `<svg>` on web): back, close, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. The menu icons (account, lessons, review, word bank, boss round, settings, help) and stop, search, flip, plus, heart are added in the step that first needs them
+- `Icon`: inline SVGs (`react-native-svg` on phones, a plain `<svg>` on web): back, cross, check, play, pause, mic, speaker, pencil, menu, lock, home, book, trophy, chart. The menu icons (account, lessons, review, word bank, boss round, settings, help) and stop, search, flip, plus, heart are added in the step that first needs them
 - `PressableFocus`: wraps every control with the 2px cyan focus ring + 48px minimum target
 
 **Design-system components** (`design/system/components/*.md`)
@@ -418,7 +418,7 @@ Every component step: **Done when** = component + `.meta.ts` + `.stories.tsx` wi
 | 1.2  | `feat/i18n-setup`                 | `packages/i18n` with i18next + react-i18next + `expo-localization`, `en.json`/`ru.json`, `useAppLanguage()`; Russian plural test (1/2/5 words) passes. Delete the 0.5 check story.                                                                                 | 1.1        |
 | 1.3  | `feat/text-primitive`             | `Text` with every §5.3 variant; story shows all variants in EN and RU.                                                                                                                                                                                             | 1.2        |
 | 1.4  | `feat/layout-primitives`          | `Screen` (safe area + scanlines), `HardShadow` (native block / web `boxShadow`), `PressableFocus` (2px cyan ring, 2px offset, ≥48px target).                                                                                                                       | 1.3        |
-| 1.5  | `feat/icons`                      | `Icon` with the 15 icons (13 from the screens plus check and cross), `currentColor`, label required when used alone.                                                                                                                                               | 1.4        |
+| 1.5  | `feat/icons`                      | `Icon` with the 14 icons (12 from the screens plus check and cross), `currentColor`, label required when used alone.                                                                                                                                               | 1.4        |
 | 1.6  | `feat/button`                     | React Native Reusables `button` restyled per §9.1: primary, secondary, ghost, danger; pressed state.                                                                                                                                                               | 1.5        |
 | 1.7  | `feat/article-chip`               | `packages/languages/de` maps gender roles → article words; `ArticleChip` tag / plural (dashed) / picker with answered ✓/✗ states.                                                                                                                                  | 1.6        |
 | 1.8  | `feat/word-card`                  | Controlled `WordCard` (`isFlipped` + `onFlip`), no flip animation under reduced motion.                                                                                                                                                                            | 1.7        |

@@ -4,7 +4,7 @@ export const pressableFocusMeta = {
   name: 'PressableFocus',
   category: 'atom',
   description:
-    'Makes anything tappable: the minimum touch size and the focus ring when it has keyboard focus.',
+    'Makes anything tappable: the minimum touch size and the focus ring when it has keyboard focus or is pressed. It is a component and not a CSS class because the ring must look the same on web and phones. On phones NativeWind ignores the outline classes (outline-2, outline-offset-2, outline-ring), and a border cannot leave the gap between control and ring that DESIGN.md asks for. So the ring is drawn as an extra view 0.25rem outside the control, shown while it is focused or pressed. Every control (Button, TabBar, ArticleChip, the gap-fill options) wraps itself in PressableFocus, so the ring is written once.',
   base: 'pressable',
   spec: 'DESIGN.md §7.1, §7.5',
   props: {

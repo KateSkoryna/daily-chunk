@@ -38,7 +38,7 @@ jobs:
 
   test:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +47,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npx playwright install --with-deps chromium
         working-directory: apps/app
+        timeout-minutes: 5
       - run: npx nx affected -t test --base="$NX_BASE" --head=HEAD
 
   build:

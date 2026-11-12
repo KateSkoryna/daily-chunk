@@ -1,12 +1,15 @@
-import type { AppLanguage } from '@daily-chunk/i18n';
+import { appLanguages, type AppLanguage } from '@daily-chunk/i18n';
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
+import type { ComponentProps } from 'react';
 import { View } from 'react-native';
 import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
+import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { typeSpecimens } from '../../mocks/type-specimens';
 import { textVariants, type TextVariant } from '../tokens';
 import { Text } from './text';
+import { textMeta } from './text.meta';
 
 function AllVariants({ appLanguage }: { appLanguage: AppLanguage }) {
   return (
@@ -21,14 +24,43 @@ function AllVariants({ appLanguage }: { appLanguage: AppLanguage }) {
   );
 }
 
+type TextStoryArgs = ComponentProps<typeof Text> & {
+  appLanguage: AppLanguage;
+};
+
 const meta = {
   title: 'Primitives/Text',
   component: Text,
-} satisfies Meta<typeof Text>;
+  tags: ['autodocs'],
+  parameters: {
+    docs: { description: { component: metaToMarkdown(textMeta) } },
+    controls: { include: ['appLanguage', 'variant', 'children'] },
+  },
+  args: { appLanguage: 'en', variant: 'body' },
+  argTypes: {
+    appLanguage: {
+      control: 'inline-radio',
+      options: appLanguages,
+      description:
+        'The language of the sample text. Text itself does not read the app language.',
+    },
+    variant: {
+      control: 'select',
+      options: textVariants,
+      description:
+        'The type-scale style: sets font, size, line height and default colour.',
+    },
+    children: {
+      control: 'text',
+      description:
+        'The text to show. Leave empty to use the sample text for the variant and language.',
+    },
+  },
+} satisfies Meta<TextStoryArgs>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<TextStoryArgs>;
 
 const fontFamilyNames = {
   display: 'RussoOne_400Regular',
@@ -97,16 +129,34 @@ async function expectVariantStyles(
   expect(colours.get('caption')).not.toBe(colours.get('body'));
 }
 
-export const AllVariantsEnglish: Story = {
-  render: () => <AllVariants appLanguage="en" />,
-  play: async ({ canvasElement }) => {
-    await expectVariantStyles(canvasElement, 'en');
+function sampleText({ appLanguage, variant, children }: TextStoryArgs) {
+  return children ?? typeSpecimens[appLanguage][variant ?? 'body'];
+}
+
+export const Default: Story = {
+  render: ({ appLanguage, ...args }) => (
+    <View className="p-gutter">
+      <Text {...args}>{sampleText({ appLanguage, ...args })}</Text>
+    </View>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const element = await within(canvasElement).findByText(
+      String(sampleText(args)),
+    );
+    const style = getComputedStyle(element);
+    const expected = expectedVariantStyles[args.variant ?? 'body'];
+
+    expect(style.fontFamily).toContain(fontFamilyNames[expected.family]);
+    if (expected.sizeInRem !== null) {
+      expect(toRem(style.fontSize)).toBe(expected.sizeInRem);
+    }
   },
 };
 
-export const AllVariantsRussian: Story = {
-  render: () => <AllVariants appLanguage="ru" />,
-  play: async ({ canvasElement }) => {
-    await expectVariantStyles(canvasElement, 'ru');
+export const Gallery: Story = {
+  parameters: { controls: { include: ['appLanguage'] } },
+  render: ({ appLanguage }) => <AllVariants appLanguage={appLanguage} />,
+  play: async ({ canvasElement, args }) => {
+    await expectVariantStyles(canvasElement, args.appLanguage);
   },
 };
