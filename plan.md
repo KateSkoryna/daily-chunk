@@ -226,7 +226,7 @@ Expo Router file routes. Tab screens live in `app/(tabs)/`; the lesson flow is a
 
 ## 5. Component inventory
 
-Each component ships with a meta and a story. Names match the design system where one exists. Base pieces come from React Native Reusables in `src/components/ui/`; DESIGN.md §9 maps each app component to its base and tokens. Every component ships a meta file next to it (`<Name>.meta.ts`, DESIGN.md §14).
+Each component ships with a meta and a story. Names match the design system where one exists. Components with real behaviour (dialogs, select, switch, toggle group, tabs) come from React Native Reusables into `src/components/ui/`; simple ones (button, text, chips, cards) are written by hand in the same style (owner's decision, step 1.6); DESIGN.md §9 maps each app component to its base and tokens. Every component ships a meta file next to it (`<Name>.meta.ts`, DESIGN.md §14).
 
 **Primitives**
 
