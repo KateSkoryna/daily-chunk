@@ -1,8 +1,11 @@
 import { useTranslation, useAppLanguage } from '@daily-chunk/i18n';
+import type { PickerGender } from '@daily-chunk/languages';
 import { rem } from 'nativewind';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
+import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { ArticlePicker } from '../../src/components/ArticlePicker/ArticlePicker';
 import { Icon } from '../../src/components/Icon/Icon';
 import { iconNames } from '../../src/components/Icon/icon-shapes';
 import { PressableFocus } from '../../src/components/PressableFocus/PressableFocus';
@@ -16,6 +19,7 @@ export default function ThemeCheck() {
   const { appLanguage, setAppLanguage } = useAppLanguage();
   const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
   const [pressStatus, setPressStatus] = useState('not pressed');
+  const [pickedGender, setPickedGender] = useState<PickerGender | null>(null);
 
   return (
     <ScrollView
@@ -192,6 +196,38 @@ export default function ThemeCheck() {
             <VariantText>Delete</VariantText>
           </Button>
         </View>
+      </View>
+
+      <View className="gap-4">
+        <Text className="font-display text-display-btn text-foreground">
+          Articles
+        </Text>
+        <View className="flex-row flex-wrap gap-2">
+          <ArticleChip gender="masc" targetLanguage="de" />
+          <ArticleChip gender="fem" targetLanguage="de" />
+          <ArticleChip gender="neut" targetLanguage="de" />
+          <ArticleChip gender="plural" targetLanguage="de" />
+        </View>
+        <ArticlePicker
+          targetLanguage="de"
+          value={pickedGender}
+          onSelect={setPickedGender}
+          accessibilityLabel="Pick the article"
+        />
+        <ArticlePicker
+          targetLanguage="de"
+          value="fem"
+          correctAnswer="masc"
+          onSelect={() => undefined}
+          accessibilityLabel="Answered wrong"
+        />
+        <ArticlePicker
+          targetLanguage="de"
+          value="neut"
+          correctAnswer="neut"
+          onSelect={() => undefined}
+          accessibilityLabel="Answered correct"
+        />
       </View>
     </ScrollView>
   );

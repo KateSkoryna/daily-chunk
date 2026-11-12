@@ -9,5 +9,9 @@
   "language": {
     "en": "English",
     "ru": "Русский"
+  },
+  "answer": {
+    "correct": "Correct",
+    "wrong": "Wrong"
   }
 }
