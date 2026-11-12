@@ -176,7 +176,7 @@ Each style is one Tailwind `fontSize` entry (size + line height + letter spacing
 | `label-sm` | pixel | 1.25 / 1.25 | tracking 0.125rem, uppercase | 03 / READ THE STORY | Stepper label, tutor tab |
 | `ui` | pixel | 1.375 / 1.5625 | | 5 words due today | UI copy, tab labels |
 | `caption` | pixel | 1.125 / 1.25 | | Tap to flip | Hints, metadata |
-| `word-xl` | content-semibold | 2.25 / 2.625 | | der Bahnhof | Flashcard front |
+| `word-xl` | content-semibold | 3 / 3.5 | | der Bahnhof | Flashcard front |
 | `word-l` | content-semibold | 1.375 / 1.75 | | die Bahnhöfe | Word in lists, plural |
 | `option` | content-semibold | 1.125 / 1.5 | | des Bahnhofs | Gap-fill options |
 | `chip` | content-semibold | 1 / 1.25 | | der | Article chip |
@@ -510,7 +510,7 @@ module.exports = {
         'label-sm': ['1.25rem', { lineHeight: '1.25rem', letterSpacing: '0.125rem' }],
         ui: ['1.375rem', { lineHeight: '1.5625rem' }],
         caption: ['1.125rem', { lineHeight: '1.25rem' }],
-        'word-xl': ['2.25rem', { lineHeight: '2.625rem' }],
+        'word-xl': ['3rem', { lineHeight: '3.5rem' }],
         'word-l': ['1.375rem', { lineHeight: '1.75rem' }],
         option: ['1.125rem', { lineHeight: '1.5rem' }],
         chip: ['1rem', { lineHeight: '1.25rem' }],
@@ -544,7 +544,7 @@ module.exports = {
         segment: '0.125rem',
       },
       borderWidth: { DEFAULT: '0.125rem', 2: '0.125rem', 3: '0.1875rem' },
-      transitionDuration: { fast: '120ms', flip: '280ms', reward: '600ms' },
+      transitionDuration: { fast: '120ms', flip: '500ms', reward: '600ms' },
     },
   },
 };
@@ -572,7 +572,7 @@ React Native Reusables uses the standard shadcn file. Point it at our paths: `"t
 | Token | Value | Use |
 | --- | --- | --- |
 | `duration-fast` | 120ms | Button press, chip select. Easing `steps(2)` for the pixel feel |
-| `duration-flip` | 280ms | Flashcard flip (rotateY) |
+| `duration-flip` | 500ms | Flashcard flip (rotateY, in perspective, ease in and out) |
 | `duration-reward` | 600ms | XP count-up |
 
 Reduced motion (`useReducedMotion` / `prefers-reduced-motion`): no flip (swap faces instantly), no count-up (show the final value), press translate stays (it isn't animated).

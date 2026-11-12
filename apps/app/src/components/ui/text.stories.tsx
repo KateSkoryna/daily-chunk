@@ -79,7 +79,7 @@ const expectedVariantStyles = {
   'label-sm': { family: 'pixel', sizeInRem: 1.25 },
   ui: { family: 'pixel', sizeInRem: 1.375 },
   caption: { family: 'pixel', sizeInRem: 1.125 },
-  'word-xl': { family: 'content-semibold', sizeInRem: 2.25 },
+  'word-xl': { family: 'content-semibold', sizeInRem: 3 },
   'word-l': { family: 'content-semibold', sizeInRem: 1.375 },
   option: { family: 'content-semibold', sizeInRem: 1.125 },
   chip: { family: 'content-semibold', sizeInRem: 1 },
