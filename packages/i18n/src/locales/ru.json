@@ -11,5 +11,9 @@
   "language": {
     "en": "English",
     "ru": "Русский"
+  },
+  "answer": {
+    "correct": "Верно",
+    "wrong": "Неверно"
   }
 }
