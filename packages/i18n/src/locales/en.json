@@ -13,5 +13,10 @@
   "answer": {
     "correct": "Correct",
     "wrong": "Wrong"
+  },
+  "flashcard": {
+    "flipHint": "Flips the card",
+    "tapToFlip": "Tap to flip",
+    "tapToFlipBack": "Tap to flip back"
   }
 }

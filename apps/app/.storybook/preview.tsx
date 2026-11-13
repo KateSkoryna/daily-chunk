@@ -43,6 +43,15 @@ const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
     a11y: { test: 'error' },
+    viewport: {
+      options: {
+        phone: {
+          name: 'Phone (design size)',
+          styles: { width: '390px', height: '844px' },
+          type: 'mobile',
+        },
+      },
+    },
   },
 };
 

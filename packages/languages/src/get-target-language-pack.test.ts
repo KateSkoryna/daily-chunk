@@ -32,4 +32,8 @@ describe('getTargetLanguagePack', () => {
   it('writes the plural tag label with the article and Pl.', () => {
     expect(getTargetLanguagePack('de').pluralTagLabel).toBe('die · Pl.');
   });
+
+  it('captions a plural form with (Pl.)', () => {
+    expect(getTargetLanguagePack('de').pluralCaption).toBe('(Pl.)');
+  });
 });

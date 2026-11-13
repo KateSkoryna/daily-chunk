@@ -33,3 +33,7 @@
 - Step 2: read the `--primary` token and paint a temporary swatch with it (`colourPaintedFromToken`), then ask the browser for the swatch's colour and remove the swatch.
 - Step 3: the two colours must be equal.
 - It fails if the component uses another token or the Tailwind link breaks. It cannot fail on a wrong colour value (both sides come from `global.css`). Its job is to prove the setup works end to end.
+
+## Phone size in Storybook
+
+Storybook runs the components on the web (`react-native-web`), not on a phone. To see the phone layout, open the viewport button in the toolbar and choose "Phone (design size)" (390 x 844, the size of the design screens); the preview narrows and the `desktop:` rules switch off. Behaviour that only a real phone shows (native animation driver, Android dashed borders, notches) is checked on the A54 through `/dev/theme-check`.

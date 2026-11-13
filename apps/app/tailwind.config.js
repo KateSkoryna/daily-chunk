@@ -83,7 +83,7 @@ module.exports = {
         ],
         ui: ['1.375rem', { lineHeight: '1.5625rem' }],
         caption: ['1.125rem', { lineHeight: '1.25rem' }],
-        'word-xl': ['2.25rem', { lineHeight: '2.625rem' }],
+        'word-xl': ['3rem', { lineHeight: '3.5rem' }],
         'word-l': ['1.375rem', { lineHeight: '1.75rem' }],
         option: ['1.125rem', { lineHeight: '1.5rem' }],
         chip: ['1rem', { lineHeight: '1.25rem' }],
@@ -122,7 +122,7 @@ module.exports = {
         segment: '0.125rem',
       },
       borderWidth: { DEFAULT: '0.125rem', 2: '0.125rem', 3: '0.1875rem' },
-      transitionDuration: { fast: '120ms', flip: '280ms', reward: '600ms' },
+      transitionDuration: { fast: '120ms', flip: '500ms', reward: '600ms' },
     },
   },
 };

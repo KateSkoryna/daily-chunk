@@ -1,16 +1,22 @@
 import { useTranslation, useAppLanguage } from '@daily-chunk/i18n';
-import type { PickerGender } from '@daily-chunk/languages';
+import {
+  getTargetLanguagePack,
+  type PickerGender,
+} from '@daily-chunk/languages';
 import { rem } from 'nativewind';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { Noun } from '../../src/components/Noun/Noun';
 import { ArticlePicker } from '../../src/components/ArticlePicker/ArticlePicker';
 import { Icon } from '../../src/components/Icon/Icon';
 import { iconNames } from '../../src/components/Icon/icon-shapes';
 import { PressableFocus } from '../../src/components/PressableFocus/PressableFocus';
+import { WordCard } from '../../src/components/WordCard/WordCard';
 import { Button } from '../../src/components/ui/button';
 import { Text as VariantText } from '../../src/components/ui/text';
+import { bahnhofCard } from '../../src/mocks/word-cards';
 import { HardShadow } from '../../src/theme/HardShadow/HardShadow';
 import { Scanlines } from '../../src/theme/Scanlines/Scanlines';
 
@@ -19,6 +25,7 @@ export default function ThemeCheck() {
   const { appLanguage, setAppLanguage } = useAppLanguage();
   const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
   const [pressStatus, setPressStatus] = useState('not pressed');
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [pickedGender, setPickedGender] = useState<PickerGender | null>(null);
 
   return (
@@ -227,6 +234,44 @@ export default function ThemeCheck() {
           correctAnswer="neut"
           onSelect={() => undefined}
           accessibilityLabel="Answered correct"
+        />
+      </View>
+
+      <View className="gap-4">
+        <Text className="font-display text-display-btn text-foreground">
+          Word card
+        </Text>
+        <WordCard
+          isFlipped={isCardFlipped}
+          onFlip={() => setIsCardFlipped(!isCardFlipped)}
+          front={
+            <View className="flex-1 justify-center gap-2">
+              <Noun gender={bahnhofCard.gender} targetLanguage="de">
+                {bahnhofCard.noun}
+              </Noun>
+              <View className="flex-row items-baseline gap-2">
+                <Noun gender="plural" targetLanguage="de" variant="word-l">
+                  {bahnhofCard.pluralNoun}
+                </Noun>
+                <VariantText variant="body-sm">
+                  {getTargetLanguagePack('de').pluralCaption}
+                </VariantText>
+              </View>
+              <VariantText variant="body">
+                {bahnhofCard.translations[appLanguage]}
+              </VariantText>
+            </View>
+          }
+          back={
+            <View className="flex-1 justify-center gap-2">
+              <VariantText variant="word-l">
+                {bahnhofCard.example.target}
+              </VariantText>
+              <VariantText variant="reading">
+                {bahnhofCard.example.translations[appLanguage]}
+              </VariantText>
+            </View>
+          }
         />
       </View>
     </ScrollView>
