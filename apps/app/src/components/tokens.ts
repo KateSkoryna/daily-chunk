@@ -57,6 +57,7 @@ export const textVariants = [
 export const spacingTokens = [
   '1',
   '2',
+  '2.5',
   '3',
   '3.5',
   '4',
@@ -72,6 +73,7 @@ export const spacingTokens = [
   'section',
   'screen-top',
   'screen-bottom',
+  'glitch',
 ] as const;
 
 export const otherTokens = [

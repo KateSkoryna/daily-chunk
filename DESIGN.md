@@ -246,6 +246,7 @@ Semantic aliases (in `tailwind.config.js` → `spacing`). Use these for layout s
 | `section` | 1.25 | `gap-section` |
 | `screen-top` | 3.5 | `pt-screen-top` |
 | `screen-bottom` | 1 | `pb-screen-bottom` |
+| `glitch` | 0.1875 | `translate-x-glitch`: the pink and cyan copies behind a `GlitchTitle` (one shadow cannot be drawn twice on a phone, so the title is three layers) |
 
 Mobile screen padding: `pt-screen-top px-gutter pb-screen-bottom` (= 3.5 / 1.5 / 1 rem). The `Screen` wrapper applies it.
 
@@ -376,6 +377,12 @@ Rule: one `default` button per screen.
 | `GapFill` | Sentence `body`; blank `min-w-[6.875rem] border-b-3 border-field`; hint `body-sm`; options 2×2 `gap-2 h-control`, `option` style |
 | `RecordButton` | `size-record rounded-full border-3`. Idle `border-highlight` + mic; recording `bg-highlight` + stop + timer; done `border-success` + play + score |
 | `TutorQuote` | `border-2`, `pt-6 px-3.5 pb-3.5`; tab on top border, `label-sm` `text-primary-foreground`. Variants: start `primary`, pass `success` + ✓, fail `destructive` + ✗ |
+| `LogoBadge` | The Sheriff badge (`plan.md` D6): `size-10`, four layers: `text-highlight` shadow star, `text-primary` star with five tip dots, `text-background` disc, `text-foreground` letters DC |
+| `GlitchTitle` | `display-xl` / `display-l` text with a `text-highlight` copy at `translate-x-glitch` and a `text-ring` copy at `-translate-x-glitch` behind it |
+| `Textarea` | `min-h-36 border-2 border-field bg-card p-3`, `body`; an optional trailing control at `bottom-2.5 right-2.5` and `pb-16` |
+| `ListGroup`, `ListGroup.Row` | Group `border-2 border-border`, rows separated by `border-t-2`; row `min-h-touch bg-card px-3 py-2.5 gap-3` with left, body and right slots |
+| `Chip` | `h-control border-2 border-highlight bg-card`, optional pink icon, `option` label; pressable |
+| `Notice` | `border-2 border-dashed border-gender-plural px-3 py-2.5`, `label-sm` in `text-gender-plural` (only for plural notices until a neutral colour is decided); `role="status"` |
 | `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
 | `Screen`, `HardShadow`, `Scanlines`, `PressableFocus` | Wrappers from §6 and §7 |
 
@@ -525,6 +532,7 @@ module.exports = {
         section: '1.25rem',
         'screen-top': '3.5rem',
         'screen-bottom': '1rem',
+        glitch: '0.1875rem',
         touch: '3rem',
         control: '3.5rem',
         button: '4rem',

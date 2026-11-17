@@ -8,6 +8,12 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { Chip } from '../../src/components/Chip/Chip';
+import { GlitchTitle } from '../../src/components/GlitchTitle/GlitchTitle';
+import { ListGroup } from '../../src/components/ListGroup/ListGroup';
+import { LogoBadge } from '../../src/components/LogoBadge/LogoBadge';
+import { Notice } from '../../src/components/Notice/Notice';
+import { Textarea } from '../../src/components/Textarea/Textarea';
 import { HeaderStats } from '../../src/components/HeaderStats/HeaderStats';
 import { SectionLabel } from '../../src/components/SectionLabel/SectionLabel';
 import { StatTile } from '../../src/components/StatTile/StatTile';
@@ -38,6 +44,7 @@ export default function ThemeCheck() {
   const [pressStatus, setPressStatus] = useState('not pressed');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [typedWords, setTypedWords] = useState('');
   const [pickedWord, setPickedWord] = useState<string | null>(null);
   const [answerTileIds, setAnswerTileIds] = useState<string[]>([]);
   const [recordState, setRecordState] = useState<'idle' | 'recording' | 'done'>(
@@ -252,6 +259,44 @@ export default function ThemeCheck() {
           onSelect={() => undefined}
           accessibilityLabel="Answered correct"
         />
+      </View>
+
+      <View className="gap-6">
+        <Text className="font-display text-display-btn text-foreground">
+          Form and list primitives
+        </Text>
+        <LogoBadge accessibilityLabel="Daily Chunk" />
+        <GlitchTitle>Daily Chunk</GlitchTitle>
+        <Textarea
+          value={typedWords}
+          onChangeText={setTypedWords}
+          placeholder="One per line, any form"
+          accessibilityLabel="Words"
+          trailing={
+            <TopBar.Button
+              icon="mic"
+              accessibilityLabel="Dictate words"
+              onPress={() => undefined}
+            />
+          }
+        />
+        <ListGroup>
+          <ListGroup.Row
+            right={<VariantText variant="caption">Tomorrow</VariantText>}
+          >
+            <VariantText variant="option">der Bahnhof</VariantText>
+          </ListGroup.Row>
+          <ListGroup.Row
+            right={<VariantText variant="caption">Tomorrow</VariantText>}
+          >
+            <VariantText variant="option">die Fahrkarte</VariantText>
+          </ListGroup.Row>
+        </ListGroup>
+        <View className="flex-row gap-2">
+          <Chip label="Fahrkarte" icon="mic" onPress={() => undefined} />
+          <Chip label="läuft" icon="mic" onPress={() => undefined} />
+        </View>
+        <Notice>{`You wrote "Bahnhöfe" (plural). Saved as der Bahnhof.`}</Notice>
       </View>
 
       <View className="gap-6">

@@ -262,8 +262,9 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 1.8  | DONE           | `feat/word-card`                  |
 | 1.9  | DONE           | `feat/lesson-stepper-tutor-quote` |
 | 1.10 | DONE           | `feat/gap-fill-record-button`     |
-| 1.11 | WAITING-REVIEW | `feat/app-chrome`                 |
-| 1.12 | TODO           | `chore/phase-1-review`            |
+| 1.11 | DONE           | `feat/app-chrome`                 |
+| 1.12 | WAITING-REVIEW | `feat/form-list-primitives`       |
+| 1.13 | TODO           | `chore/phase-1-review`            |
 
 ### 1.1 Design guards (lint rule, ComponentMeta, meta check)
 
@@ -526,3 +527,87 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - New strings (EN and RU): `common.next/listen`, `stats.xp/streak/dayStreak/accuracy`, `lesson.stepLabel/tasks.read/xpEarned`, `tutor.says/approves/sighs/startLine/passLine/failLine`, `gapFill.blank/pickWord`, `articlePicker.label`, `sentenceBuilder.answer`, `record.start/stop/play`, `home.addWords`, `nav.menu`. **The Russian wording is mine, please read it**, especially the tutor lines (Чанк, dry voice) and "Итоги" for Score.
 - Left in English: the story-help captions ("Screen readers say: ...", "Decorative: ..."), the variant names used as button labels in `Button` `AllVariants`, the Icon names in the gallery, and `/dev/theme-check`; they are for developers, not part of the app. The Text gallery shows EN and RU together on purpose.
 - Evidence: `nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 100 tests pass (in English); `npx prettier --check .` → exit 0. A browser pass over all stories with `appLanguage` = ru found no English from the app strings and no page errors; screenshots of `TutorQuote`, `GapFill` checked.
+
+## Phase 1 report
+
+Status: first draft. The owner approved the new step 1.12 (`feat/form-list-primitives`: `GlitchTitle`, `LogoBadge`, `Textarea`, `ListGroup` + `ListRow`, `Chip`, `Notice`) and the Russian wording; the review step is now 1.13 and runs after 1.12.
+
+| Step | Status | PR       | In one line                                                                                                                                                  |
+| ---- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.1  | DONE   |          | Lint fails on hex and px under `src/`; `ComponentMeta` and a meta check, proven by fixtures                                                                  |
+| 1.2  | DONE   |          | `packages/i18n` (EN, RU, Russian plurals), `useAppLanguage`                                                                                                  |
+| 1.3  | DONE   |          | `Text` with every type variant, story in EN and RU                                                                                                           |
+| 1.4  | DONE   |          | `Screen`, `HardShadow`, `PressableFocus`, `Scanlines`                                                                                                        |
+| 1.5  | DONE   |          | `Icon` (now 15 icons)                                                                                                                                        |
+| 1.6  | DONE   | #19      | `Button`: primary, secondary, ghost, danger; Reusables only for real behaviour                                                                               |
+| 1.7  | DONE   | #20      | German language pack, `ArticleChip`, `ArticlePicker`, `Noun`                                                                                                 |
+| 1.8  | DONE   | #21      | `WordCard`: 3D flip, reduced motion, phone viewport in Storybook                                                                                             |
+| 1.9  | DONE   | #22      | `LessonStepper`, `TutorQuote`                                                                                                                                |
+| 1.10 | DONE   | #23      | `OptionGrid`, `GapFill`, `SentenceBuilder`, `RecordButton`, `stop` icon                                                                                      |
+| 1.11 | DONE   | #24, #25 | `TopBar`, `HeaderStats`, `SectionLabel`, `StatTile`, `TabBar`; focus ring only for the keyboard; every story follows the app language. `LogoBadge` not built |
+
+### Evidence (at the end of phase 1, on `main`)
+
+- `nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → three test runs: 6 tests in `packages/languages`, 14 in `packages/i18n`, 100 in the app (29 files, including the story tests in Chromium); `npx prettier --check .` → exit 0; `build-storybook`, `export:web`, `npx expo export --platform android` → exit 0.
+- 24 components, primitives and wrappers, each with a `.meta.ts` and a `.stories.tsx` (the meta check runs in CI); 18 notes in `docs/learn/`.
+- Every story runs an accessibility check (axe) and a `play` test; all stories follow the app-language toolbar (German content stays German).
+- CI: the four jobs are required on `main`; the run for the last merge is listed on GitHub (checked at the time of writing: see the Actions tab).
+
+> Update: step 1.12 builds rows 1 to 6 of this table (`GlitchTitle`, `Textarea`, `ListGroup`/`ListRow`, `Chip`, `Notice`, `LogoBadge`); the USE word chips wait for the ADJ-chip answer (step 2.6). The rest stays in the phase 2 steps.
+
+### Gap check: what the 9 core-loop screens still need
+
+A fresh agent mapped every UI pattern of Home, Confirm, Flashcards, Listen, Read, Record, Gap fill, Translate and Done to the kit. Covered: `Screen`, `TopBar`, `HeaderStats`, `SectionLabel`, `TutorQuote`, `LessonStepper`, `WordCard`, `GapFill` + `OptionGrid`, `RecordButton`, `StatTile`, `TabBar`, `ArticleChip`, `Noun`, `Button`, `Text`, `Icon`.
+
+| #   | Missing                                                                           | Screens                                            | In `plan.md`?        | Recommendation                                                                 |
+| --- | --------------------------------------------------------------------------------- | -------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------ |
+| 1   | `GlitchTitle` (needs a shadow token in `DESIGN.md` first)                         | Home, Done                                         | inventory only       | new Phase 1 step                                                               |
+| 2   | `Textarea` / `TextField` with a trailing icon button                              | Home, Translate (later Settings, Account)          | no                   | new Phase 1 step                                                               |
+| 3   | `ListGroup` + `ListRow` (compound: left, body, right)                             | Confirm, Done (later Lessons, Word bank, Settings) | inventory only       | new Phase 1 step                                                               |
+| 4   | `Chip` (pill with an optional icon)                                               | Record, Translate                                  | no                   | new Phase 1 step                                                               |
+| 5   | `Notice` (dashed box; its orange colour needs a token check)                      | Confirm                                            | no                   | new Phase 1 step, or inside 2.3                                                |
+| 6   | `LogoBadge`                                                                       | Home                                               | in 1.11              | your decision (question 1)                                                     |
+| 7   | `StepIndicator`, `Waveform` / `AudioPlayer`                                       | Listen                                             | no                   | inside 2.4 (`Waveform` is custom SVG: mind the `react-native-svg` web problem) |
+| 8   | `Toggle` (RU ON/OFF), `StoryText` (tappable words), `ScoreSummary`, `WordPopover` | Read, Record, Listen                               | `WordPopover` in 2.5 | inside 2.5                                                                     |
+| 9   | Correction diff                                                                   | Translate                                          | no                   | inside 2.6                                                                     |
+
+Recommendation: add one Phase 1 step, "form and list primitives" (`GlitchTitle` token and component, `Textarea`, `ListRow`, `Chip`, `Notice`), before phase 2, because each is needed by two or more screens. I did not change `plan.md`; that needs your OK. There is also no retry/refresh icon for the Record retry chips (icon set change, your decision).
+
+### Open owner questions (all in one place; details in the step sections above)
+
+1. ~~Logo~~ Answered by the owner: the chosen mark (Sheriff badge, `Logo.dc.html` direction B) is built as `LogoBadge` in step 1.12.
+2. ~~New step~~ Approved by the owner: step 1.12 `feat/form-list-primitives` (plan.md updated; the review is 1.13).
+3. `SectionLabel`: keep or drop (1.11).
+4. Back button: a ghost `Button` with the back icon, muted, instead of cyan text (1.11).
+5. Button: is "AGAIN" (pink outline, 4rem) a new variant or does `destructive` change (1.6).
+6. `ArticleChip` and picker: toggle-group vs hand-written (1.7 q1), a grey dashed ADJ chip for non-nouns (q2), answered look (q3), smaller `das` tag in notifications (q4).
+7. `WordCard`: gestures and keys left to the Flashcards screen (1.8 q1); a `flashcard-desktop` token for 26.25rem (q2).
+8. `TutorQuote`: normal-case line with `label` letter spacing (1.9 q1); persona avatar later (q2).
+9. Gap fill: selected-option look (1.10 q1), sentence size 17px vs 20px (q2), answer line 7rem vs 7.5rem (q3), tile border (q4), typing mode later (q5), dashed vs solid reveal (q6), round focus ring for `RecordButton` (q7).
+10. `StatTile` height 6rem vs 5.75rem (1.11 q6); the tab bar's Space and arrow keys and badge wording (step 3.1).
+11. ~~Russian wording~~ Approved by the owner. `/dev/theme-check` is still English.
+12. Earlier, still open: `LanguagePair.targetLanguage` should come from `supportedTargetLanguages` (step 2.1); `shadow-hard` tokens are named but not in `tailwind.config.js`; `Screen` insets on the A54; `Scanlines` performance; the cause of the old SVG crash is unproven; the Handjet size on the phone.
+
+### Owner actions (in order)
+
+1. Open Storybook (`npm run storybook`, or the hosted one) and look through every component, once in EN and once in RU (toolbar), once in the phone viewport.
+2. On the A54 open `/dev/theme-check` and check: the word card flips and turns back; Buttons (the icon in the secondary); the Articles block (dashed plural, ✓/✗ icons); the stepper and tutor quotes; the gap fill, tiles and record button; "App chrome" (tabs switch, active yellow bar, badge).
+3. Answer the questions above (at least 1 and 2; the rest can wait for their screens).
+4. Say "commit" and "open pr" for this report, merge, and then start phase 2 with `/loop run plan.md phase 2`.
+
+### 1.12 Form and list primitives (GlitchTitle, LogoBadge, Textarea, ListGroup, Chip, Notice)
+
+- Result: six components in `src/components/`. `GlitchTitle`: the title in three layers (a pink copy 0.1875rem right, a cyan copy 0.1875rem left, the text in front); the offset is a new spacing token `glitch` (`DESIGN.md` §8 table and §10.2 config, `tailwind.config.js`, `tokens.ts`, approved by the owner). `LogoBadge`: the chosen Sheriff badge from `Logo.dc.html` direction B: yellow star with five tip dots, pink shadow star, dark disc, DC drawn as strokes (no font needed), as four stacked `Path` layers coloured by tokens; `size-10`. `Textarea`: cyan-bordered multi-line input, controlled, with a `trailing` slot (the dictate button). `ListGroup` + `ListGroup.Row`: a framed list with left, body and right slots; a row with `onPress` is a button. `Chip`: pink-outlined pressable tile with an optional icon (the retry words on Record). `Notice`: dashed box, `role="status"`.
+- Added: components, metas and stories (all follow the app language; strings `app.name`, `home.wordsLabel/wordsPlaceholder/dictate`, `done.stageClear/addedToReview/tomorrow/tomorrowWeak`, `confirm.pluralNotice`, `record.retry` in EN and RU), mock `src/mocks/word-list.ts`, a "Form and list primitives" block in `/dev/theme-check`, `DESIGN.md` §9.3 rows, `docs/learn/svg-in-storybook.md`. Russian: "01 / Добавь новые слова" (owner's wording).
+- Decisions: `Notice` uses `gender-plural` for now (owner's answer; a neutral `warning` colour later if more notices come). The USE word chips of the Translate screen (a noun with its gender colour, a dashed grey chip for other words) are not built: they depend on the open ADJ-chip question (1.7 q2), so they go with step 2.6. `Chip` is only the pressable retry tile. The dictate button in the `Textarea` story is `TopBar.Button` (square, `border-input`); the screen has a pink border (question 3).
+- **Tooling fix (needed for `LogoBadge`):** any new file that imports `react-native-svg` made the story tests and a clean `npm run storybook` fail with `TurboModuleRegistry is not exported by react-native-web` (the library's web code imports a native module, and its web asset code imports `@react-native/assets-registry`, which is not installed). It was hidden before because the library was only found late and a warm cache hid it. `.storybook/main.ts` now has a `viteFinal` that lets the optimiser ignore the missing export and points the registry import to a small stub (`tests/stubs/assets-registry.ts`). Checked: clean cache, a single story file alone, the full run, `build-storybook`, `export:web`, Android export. The earlier SVG crash cause is still unproven for phones.
+- Evidence: `nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 107 tests pass; `npx prettier --check .` → exit 0; `build-storybook`, `export:web`, `npx expo export --platform android` → exit 0. Screenshots in Russian checked for `GlitchTitle` and `LogoBadge`.
+- Questions for the owner:
+  1. `Textarea` minimum height is `min-h-36` (9rem; the screen has 9.375rem), the bottom padding `pb-16` makes room for the dictate button; not in a spec.
+  2. `ListGroup.Row` is `min-h-touch` (3rem) with `py-2.5`; the Done screen has 44px rows and Confirm 84px (content decides); the screens' `line` border is `border-border` (decorative).
+  3. The dictate button on Home has a pink border; `TopBar.Button` has `border-input`. Add a pink tone to the icon button?
+  4. `Chip` label is `option` (1.125rem); the screen has 17px.
+  5. `Notice` text is `label-sm` (uppercase, tracking); the screen's text has no tracking and is typed in capitals.
+  6. A retry/refresh icon is still not in the icon set (the screen uses the mic).
+- Owner actions: Storybook `Components/GlitchTitle`, `LogoBadge`, `Textarea`, `ListGroup` (Default and Editable), `Chip`, `Notice`, once in RU; on the A54 open `/dev/theme-check`, "Form and list primitives": does the title have the pink and cyan edges, does the logo look like the badge, does the text area take typing?
+- Review: fresh reviewer found 0 blocking, 4 medium, 9 low. Fixed: the `Textarea` placeholder was typed-text colour on the web (now `placeholder:text-muted-foreground`, checked in the story), the pink and cyan copies of `GlitchTitle` could be selected (`select-none`), `ListGroup` used row indexes as keys (uses the element key), `Notice` is a polite live region (Android), the Russian text-area label has no gender ("Слова, которые встретились тебе сегодня"), meta wording. Left: `ListGroup` is one framed group, while Confirm draws separate bordered cards 10px apart (question 2: a gap variant?); Done rows are 48px (`min-h-touch`) against 44px; pressable rows have no pressed look yet; the stories are `Default` only (plus `Editable`): no `display-l`, narrow or long-text stories; `Textarea` does not grow with its text; `shimMissingExports` is global to all bundled libraries (the build prints `SHIMMED_EXPORT`), and the registry stub returns `undefined`, which is safe for SVG but would hide a future local-asset `Image` in Storybook.

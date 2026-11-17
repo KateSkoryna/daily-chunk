@@ -2,7 +2,10 @@
   "home": {
     "wordsDue_one": "{{count}} word is due today",
     "wordsDue_other": "{{count}} words are due today",
-    "addWords": "01 / Add today's words"
+    "addWords": "01 / Add today's words",
+    "wordsLabel": "Words you heard or saw today",
+    "wordsPlaceholder": "One per line, any form: Bahnhöfe, ging, schöner…",
+    "dictate": "Dictate words"
   },
   "settings": {
     "appLanguage": "App language"
@@ -66,6 +69,19 @@
   "record": {
     "start": "Start recording",
     "stop": "Stop recording",
-    "play": "Play your recording"
+    "play": "Play your recording",
+    "retry": "Retry {{word}}"
+  },
+  "app": {
+    "name": "Daily Chunk"
+  },
+  "done": {
+    "stageClear": "Stage clear",
+    "addedToReview": "Added to review",
+    "tomorrow": "Tomorrow",
+    "tomorrowWeak": "Tomorrow · weak"
+  },
+  "confirm": {
+    "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}."
   }
 }
