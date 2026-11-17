@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { displayedWord } from '../../lib/displayed-word';
@@ -104,6 +104,7 @@ export const Default: Story = {
     await userEvent.click(card);
     expect(args.onFlip).toHaveBeenCalledTimes(1);
     expect(front.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() => expect(Number(getComputedStyle(back).opacity)).toBe(1));
     expect(within(back).getByText(word.sentence)).toBeTruthy();
     expect(
       within(back).getByText(word.sentenceTranslations[nativeLanguage]!),
