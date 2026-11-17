@@ -1,0 +1,128 @@
+import {
+  supportedNativeLanguages,
+  supportedTargetLanguages,
+} from '@daily-chunk/languages';
+import { describe, expect, expectTypeOf, it } from 'vitest';
+
+import { lessonTaskTypes } from './lesson';
+import type { LanguagePair } from './language-pair';
+import type { Lesson } from './lesson';
+import type { Profile } from './profile';
+import type { ReviewLog } from './review-log';
+import type { Word } from './word';
+
+describe('LanguagePair', () => {
+  it('takes both languages from the language packs', () => {
+    expectTypeOf<LanguagePair['targetLanguage']>().toEqualTypeOf<
+      (typeof supportedTargetLanguages)[number]
+    >();
+    expectTypeOf<LanguagePair['nativeLanguage']>().toEqualTypeOf<
+      (typeof supportedNativeLanguages)[number]
+    >();
+  });
+});
+
+describe('Word', () => {
+  it('keeps one translation per native language', () => {
+    const word: Word = {
+      id: 'w1',
+      targetLanguage: 'de',
+      lemma: 'Bahnhof',
+      partOfSpeech: 'noun',
+      gender: 'masc',
+      sentence: 'Der Zug fährt vom Bahnhof ab.',
+      translations: { ru: 'вокзал', en: 'station' },
+      reviewStage: 0,
+      nextReviewAt: null,
+      learnedAt: null,
+      createdAt: '2026-11-17T08:00:00Z',
+      updatedAt: '2026-11-17T08:00:00Z',
+    };
+
+    expect(word.translations.ru).toBe('вокзал');
+    expect(word.translations.en).toBe('station');
+  });
+
+  it('allows a translation to be missing for a native language', () => {
+    const translations: Word['translations'] = { ru: 'билет' };
+
+    expect(translations.en).toBeUndefined();
+  });
+
+  it('has review stages 0 to 5 and a separate learned date', () => {
+    expectTypeOf<Word['reviewStage']>().toEqualTypeOf<0 | 1 | 2 | 3 | 4 | 5>();
+    expectTypeOf<Word['learnedAt']>().toEqualTypeOf<string | null>();
+  });
+
+  it('rejects a translation key that is not a native language', () => {
+    // @ts-expect-error de is a target language, not a native one
+    const translations: Word['translations'] = { de: 'Bahnhof' };
+
+    expect(translations).toBeDefined();
+  });
+});
+
+describe('Lesson', () => {
+  it('has the six tasks in lesson order', () => {
+    expect(lessonTaskTypes).toEqual([
+      'flashcards',
+      'listen',
+      'read',
+      'record',
+      'gap-fill',
+      'translate',
+    ]);
+  });
+
+  it('stores a result only for a task that was played', () => {
+    const lesson: Lesson = {
+      id: 'l13',
+      number: 13,
+      wordIds: ['w1'],
+      taskResults: { flashcards: { correct: 4, total: 4 } },
+      xpEarned: 0,
+      startedAt: null,
+      completedAt: null,
+    };
+
+    expect(lesson.taskResults.listen).toBeUndefined();
+  });
+
+  it('rejects a result for a task that does not exist', () => {
+    const taskResults: Lesson['taskResults'] = {
+      // @ts-expect-error there is no task called dictation
+      dictation: { correct: 1, total: 1 },
+    };
+
+    expect(taskResults).toBeDefined();
+  });
+});
+
+describe('ReviewLog', () => {
+  it('records the stage before and after an answer', () => {
+    expectTypeOf<ReviewLog['stageBefore']>().toEqualTypeOf<
+      Word['reviewStage']
+    >();
+    expectTypeOf<ReviewLog['stageAfter']>().toEqualTypeOf<
+      Word['reviewStage']
+    >();
+  });
+});
+
+describe('Profile', () => {
+  it('keeps the app language apart from the language pair', () => {
+    const profile: Profile = {
+      id: 'p1',
+      languages: { targetLanguage: 'de', nativeLanguage: 'ru' },
+      appLanguage: 'en',
+      xp: 1240,
+      currentStreak: 12,
+      longestStreak: 12,
+      lastStudyDate: null,
+      createdAt: '2026-11-01T08:00:00Z',
+      updatedAt: '2026-11-17T08:00:00Z',
+    };
+
+    expect(profile.appLanguage).not.toBe(profile.languages.nativeLanguage);
+  });
+});
