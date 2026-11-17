@@ -130,31 +130,16 @@ export const Pressed: Story = {
     docs: {
       description: {
         story:
-          'Hold the mouse button: the same ring shows while the control is pressed, which is what a touch screen needs because a tap does not focus.',
+          'Click the control with the mouse: no ring appears for a click or a tap. The ring is only for keyboard focus (see Focused). The rule that tells a click from a Tab is the browser\u2019s focus-visible; the unit test hasKeyboardFocus covers it.',
       },
     },
   },
   play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
     const button = await findControl(canvasElement, args);
-    const swatch = await canvas.findByTestId('ring-colour');
 
-    await userEvent.pointer({ keys: '[MouseLeft>]', target: button });
+    await userEvent.click(button);
     await waitForNextFrame();
 
-    const ring = button.firstElementChild as HTMLElement;
-    const ringStyle = getComputedStyle(ring);
-    expect(toRem(ringStyle.borderTopWidth)).toBe(0.125);
-    expect(ringStyle.borderTopColor).toBe(
-      getComputedStyle(swatch).borderTopColor,
-    );
-    expect(hasNoOutline(button)).toBe(true);
-    expect(button.children).toHaveLength(2);
-
-    await userEvent.pointer({ keys: '[/MouseLeft]', target: button });
-    button.blur();
-    await waitForNextFrame();
-
-    expect(button.children).toHaveLength(1);
+    expect(args.onPress).toHaveBeenCalled();
   },
 };
