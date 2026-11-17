@@ -11,6 +11,7 @@ export const iconShapes = {
     paths: ['M6 5 H10 V19 H6 Z M14 5 H18 V19 H14 Z'],
     isFilled: true,
   },
+  stop: { paths: ['M6 6 H18 V18 H6 Z'], isFilled: true },
   mic: {
     paths: [
       'M9 6 A3 3 0 0 1 15 6 V12 A3 3 0 0 1 9 12 Z',

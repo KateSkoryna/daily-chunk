@@ -15,8 +15,8 @@ export const iconMeta = {
       'Extra classes, for example the colour from the text token of the context',
   },
   variants: {
-    stroke: 'Every icon except play and pause',
-    filled: 'Play and pause only',
+    stroke: 'Every icon except play, pause and stop',
+    filled: 'Play, pause and stop only',
   },
   states: ['default'],
   relationships: {
@@ -40,7 +40,7 @@ export const iconMeta = {
     invalid: [
       'An icon on its own without a label',
       'A hard-coded colour: the icon takes the colour of the text around it',
-      'A fill on any icon except play and pause',
+      'A fill on any icon except play, pause and stop',
     ],
   },
 } satisfies ComponentMeta;

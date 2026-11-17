@@ -8,6 +8,10 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { GapFill } from '../../src/components/GapFill/GapFill';
+import { OptionGrid } from '../../src/components/OptionGrid/OptionGrid';
+import { RecordButton } from '../../src/components/RecordButton/RecordButton';
+import { SentenceBuilder } from '../../src/components/SentenceBuilder/SentenceBuilder';
 import { LessonStepper } from '../../src/components/LessonStepper/LessonStepper';
 import { TutorQuote } from '../../src/components/TutorQuote/TutorQuote';
 import { Noun } from '../../src/components/Noun/Noun';
@@ -28,6 +32,11 @@ export default function ThemeCheck() {
   const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
   const [pressStatus, setPressStatus] = useState('not pressed');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [pickedWord, setPickedWord] = useState<string | null>(null);
+  const [answerTileIds, setAnswerTileIds] = useState<string[]>([]);
+  const [recordState, setRecordState] = useState<'idle' | 'recording' | 'done'>(
+    'idle',
+  );
   const [pickedGender, setPickedGender] = useState<PickerGender | null>(null);
 
   return (
@@ -258,6 +267,73 @@ export default function ThemeCheck() {
         <TutorQuote variant="fail" tabLabel="Chunk sighs">
           Wrong, but the right answer is right there.
         </TutorQuote>
+      </View>
+
+      <View className="gap-6">
+        <Text className="font-display text-display-btn text-foreground">
+          Gap fill, sentence builder, record
+        </Text>
+        <GapFill
+          before="Sie sucht ihre"
+          after="in der Tasche."
+          answer={pickedWord}
+          blankLabel="Blank"
+          hint="She is looking for her ticket in the bag."
+        >
+          <OptionGrid
+            options={['Fahrkarte', 'Fahrkarten', 'Bahnhof', 'Gleis']}
+            value={pickedWord}
+            onSelect={setPickedWord}
+            accessibilityLabel="Pick the word"
+          />
+        </GapFill>
+        <GapFill
+          before="Sie sucht ihre"
+          after="in der Tasche."
+          answer="Gleis"
+          status="wrong"
+          blankLabel="Blank"
+        >
+          <OptionGrid
+            options={['Fahrkarte', 'Fahrkarten', 'Bahnhof', 'Gleis']}
+            value="Gleis"
+            correctAnswer="Fahrkarte"
+            onSelect={() => undefined}
+            accessibilityLabel="Answered wrong"
+          />
+        </GapFill>
+        <SentenceBuilder
+          answerLabel="Your answer"
+          answer={answerTileIds.map((id) => ({ id, text: id }))}
+          pool={['Ich', 'warte', 'am', 'Bahnhof', 'bin']
+            .filter((id) => !answerTileIds.includes(id))
+            .map((id) => ({ id, text: id }))}
+          onAdd={(id) => setAnswerTileIds([...answerTileIds, id])}
+          onRemove={(id) =>
+            setAnswerTileIds(answerTileIds.filter((tileId) => tileId !== id))
+          }
+        />
+        <View className="flex-row items-center gap-4">
+          <RecordButton
+            state={recordState}
+            accessibilityLabel={`Record button: ${recordState}`}
+            onPress={() =>
+              setRecordState(
+                recordState === 'idle'
+                  ? 'recording'
+                  : recordState === 'recording'
+                    ? 'done'
+                    : 'idle',
+              )
+            }
+          />
+          <RecordButton
+            size="small"
+            state="done"
+            accessibilityLabel="Play your recording"
+            onPress={() => undefined}
+          />
+        </View>
       </View>
 
       <View className="gap-4">

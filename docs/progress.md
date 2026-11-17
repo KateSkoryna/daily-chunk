@@ -260,8 +260,8 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 | 1.6  | DONE           | `feat/button`                     |
 | 1.7  | DONE           | `feat/article-chip`               |
 | 1.8  | DONE           | `feat/word-card`                  |
-| 1.9  | WAITING-REVIEW | `feat/lesson-stepper-tutor-quote` |
-| 1.10 | TODO           | `feat/gap-fill-record-button`     |
+| 1.9  | DONE           | `feat/lesson-stepper-tutor-quote` |
+| 1.10 | WAITING-REVIEW | `feat/gap-fill-record-button`     |
 | 1.11 | TODO           | `feat/app-chrome`                 |
 | 1.12 | TODO           | `chore/phase-1-review`            |
 
@@ -478,3 +478,21 @@ Statuses: `TODO` · `IN-PROGRESS` · `DONE` · `WAITING-REVIEW` (built and verif
 - Questions for the owner:
   1. `TutorQuote.md` says the line is `pixel` 24/26 and `DESIGN.md` says "`label` with line height 1.625rem". `label` is uppercase and pink, while the screens show the line in normal case in the main text colour. I used `label` with `normal-case` and `text-foreground` on the Text. The line also keeps the `label` letter spacing (0.125rem) which the screen does not have. Confirm, or add a variant for the tutor line.
   2. `TutorQuote.md` says the persona's avatar (48px square, desktop) sits left of the tab. Not built (no persona or avatar yet). Add it when the Settings persona exists?
+
+### 1.10 GapFill, OptionGrid, SentenceBuilder and RecordButton
+
+- Result: four components in `src/components/`. `OptionGrid`: pick one word, rows of 2 or 3, `h-control`, `option` style; idle `border-input`, selected `border-field`, correct `border-success` + check, wrong `border-highlight` + cross, the right one shown dashed when the pick was wrong; locked once `correctAnswer` is set. `GapFill`: sentence (`body`) with a blank (`min-w-[6.875rem] border-b-3`, cyan while open, cyan (success) or pink after the check), a `body-sm` hint, and the options as `children`. `SentenceBuilder`: an answer line (`border-field`) and a pool of word tiles (`h-touch`, `border-input`); a tap moves a tile between them; the screen owns both lists. `RecordButton`: `size-record` (5rem) or `size-button` (4rem) round, `border-3`; idle pink outline + mic, recording pink fill + stop, done cyan (success) outline + play.
+- Added: components, metas and stories (`Default` each, with controls; plus `OptionGrid` `Answered`, `GapFill` `Answered` and `LongSentence`, `RecordButton` `AllStates`), a new `stop` icon (owner's OK: icon set is now 15; `DESIGN.md` §12, `icon-shapes.ts`, the Icon meta, story and `docs/learn/icons.md`), a block in `app/dev/theme-check.tsx`, `docs/learn/gap-fill-and-controlled-lists.md`.
+- Decisions: owner's answers: add the `stop` icon; four components as planned, typing mode (input with ae/oe/ue/ss) later. The blank and the answer line are `role="group"` with a name: the web accessibility check rejects a name on a plain `div`, and `list` needs `listitem` children. The timer ("00:24") and the score ("86% CLEAR SPEECH") are text next to `RecordButton` (as on the screen), not inside it. `OptionGrid` fills a row with `flex-1` items, so an odd last option is wide. The sentence is laid out word by word, so a long sentence wraps normally and the blank can sit in the middle of a line (a space is a 0.25rem gap, so a leading comma after the blank gets a small gap).
+- Evidence: `nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 87 tests pass (new: 4 stories); `npx prettier --check .` → exit 0; `build-storybook`, `export:web`, `npx expo export --platform android` → exit 0.
+- Questions for the owner:
+  1. Selected, unchecked option: `DESIGN.md` §9.3 says only "selected fill" (toggle-group). Yellow is the one primary action, so I used a cyan border (`border-field`, the "input" colour) with no fill; the answered states use green and pink. Confirm.
+  2. `GapFill.md` and §9.3 say the sentence is `body` (1.0625rem); the screen uses 20px. I followed `DESIGN.md`.
+  3. The screen's answer line is 7.5rem high (120px); I used `min-h-28` (7rem) from the standard scale, because 7.5rem is not in a component spec.
+  4. The screen's added tiles have a yellow border; the spec says tiles keep `border-input` and move. I followed the spec (yellow is the primary action).
+  5. Typing mode (input, 3rem high, cyan border, umlaut alternatives) is left to the Boss and gap-fill screens. OK?
+  6. The wrong-answer reveal: the right option gets a dashed `success` border (like the plural's dashed outline), while `GapFill.md` says it turns cyan and the screen shows a dashed cyan border. Keep dashed, or solid?
+  7. The focus ring is the shared square `PressableFocus` frame, so around the round `RecordButton` it is a square. Make a round ring for it (changes `DESIGN.md` §7)?
+  8. "AGAIN" retry chips on the Read aloud screen (pink-outlined buttons with a mic) are not part of this step; they are plain secondary-style buttons for step 3.x.
+- Owner actions: Storybook `Components/OptionGrid`, `GapFill`, `SentenceBuilder`, `RecordButton`; on the A54 open `/dev/theme-check`, "Gap fill, sentence builder, record": do the tiles move, does the round button show mic, stop and play, are the correct/wrong icons visible?
+- Review: fresh reviewer found 0 blocking, 5 medium, 9 low. Fixed: the sentence wrapping around the blank (word by word), more stories (`Answered`, `LongSentence`, `AllStates`), test swatches hidden, 'green' → 'cyan' in metas and docs (`--success` is cyan; also in the `TutorQuote` and `LessonStepper` metas), row keys, `usedIn`, the dashed reveal and the focus ring added as owner questions 7 and 8. Left: roving arrow keys in the radiogroup, same name for a pool and an answer tile with no announcement, no truncation of long options at 230px, the answer line 7rem vs 7.5rem (question 3).

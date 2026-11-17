@@ -38,7 +38,7 @@ const meta = {
     name: {
       control: 'select',
       options: iconNames,
-      description: 'Which icon to draw. The set is fixed (14 icons).',
+      description: 'Which icon to draw. The set is fixed (15 icons).',
     },
     label: {
       control: 'text',
@@ -131,7 +131,7 @@ export const Gallery: Story = {
       expect(toRem(icon.getBoundingClientRect().width)).toBe(1.5);
       expect(toRem(icon.getBoundingClientRect().height)).toBe(1.5);
     }
-    expect(filledNames).toEqual(['pause', 'play']);
+    expect(filledNames).toEqual(['pause', 'play', 'stop']);
   },
 };
 
