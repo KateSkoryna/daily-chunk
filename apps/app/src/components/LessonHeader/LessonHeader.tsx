@@ -7,7 +7,8 @@ import { Text } from '../ui/text';
 
 type LessonHeaderProps = {
   left: ReactNode;
-  lessonLabel: string;
+  lessonLabel?: string;
+  right?: ReactNode;
   stepLabel: string;
   xpLabel: string;
   stepCount: number;
@@ -17,6 +18,7 @@ type LessonHeaderProps = {
 function LessonHeader({
   left,
   lessonLabel,
+  right,
   stepLabel,
   xpLabel,
   stepCount,
@@ -27,9 +29,11 @@ function LessonHeader({
       <TopBar
         left={left}
         right={
-          <Text variant="ui" className="uppercase text-muted-foreground">
-            {lessonLabel}
-          </Text>
+          right ?? (
+            <Text variant="ui" className="uppercase text-muted-foreground">
+              {lessonLabel}
+            </Text>
+          )
         }
       />
       <LessonStepper

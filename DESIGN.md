@@ -387,11 +387,14 @@ Rule: one `default` button per screen.
 | `Chip` | `h-control border-2 border-highlight bg-card`, optional pink icon, `option` label; pressable |
 | `PartOfSpeechChip` | Tag for a word without an article (adjective, verb): `h-8 px-2.5 border-2 border-dashed border-muted-foreground`, `chip` style in `text-muted-foreground`; the label is the part of speech from i18n. Sits where `ArticleChip` sits |
 | `TopBar` extras | `center` slot (Home: `LogoBadge`). `TopBar.Button` `variant="record"`: `border-highlight bg-background`, icon `text-highlight` (dictate button in `Textarea`) |
-| `LessonHeader` | Top of a lesson task screen: `TopBar` (left: ghost `Button` with back or cross; right: lesson name, `ui` muted) over a `LessonStepper`; `gap-4` |
+| `LessonHeader` | Top of a lesson task screen: `TopBar` (left: ghost `Button` with back or cross; right: the lesson name in `ui` muted, or another control such as the `Toggle` of the Read screen) over a `LessonStepper`; `gap-4` |
 | `StepIndicator` | Parts of one task (`1 · Listen`, `2 · Repeat`): `border-2 border-border`, each part `min-h-touch flex-1`; the current one `bg-popover` with `text-primary`, the others `text-muted-foreground`; `ui` style |
 | `Waveform` | `h-12` row of `flex-1` bars with `gap-1`; heights are percentages of the row; played bars `bg-ring`, the rest `bg-border`; an image with a text alternative |
 | `PlaybackControls` | Speed button `h-control border-2 border-input px-4` (text `0.75×`), play or pause `size-record rounded-full border-3 border-ring bg-ring` with a `text-primary-foreground` icon, `RecordButton` `small` on the right |
-| `HomeScreen`, `ConfirmScreen`, `FlashcardsScreen`, `ListenScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
+| `Toggle` | `h-control border-2 px-3`; off `border-input`, on `border-ring` with `text-ring`; `ui` label that says the state (`RU ON` / `RU OFF`); a switch |
+| `StoryText` | Paragraph in `reading` style with marked words underlined in the colour of their gender role (`decoration-gender-*`), grey for a word without a gender, pink with pink text for words to retry; the open word has `bg-popover`; with `onWordPress` the words are buttons |
+| `WordPopover` | Card under a paragraph: `border-2` in the gender colour, `bg-popover px-3 py-2.5 gap-2.5`, `HardShadow`; `ArticleChip`, the word in `option` style, translation and plural in `body-sm`, a `border-2 border-ring` play button |
+| `HomeScreen`, `ConfirmScreen`, `FlashcardsScreen`, `ListenScreen`, `ReadScreen`, `RecordScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
 | `Notice` | `border-2 border-dashed border-gender-plural px-3 py-2.5`, `label-sm` in `text-gender-plural` (only for plural notices until a neutral colour is decided); `role="status"` |
 | `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
 | `Screen`, `HardShadow`, `Scanlines`, `PressableFocus` | Wrappers from §6 and §7 |
@@ -599,7 +602,7 @@ Reduced motion (`useReducedMotion` / `prefers-reduced-motion`): no flip (swap fa
 
 ## 12. Icons
 
-Inline SVG via `react-native-svg` on phones and a plain `<svg>` on web: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set (15): back, cross, check, play, pause, stop, mic, speaker, pencil, menu, lock, home, book, trophy, chart. Play, pause and stop are the only filled icons. No emoji.
+Inline SVG via `react-native-svg` on phones and a plain `<svg>` on web: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set (16): back, cross, check, play, pause, stop, mic, speaker, pencil, menu, lock, home, book, trophy, chart, retry. Play, pause and stop are the only filled icons. No emoji.
 
 ---
 

@@ -8,8 +8,10 @@ export const lessonHeaderMeta = {
   spec: 'DESIGN.md §9.3, design/screens/Flashcards.dc.html, Listen.dc.html',
   props: {
     left: 'The control on the left: a ghost Button with a back or cross icon',
+    right:
+      'What sits on the right instead of the lesson name, for example the translation toggle of the Read screen',
     lessonLabel:
-      'The lesson name on the right, already translated, for example Lesson 13',
+      'The lesson name on the right, already translated, for example Lesson 13; used when right is not given',
     stepLabel: 'The task name above the stepper, already translated',
     xpLabel: 'The XP earned so far, already translated',
     stepCount: 'How many tasks the lesson has',
