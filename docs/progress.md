@@ -631,3 +631,26 @@ Recommendation: add one Phase 1 step, "form and list primitives" (`GlitchTitle` 
 - `shadow-hard`: only `HardShadow` draws shadows. Asked to remove the names; they are still used by `tokens.ts`, three metas and `tests/design-tokens.test.ts`, so I kept them and wrote the rule in `DESIGN.md` §7.4. Open: remove them everywhere?
 - Left open on purpose: `Screen` insets and `Scanlines` speed (the A54), `LanguagePair.targetLanguage` (step 2.1), the registry stub (revisit at the first local image).
 - The owner checks the device list in "Owner actions" on the A54 before phase 2.
+
+## Phase 2: core-loop screen stories
+
+One branch for the whole phase: `feat/phase-2-screens`, one commit per step, one PR after 2.7.
+
+| Step | Status | Branch                 |
+| ---- | ------ | ---------------------- |
+| 2.1  | DONE   | `feat/phase-2-screens` |
+| 2.2  | TODO   | `feat/phase-2-screens` |
+| 2.3  | TODO   | `feat/phase-2-screens` |
+| 2.4  | TODO   | `feat/phase-2-screens` |
+| 2.5  | TODO   | `feat/phase-2-screens` |
+| 2.6  | TODO   | `feat/phase-2-screens` |
+| 2.7  | TODO   | `feat/phase-2-screens` |
+
+### 2.1 Core domain types
+
+- Result: `packages/core` has `Word`, `Lesson`, `ReviewLog`, `Profile` and `LanguagePair`, one file each (`word.ts`, `lesson.ts`, `review-log.ts`, `profile.ts`, `language-pair.ts`), plus `Translations` (`Partial<Record<NativeLanguage, string>>`, so a word keeps one translation per native language and a missing one is allowed).
+- `LanguagePair` now takes `targetLanguage` from `TargetLanguage` (derived from `supportedTargetLanguages`) and `nativeLanguage` from a new `NativeLanguage` in `packages/languages` (`supportedNativeLanguages`: `ru`, `en`). `Profile.appLanguage` is the separate `AppLanguage` from `packages/i18n`.
+- Decisions inside the types (change them here before storage in 3.2 if they are wrong): `Word` has `lemma`, `partOfSpeech` (`noun`, `verb`, `adjective`, `other`), optional `gender` (a gender role, never an article word), optional `forms`, the `sentence` it was met in, an optional `sourceUrl`, `reviewStage` 0 to 5 (0 new, 1 to 5 the 1, 3, 7, 14, 30 day steps; the scheduler comes in 3.3), `nextReviewAt` and `learnedAt` (set when a word is right at the 30 day step; the Word bank LEARNED tab reads it). Dates are ISO strings so they store the same on web and phone. A `Lesson` has the six task types in order and a result only for tasks that were played. `ReviewLog` keeps the stage before and after each answer and where it came from (`lesson`, `review`, `boss`). `Profile` keeps XP and the streak (current, longest, last study date).
+- Review: 0 blocking findings. Fixed: no state for "learned" (added `learnedAt`); a type test that could not fail (added a `@ts-expect-error` for an unknown task). Known: the type tests are enforced by `typecheck` (CI `lint-typecheck`), not by `npm test`, because `expectTypeOf` does nothing at runtime. Left: `Lesson` has no boss result type (step 4.4), `Profile` has no "<target> level" (Account step), `core` imports `AppLanguage` from `i18n` as a type only (move it if the extension or Edge Functions import `core`), `gender` is not tied to `partOfSpeech`.
+- New dependencies: `@daily-chunk/languages` and `@daily-chunk/i18n` in `packages/core/package.json` (type imports only; workspace links; the lockfile only lists them).
+- Evidence: `npx nx run-many -t lint typecheck check-meta test --skip-nx-cache` → exit 0; tests: 7 in `packages/languages`, 14 in `packages/i18n`, 10 in `packages/core` (type tests use `expectTypeOf` and `@ts-expect-error`, checked by `tsc`), 107 in the app. Types only, so no Storybook or Android build was run.
