@@ -3,7 +3,8 @@
     "wordsDue_one": "На сегодня {{count}} слово",
     "wordsDue_few": "На сегодня {{count}} слова",
     "wordsDue_many": "На сегодня {{count}} слов",
-    "wordsDue_other": "На сегодня {{count}} слова"
+    "wordsDue_other": "На сегодня {{count}} слова",
+    "addWords": "01 / Добавь сегодняшние слова"
   },
   "settings": {
     "appLanguage": "Язык приложения"
@@ -26,6 +27,47 @@
     "home": "Главная",
     "lessons": "Уроки",
     "score": "Итоги",
-    "stats": "Статистика"
+    "stats": "Статистика",
+    "menu": "Открыть меню"
+  },
+  "common": {
+    "next": "Далее",
+    "listen": "Слушать"
+  },
+  "stats": {
+    "xp": "XP",
+    "streak": "СЕРИЯ {{count}}",
+    "dayStreak": "Дней подряд",
+    "accuracy": "Точность"
+  },
+  "lesson": {
+    "stepLabel": "{{step}} / {{task}}",
+    "tasks": {
+      "read": "Читай историю"
+    },
+    "xpEarned": "+{{count}} XP"
+  },
+  "tutor": {
+    "says": "Чанк говорит",
+    "approves": "Чанк одобряет",
+    "sighs": "Чанк вздыхает",
+    "startLine": "Шесть заданий. Постарайся удивиться, когда они окажутся лёгкими.",
+    "passLine": "Верно. Чанк делает вид, что не впечатлён.",
+    "failLine": "Неверно, но правильный ответ прямо перед тобой."
+  },
+  "gapFill": {
+    "blank": "Пропуск",
+    "pickWord": "Выбери слово"
+  },
+  "articlePicker": {
+    "label": "Выбери артикль"
+  },
+  "sentenceBuilder": {
+    "answer": "Твой ответ"
+  },
+  "record": {
+    "start": "Начать запись",
+    "stop": "Остановить запись",
+    "play": "Воспроизвести запись"
   }
 }

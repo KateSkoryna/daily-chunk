@@ -1,7 +1,8 @@
 {
   "home": {
     "wordsDue_one": "{{count}} word is due today",
-    "wordsDue_other": "{{count}} words are due today"
+    "wordsDue_other": "{{count}} words are due today",
+    "addWords": "01 / Add today's words"
   },
   "settings": {
     "appLanguage": "App language"
@@ -24,6 +25,47 @@
     "home": "Home",
     "lessons": "Lessons",
     "score": "Score",
-    "stats": "Stats"
+    "stats": "Stats",
+    "menu": "Open menu"
+  },
+  "common": {
+    "next": "Next",
+    "listen": "Listen"
+  },
+  "stats": {
+    "xp": "XP",
+    "streak": "STREAK {{count}}",
+    "dayStreak": "Day streak",
+    "accuracy": "Accuracy"
+  },
+  "lesson": {
+    "stepLabel": "{{step}} / {{task}}",
+    "tasks": {
+      "read": "Read the story"
+    },
+    "xpEarned": "+{{count}} XP"
+  },
+  "tutor": {
+    "says": "Chunk says",
+    "approves": "Chunk approves",
+    "sighs": "Chunk sighs",
+    "startLine": "Six tasks. Try to look surprised when they are easy.",
+    "passLine": "Correct. Chunk pretends he is not impressed.",
+    "failLine": "Wrong, but the right answer is right there."
+  },
+  "gapFill": {
+    "blank": "Blank",
+    "pickWord": "Pick the word"
+  },
+  "articlePicker": {
+    "label": "Pick the article"
+  },
+  "sentenceBuilder": {
+    "answer": "Your answer"
+  },
+  "record": {
+    "start": "Start recording",
+    "stop": "Stop recording",
+    "play": "Play your recording"
   }
 }
