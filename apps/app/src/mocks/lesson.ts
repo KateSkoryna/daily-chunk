@@ -1,4 +1,4 @@
-import type { Lesson } from '@daily-chunk/core';
+import type { Lesson, LessonTaskType } from '@daily-chunk/core';
 
 import { demoWords } from './words';
 
@@ -18,3 +18,12 @@ export const doneDemo = {
   weakWordIds: ['word-fahrkarte'],
   bossRound: { lessonsDone: 4, lessonsTotal: 5 },
 };
+
+export const stepXpDemo = {
+  flashcards: 0,
+  listen: 20,
+  read: 40,
+  record: 60,
+  'gap-fill': 80,
+  translate: 110,
+} satisfies Record<LessonTaskType, number>;
