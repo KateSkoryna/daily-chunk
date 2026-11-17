@@ -22,6 +22,8 @@ export const buttonMeta = {
     secondary: 'An action next to or below the primary: listen, knew it',
     ghost: 'A low-priority action: skip, show hint',
     destructive: 'Confirms losing data; only inside an alert dialog',
+    again:
+      'Go back and try again, next to the primary action: again on a flashcard, try again after a wrong answer. Pink outline, same height as the primary, no shadow',
   },
   states: ['idle', 'pressed', 'focused', 'disabled'],
   relationships: {
@@ -40,6 +42,7 @@ export const buttonMeta = {
       'ring',
       'destructive',
       'destructive-foreground',
+      'highlight',
       'muted-foreground',
       'popover',
       'shadow',

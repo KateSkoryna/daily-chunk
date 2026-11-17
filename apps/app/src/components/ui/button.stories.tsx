@@ -18,6 +18,7 @@ const variants = [
   'secondary',
   'ghost',
   'destructive',
+  'again',
 ] as const satisfies readonly ButtonVariant[];
 
 const heightInRem = {
@@ -25,6 +26,7 @@ const heightInRem = {
   secondary: 3.5,
   ghost: 3,
   destructive: 3.5,
+  again: 4,
 } as const satisfies Record<ButtonVariant, number>;
 
 const labelFamily = {
@@ -32,6 +34,7 @@ const labelFamily = {
   secondary: 'Russo One',
   ghost: 'Handjet',
   destructive: 'Russo One',
+  again: 'Russo One',
 } as const satisfies Record<ButtonVariant, string>;
 
 const meta = {
@@ -135,7 +138,7 @@ export const AllVariants: Story = {
         heightInRem[variant],
       );
       expect(toRem(style.borderTopWidth)).toBe(
-        variant === 'secondary' ? 0.125 : 0,
+        variant === 'secondary' || variant === 'again' ? 0.125 : 0,
       );
       expect(shadowBlocksOf(button)).toBe(variant === 'default' ? 1 : 0);
     }
