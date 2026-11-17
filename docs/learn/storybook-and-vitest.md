@@ -37,3 +37,7 @@
 ## Phone size in Storybook
 
 Storybook runs the components on the web (`react-native-web`), not on a phone. To see the phone layout, open the viewport button in the toolbar and choose "Phone (design size)" (390 x 844, the size of the design screens); the preview narrows and the `desktop:` rules switch off. Behaviour that only a real phone shows (native animation driver, Android dashed borders, notches) is checked on the A54 through `/dev/theme-check`.
+
+## Stories and the app language
+
+The toolbar's app language is a Storybook global. A story's `render` is not a React component, so it cannot call `useTranslation`; wrap the part that needs text in `<WithText>{(t) => ...}</WithText>` (`src/lib/story-text.ts`). A `play` test gets `globals`, and `textFor(globals)` gives the same `t`, so the test checks the text of the selected language. German content never changes with the toolbar.
