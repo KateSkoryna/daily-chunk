@@ -1,9 +1,6 @@
 import type { Word } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
-import {
-  getTargetLanguagePack,
-  type NativeLanguage,
-} from '@daily-chunk/languages';
+import type { NativeLanguage } from '@daily-chunk/languages';
 import { View } from 'react-native';
 
 import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
@@ -16,6 +13,7 @@ import { Screen } from '../../components/Screen/Screen';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { displayedWord } from '../../lib/displayed-word';
 
 type ConfirmScreenProps = {
   words: Word[];
@@ -94,12 +92,6 @@ function ConfirmScreen({
       </View>
     </Screen>
   );
-}
-
-function displayedWord(word: Word) {
-  if (!word.gender) return word.lemma;
-  const { articles } = getTargetLanguagePack(word.targetLanguage);
-  return `${articles[word.gender]} ${word.lemma}`;
 }
 
 function WordTag({ word }: { word: Word }) {
