@@ -41,7 +41,8 @@
   "common": {
     "next": "Next",
     "listen": "Listen",
-    "back": "Back"
+    "back": "Back",
+    "continue": "Continue"
   },
   "stats": {
     "xp": "XP",
@@ -54,7 +55,8 @@
     "tasks": {
       "read": "Read the story",
       "flashcards": "Flashcards",
-      "listen": "Listen & shadow"
+      "listen": "Listen & shadow",
+      "record": "Read aloud"
     },
     "xpEarned": "+{{count}} XP",
     "title": "Lesson {{number}}",
@@ -82,7 +84,18 @@
     "start": "Start recording",
     "stop": "Stop recording",
     "play": "Play your recording",
-    "retry": "Retry {{word}}"
+    "retry": "Retry {{word}}",
+    "retryThese": "Retry these",
+    "recordAgain": "Record again",
+    "wordsToRetry_one": "{{count}} word to retry",
+    "wordsToRetry_other": "{{count}} words to retry",
+    "verdict": {
+      "clear": "Clear speech",
+      "almost": "Almost clear",
+      "unclear": "Hard to hear"
+    },
+    "chunkLine": "When Chunk says \"ü\", the umlaut dots stand at attention. {{score}} today. Now go get \"{{word}}\".",
+    "chunkLineClean": "When Chunk says \"ü\", the umlaut dots stand at attention. {{score}} today."
   },
   "app": {
     "name": "Daily Chunk"
@@ -133,5 +146,15 @@
     "recordRepeat": "Record your repeat",
     "waveform": "Audio waveform, {{played, number(minimumFractionDigits: 1)}} of {{total, number(minimumFractionDigits: 1)}} seconds played",
     "speed": "{{speed, number}}×"
+  },
+  "wordPopover": {
+    "label": "Word: {{word}}",
+    "play": "Play {{word}}"
+  },
+  "read": {
+    "hint": "Tap an underlined word for its card",
+    "readAloud": "Now read it aloud",
+    "translationOn": "{{language}} on",
+    "translationOff": "{{language}} off"
   }
 }

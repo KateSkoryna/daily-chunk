@@ -47,7 +47,8 @@
   "common": {
     "next": "Далее",
     "listen": "Слушать",
-    "back": "Назад"
+    "back": "Назад",
+    "continue": "Продолжить"
   },
   "stats": {
     "xp": "XP",
@@ -60,7 +61,8 @@
     "tasks": {
       "read": "Читай историю",
       "flashcards": "Карточки",
-      "listen": "Слушай и повторяй"
+      "listen": "Слушай и повторяй",
+      "record": "Читай вслух"
     },
     "xpEarned": "+{{count}} XP",
     "title": "Урок {{number}}",
@@ -88,7 +90,20 @@
     "start": "Начать запись",
     "stop": "Остановить запись",
     "play": "Воспроизвести запись",
-    "retry": "Повторить {{word}}"
+    "retry": "Повторить {{word}}",
+    "retryThese": "Повтори эти",
+    "recordAgain": "Записать ещё раз",
+    "wordsToRetry_one": "{{count}} слово на повтор",
+    "wordsToRetry_few": "{{count}} слова на повтор",
+    "wordsToRetry_many": "{{count}} слов на повтор",
+    "wordsToRetry_other": "{{count}} слова на повтор",
+    "verdict": {
+      "clear": "Чёткая речь",
+      "almost": "Почти чётко",
+      "unclear": "Плохо слышно"
+    },
+    "chunkLine": "Когда Чанк говорит «ü», точки умляута встают по стойке смирно. Сегодня {{score}}. Теперь добей «{{word}}».",
+    "chunkLineClean": "Когда Чанк говорит «ü», точки умляута встают по стойке смирно. Сегодня {{score}}."
   },
   "app": {
     "name": "Daily Chunk"
@@ -141,5 +156,15 @@
     "recordRepeat": "Записать повтор",
     "waveform": "Аудио, воспроизведено {{played, number(minimumFractionDigits: 1)}} из {{total, number(minimumFractionDigits: 1)}} с",
     "speed": "{{speed, number}}×"
+  },
+  "wordPopover": {
+    "label": "Слово: {{word}}",
+    "play": "Произнести {{word}}"
+  },
+  "read": {
+    "hint": "Нажми на подчёркнутое слово, чтобы увидеть карточку",
+    "readAloud": "Теперь прочитай вслух",
+    "translationOn": "{{language}} вкл",
+    "translationOff": "{{language}} выкл"
   }
 }
