@@ -4,7 +4,10 @@
     "wordsDue_few": "На сегодня {{count}} слова",
     "wordsDue_many": "На сегодня {{count}} слов",
     "wordsDue_other": "На сегодня {{count}} слова",
-    "addWords": "01 / Добавь сегодняшние слова"
+    "addWords": "01 / Добавь новые слова",
+    "wordsLabel": "Слова, которые встретились тебе сегодня",
+    "wordsPlaceholder": "По одному в строке, в любой форме: Bahnhöfe, ging, schöner…",
+    "dictate": "Надиктовать слова"
   },
   "settings": {
     "appLanguage": "Язык приложения"
@@ -68,6 +71,19 @@
   "record": {
     "start": "Начать запись",
     "stop": "Остановить запись",
-    "play": "Воспроизвести запись"
+    "play": "Воспроизвести запись",
+    "retry": "Повторить {{word}}"
+  },
+  "app": {
+    "name": "Daily Chunk"
+  },
+  "done": {
+    "stageClear": "Уровень пройден",
+    "addedToReview": "Добавлено в повторение",
+    "tomorrow": "Завтра",
+    "tomorrowWeak": "Завтра · слабое"
+  },
+  "confirm": {
+    "pluralNotice": "Ты написал «{{written}}» (мн. ч.). Сохранено как {{saved}}."
   }
 }
