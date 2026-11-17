@@ -18,5 +18,12 @@
     "flipHint": "Flips the card",
     "tapToFlip": "Tap to flip",
     "tapToFlipBack": "Tap to flip back"
+  },
+  "nav": {
+    "main": "Main",
+    "home": "Home",
+    "lessons": "Lessons",
+    "score": "Score",
+    "stats": "Stats"
   }
 }
