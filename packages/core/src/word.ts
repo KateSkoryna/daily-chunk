@@ -16,6 +16,7 @@ export type Word = {
   gender?: GenderRole;
   forms?: string;
   sentence: string;
+  sentenceTranslations: Translations;
   sourceUrl?: string;
   translations: Translations;
   reviewStage: ReviewStage;

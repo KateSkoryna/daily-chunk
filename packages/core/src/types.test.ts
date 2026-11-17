@@ -31,6 +31,7 @@ describe('Word', () => {
       partOfSpeech: 'noun',
       gender: 'masc',
       sentence: 'Der Zug fährt vom Bahnhof ab.',
+      sentenceTranslations: { ru: 'Поезд отходит от вокзала.' },
       translations: { ru: 'вокзал', en: 'station' },
       reviewStage: 0,
       nextReviewAt: null,
