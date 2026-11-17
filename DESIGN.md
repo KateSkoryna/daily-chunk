@@ -387,7 +387,11 @@ Rule: one `default` button per screen.
 | `Chip` | `h-control border-2 border-highlight bg-card`, optional pink icon, `option` label; pressable |
 | `PartOfSpeechChip` | Tag for a word without an article (adjective, verb): `h-8 px-2.5 border-2 border-dashed border-muted-foreground`, `chip` style in `text-muted-foreground`; the label is the part of speech from i18n. Sits where `ArticleChip` sits |
 | `TopBar` extras | `center` slot (Home: `LogoBadge`). `TopBar.Button` `variant="record"`: `border-highlight bg-background`, icon `text-highlight` (dictate button in `Textarea`) |
-| `HomeScreen`, `ConfirmScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
+| `LessonHeader` | Top of a lesson task screen: `TopBar` (left: ghost `Button` with back or cross; right: lesson name, `ui` muted) over a `LessonStepper`; `gap-4` |
+| `StepIndicator` | Parts of one task (`1 · Listen`, `2 · Repeat`): `border-2 border-border`, each part `min-h-touch flex-1`; the current one `bg-popover` with `text-primary`, the others `text-muted-foreground`; `ui` style |
+| `Waveform` | `h-12` row of `flex-1` bars with `gap-1`; heights are percentages of the row; played bars `bg-ring`, the rest `bg-border`; an image with a text alternative |
+| `PlaybackControls` | Speed button `h-control border-2 border-input px-4` (text `0.75×`), play or pause `size-record rounded-full border-3 border-ring bg-ring` with a `text-primary-foreground` icon, `RecordButton` `small` on the right |
+| `HomeScreen`, `ConfirmScreen`, `FlashcardsScreen`, `ListenScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
 | `Notice` | `border-2 border-dashed border-gender-plural px-3 py-2.5`, `label-sm` in `text-gender-plural` (only for plural notices until a neutral colour is decided); `role="status"` |
 | `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
 | `Screen`, `HardShadow`, `Scanlines`, `PressableFocus` | Wrappers from §6 and §7 |
