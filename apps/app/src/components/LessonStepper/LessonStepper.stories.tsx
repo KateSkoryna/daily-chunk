@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { LessonStepper } from './LessonStepper';
 import { lessonStepperMeta } from './LessonStepper.meta';
 
@@ -13,14 +14,9 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(lessonStepperMeta) } },
-    controls: { include: ['total', 'current', 'label', 'xpLabel'] },
+    controls: { include: ['total', 'current'] },
   },
-  args: {
-    total: 6,
-    current: 3,
-    label: '03 / Read the story',
-    xpLabel: '+40 XP',
-  },
+  args: { total: 6, current: 3 },
   argTypes: {
     total: {
       control: { type: 'number', min: 1, max: 6 },
@@ -30,28 +26,36 @@ const meta = {
       control: { type: 'number', min: 1, max: 6 },
       description: 'The position of the current task, counting from 1.',
     },
-    label: {
-      control: 'text',
-      description: 'Text above the segments, already translated.',
-    },
-    xpLabel: {
-      control: 'text',
-      description: 'The XP earned so far, already translated.',
-    },
   },
   render: (args) => (
     <View className="p-gutter">
-      <LessonStepper {...args} />
+      <WithText>
+        {(t) => (
+          <LessonStepper
+            {...args}
+            label={t('lesson.stepLabel', {
+              step: String(args.current).padStart(2, '0'),
+              task: t('lesson.tasks.read'),
+            })}
+            xpLabel={t('lesson.xpEarned', { count: 40 })}
+          />
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<typeof LessonStepper>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof LessonStepper>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const label = t('lesson.stepLabel', {
+      step: String(args.current).padStart(2, '0'),
+      task: t('lesson.tasks.read'),
+    });
     const canvas = within(canvasElement);
     const done = canvas.queryAllByTestId('segment-done');
     const current = canvas.queryAllByTestId('segment-current');
@@ -62,11 +66,13 @@ export const Default: Story = {
     expect(done).toHaveLength(args.current - 1);
     expect(current).toHaveLength(1);
     expect(upcoming).toHaveLength(args.total - args.current);
-    expect(progress.getAttribute('aria-label')).toBe(args.label);
+    expect(progress.getAttribute('aria-label')).toBe(label);
     expect(progress.getAttribute('aria-valuenow')).toBe(String(args.current));
     expect(progress.getAttribute('aria-valuemax')).toBe(String(args.total));
-    expect(await canvas.findByText(args.label)).toBeTruthy();
-    expect(await canvas.findByText(args.xpLabel)).toBeTruthy();
+    expect(await canvas.findByText(label)).toBeTruthy();
+    expect(
+      await canvas.findByText(t('lesson.xpEarned', { count: 40 })),
+    ).toBeTruthy();
 
     for (const segment of segments) {
       expect(toRem(segment.getBoundingClientRect().height)).toBe(0.5);

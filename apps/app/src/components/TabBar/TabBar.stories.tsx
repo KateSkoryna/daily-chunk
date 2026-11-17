@@ -1,49 +1,51 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
-import { useTranslation } from '@daily-chunk/i18n';
 import { View } from 'react-native';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { useState } from 'react';
 
 import { TabBar, type TabBarProps, type TabBarTab } from './TabBar';
 import { tabBarMeta } from './TabBar.meta';
 
+const tabNameKeys = {
+  home: 'nav.home',
+  lessons: 'nav.lessons',
+  score: 'nav.score',
+  stats: 'nav.stats',
+} as const;
+
 const tabs: TabBarTab[] = [
-  { key: 'home', label: 'Home', icon: 'home' },
-  { key: 'lessons', label: 'Lessons', icon: 'book' },
-  {
-    key: 'score',
-    label: 'Score',
-    icon: 'trophy',
-    badge: 5,
-  },
-  { key: 'stats', label: 'Stats', icon: 'chart' },
+  { key: 'home', label: '', icon: 'home' },
+  { key: 'lessons', label: '', icon: 'book' },
+  { key: 'score', label: '', icon: 'trophy', badge: 5 },
+  { key: 'stats', label: '', icon: 'chart' },
 ];
 
 function TabBarDemo({ activeKey, onSelect, ...props }: TabBarProps) {
-  const { t } = useTranslation();
   const [active, setActive] = useState(activeKey);
-  const labels: Record<string, string> = {
-    home: t('nav.home'),
-    lessons: t('nav.lessons'),
-    score: t('nav.score'),
-    stats: t('nav.stats'),
-  };
 
   return (
     <View className="min-h-screen justify-end">
-      <TabBar
-        {...props}
-        accessibilityLabel={t('nav.main')}
-        tabs={props.tabs.map((tab) => ({ ...tab, label: labels[tab.key]! }))}
-        activeKey={active}
-        onSelect={(key) => {
-          setActive(key);
-          onSelect(key);
-        }}
-      />
+      <WithText>
+        {(t) => (
+          <TabBar
+            {...props}
+            accessibilityLabel={t('nav.main')}
+            tabs={props.tabs.map((tab) => ({
+              ...tab,
+              label: t(tabNameKeys[tab.key as keyof typeof tabNameKeys]),
+            }))}
+            activeKey={active}
+            onSelect={(key) => {
+              setActive(key);
+              onSelect(key);
+            }}
+          />
+        )}
+      </WithText>
     </View>
   );
 }
@@ -65,7 +67,7 @@ const meta = {
   args: {
     tabs,
     activeKey: 'home',
-    accessibilityLabel: 'Main',
+    accessibilityLabel: '',
     onSelect: fn(),
   },
   argTypes: {
@@ -80,12 +82,13 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TabBar>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
-    const list = await canvas.findByRole('tablist', { name: 'Main' });
+    const list = await canvas.findByRole('tablist', { name: t('nav.main') });
     const tabButtons = within(list).getAllByRole('tab');
     const active = tabButtons.find(
       (tab) => tab.getAttribute('aria-selected') === 'true',
@@ -94,7 +97,7 @@ export const Default: Story = {
 
     expect(tabButtons).toHaveLength(tabs.length);
     expect(active.textContent).toContain(
-      tabs.find((tab) => tab.key === args.activeKey)!.label,
+      t(tabNameKeys[args.activeKey as keyof typeof tabNameKeys]),
     );
     const labelColourOf = (tab: HTMLElement) =>
       getComputedStyle(

@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { Text, TextClassContext } from '../ui/text';
 import { Icon } from './Icon';
 import { iconNames } from './icon-shapes';
@@ -33,7 +34,7 @@ const meta = {
   parameters: {
     docs: { description: { component: metaToMarkdown(iconMeta) } },
   },
-  args: { name: 'check', label: 'Correct', className: 'text-foreground' },
+  args: { name: 'check', label: '', className: 'text-foreground' },
   argTypes: {
     name: {
       control: 'select',
@@ -43,7 +44,7 @@ const meta = {
     label: {
       control: 'text',
       description:
-        'Accessible name. Required when the icon stands alone; leave empty when decorative.',
+        'Accessible name. Required when the icon stands alone; leave empty when decorative. Empty: the translated default for the app language.',
     },
     decorative: {
       control: 'boolean',
@@ -65,26 +66,38 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: ({ name, label, decorative, className }) => (
-    <View className="items-start gap-4 p-gutter">
-      <View className="flex-row items-center gap-4">
-        {decorative ? (
-          <Icon name={name} decorative className={className} />
-        ) : (
-          <Icon name={name} label={label ?? name} className={className} />
-        )}
-        <View
-          testID="colour-swatch"
-          className={`${colourSwatches[(className ?? 'text-foreground') as keyof typeof colourSwatches]} h-2 w-6`}
-        />
-      </View>
-      <Text variant="caption">
-        {decorative
-          ? 'Decorative: hidden from screen readers, no name'
-          : `Screen readers say: "${label ?? name}"`}
-      </Text>
-    </View>
+    <WithText>
+      {(t) => {
+        const accessibleName = label || t('answer.correct');
+
+        return (
+          <View className="items-start gap-4 p-gutter">
+            <View className="flex-row items-center gap-4">
+              {decorative ? (
+                <Icon name={name} decorative className={className} />
+              ) : (
+                <Icon
+                  name={name}
+                  label={accessibleName}
+                  className={className}
+                />
+              )}
+              <View
+                testID="colour-swatch"
+                className={`${colourSwatches[(className ?? 'text-foreground') as keyof typeof colourSwatches]} h-2 w-6`}
+              />
+            </View>
+            <Text variant="caption">
+              {decorative
+                ? 'Decorative: hidden from screen readers, no name'
+                : `Screen readers say: "${accessibleName}"`}
+            </Text>
+          </View>
+        );
+      }}
+    </WithText>
   ),
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
     const icon = canvasElement.querySelector('svg')!;
     const swatch = canvasElement.querySelector(
       '[data-testid="colour-swatch"]',
@@ -95,7 +108,9 @@ export const Default: Story = {
       expect(icon.getAttribute('aria-hidden')).toBe('true');
       expect(icon.getAttribute('aria-label')).toBeNull();
     } else {
-      expect(icon.getAttribute('aria-label')).toBe(args.label);
+      expect(icon.getAttribute('aria-label')).toBe(
+        args.label || textFor(globals)('answer.correct'),
+      );
       expect(icon.getAttribute('role')).toBe('img');
       expect(icon.getAttribute('aria-hidden')).toBeNull();
     }
@@ -162,7 +177,6 @@ export const InheritsColour: Story = {
   parameters: { controls: { include: ['name', 'label', 'parentTextClass'] } },
   args: {
     name: 'mic',
-    label: 'Record',
     parentTextClass: 'text-ring',
   } as Story['args'] & InheritsColourArgs,
   argTypes: {
@@ -179,19 +193,23 @@ export const InheritsColour: Story = {
       (args as typeof args & InheritsColourArgs).parentTextClass ?? 'text-ring';
 
     return (
-      <View className="items-start gap-4 p-gutter">
-        <View className="flex-row items-center gap-4">
-          <TextClassContext.Provider value={parentTextClass}>
-            <Icon name={name} label={label ?? name} />
-          </TextClassContext.Provider>
-          <View
-            testID="parent-colour-swatch"
-            className={`${colourSwatches[parentTextClass]} h-4 w-4`}
-          />
-        </View>
-        <Text variant="caption">{`Parent sets ${parentTextClass}; the icon has no colour of its own`}</Text>
-        <ScreenReaderCaption text={label ?? name} />
-      </View>
+      <WithText>
+        {(t) => (
+          <View className="items-start gap-4 p-gutter">
+            <View className="flex-row items-center gap-4">
+              <TextClassContext.Provider value={parentTextClass}>
+                <Icon name={name} label={label || t('record.start')} />
+              </TextClassContext.Provider>
+              <View
+                testID="parent-colour-swatch"
+                className={`${colourSwatches[parentTextClass]} h-4 w-4`}
+              />
+            </View>
+            <Text variant="caption">{`Parent sets ${parentTextClass}; the icon has no colour of its own`}</Text>
+            <ScreenReaderCaption text={label || t('record.start')} />
+          </View>
+        )}
+      </WithText>
     );
   },
   play: async ({ canvasElement }) => {

@@ -11,6 +11,7 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { ArticlePicker, type ArticlePickerProps } from './ArticlePicker';
 import { articlePickerMeta } from './ArticlePicker.meta';
 
@@ -53,7 +54,7 @@ const meta = {
     targetLanguage: 'de',
     value: null,
     correctAnswer: undefined,
-    accessibilityLabel: 'Pick the article',
+    accessibilityLabel: '',
     onSelect: fn(),
   },
   argTypes: {
@@ -76,22 +77,33 @@ const meta = {
         'The right gender. Once set, the picker shows the result and locks.',
     },
   },
-  render: (args) => <PickerDemo key={String(args.value)} {...args} />,
+  render: (args) => (
+    <WithText>
+      {(t) => (
+        <PickerDemo
+          key={String(args.value)}
+          {...args}
+          accessibilityLabel={t('articlePicker.label')}
+        />
+      )}
+    </WithText>
+  ),
 } satisfies Meta<typeof ArticlePicker>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ArticlePicker>;
 
 function articleOf(gender: GenderRole) {
   return getTargetLanguagePack('de').articles[gender];
 }
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const group = await canvas.findByRole('radiogroup', {
-      name: args.accessibilityLabel,
+      name: t('articlePicker.label'),
     });
     const radios = within(group).getAllByRole('radio');
     const pack = getTargetLanguagePack(args.targetLanguage);
@@ -127,7 +139,9 @@ export const Default: Story = {
         name: new RegExp(articleOf(args.value)),
       });
       const resultName =
-        args.value === args.correctAnswer ? 'Correct' : 'Wrong';
+        args.value === args.correctAnswer
+          ? t('answer.correct')
+          : t('answer.wrong');
 
       expect(within(picked).getByRole('img').getAttribute('aria-label')).toBe(
         resultName,

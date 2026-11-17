@@ -4,10 +4,23 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { TutorQuote, type TutorQuoteVariant } from './TutorQuote';
 import { tutorQuoteMeta } from './TutorQuote.meta';
 
 const variants = ['start', 'pass', 'fail'] as const;
+
+const tabKeys = {
+  start: 'tutor.says',
+  pass: 'tutor.approves',
+  fail: 'tutor.sighs',
+} as const;
+
+const lineKeys = {
+  start: 'tutor.startLine',
+  pass: 'tutor.passLine',
+  fail: 'tutor.failLine',
+} as const;
 
 const meta = {
   title: 'Components/TutorQuote',
@@ -16,36 +29,30 @@ const meta = {
   parameters: {
     docs: { description: { component: metaToMarkdown(tutorQuoteMeta) } },
   },
-  args: {
-    variant: 'start',
-    tabLabel: 'Chunk says',
-    children: 'Six tasks. Try to look surprised when they are easy.',
-  },
+  args: { variant: 'start' },
   argTypes: {
     variant: {
       control: 'select',
       options: variants,
       description: 'start is yellow, pass is green with ✓, fail is red with ✗.',
     },
-    tabLabel: {
-      control: 'text',
-      description: 'The text on the tab, already translated.',
-    },
-    children: {
-      control: 'text',
-      description: 'The tutor’s line, at most 2 short sentences.',
-    },
   },
-  render: (args) => (
+  render: ({ variant = 'start' }) => (
     <View className="p-gutter">
-      <TutorQuote {...args} />
+      <WithText>
+        {(t) => (
+          <TutorQuote variant={variant} tabLabel={t(tabKeys[variant])}>
+            {t(lineKeys[variant])}
+          </TutorQuote>
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<typeof TutorQuote>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TutorQuote>;
 
 function expectedIconCount(variant: TutorQuoteVariant) {
   return variant === 'start' ? 0 : 1;
@@ -74,12 +81,14 @@ async function inspectQuote(
 }
 
 export const Default: Story = {
-  parameters: { controls: { include: ['variant', 'tabLabel', 'children'] } },
-  play: async ({ canvasElement, args }) => {
+  parameters: { controls: { include: ['variant'] } },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const variant = args.variant ?? 'start';
     const { box } = await inspectQuote(
       canvasElement,
-      args.tabLabel,
-      args.variant ?? 'start',
+      t(tabKeys[variant]),
+      variant,
     );
     const style = getComputedStyle(box);
 
@@ -87,7 +96,7 @@ export const Default: Story = {
     expect(toRem(style.paddingLeft)).toBe(0.875);
     expect(toRem(style.paddingBottom)).toBe(0.875);
     expect(
-      await within(canvasElement).findByText(String(args.children)),
+      await within(canvasElement).findByText(t(lineKeys[variant])),
     ).toBeTruthy();
   },
 };
@@ -96,23 +105,29 @@ export const AllVariants: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="gap-6 p-gutter">
-      <TutorQuote variant="start" tabLabel="Chunk says">
-        Six tasks. Try to look surprised.
-      </TutorQuote>
-      <TutorQuote variant="pass" tabLabel="Chunk approves">
-        Correct. Chunk pretends he is not impressed.
-      </TutorQuote>
-      <TutorQuote variant="fail" tabLabel="Chunk sighs">
-        Wrong, but the right answer is right there.
-      </TutorQuote>
+      <WithText>
+        {(t) =>
+          variants.map((variant) => (
+            <TutorQuote
+              key={variant}
+              variant={variant}
+              tabLabel={t(tabKeys[variant])}
+            >
+              {t(lineKeys[variant])}
+            </TutorQuote>
+          ))
+        }
+      </WithText>
     </View>
   ),
-  play: async ({ canvasElement }) => {
-    const tabs = [
-      await inspectQuote(canvasElement, 'Chunk says', 'start'),
-      await inspectQuote(canvasElement, 'Chunk approves', 'pass'),
-      await inspectQuote(canvasElement, 'Chunk sighs', 'fail'),
-    ];
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const tabs = [];
+    for (const variant of variants) {
+      tabs.push(
+        await inspectQuote(canvasElement, t(tabKeys[variant]), variant),
+      );
+    }
     const colours = new Set(
       tabs.map(({ tab }) => getComputedStyle(tab).backgroundColor),
     );

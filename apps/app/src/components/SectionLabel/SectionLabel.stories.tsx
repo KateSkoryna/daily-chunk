@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { Text } from '../ui/text';
 import { SectionLabel } from './SectionLabel';
 import { sectionLabelMeta } from './SectionLabel.meta';
@@ -14,29 +15,32 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(sectionLabelMeta) } },
-    controls: { include: ['children'] },
+    controls: { disable: true },
   },
-  args: { children: "01 / Add today's words" },
-  argTypes: {
-    children: { control: 'text', description: 'The label text.' },
-  },
-  render: (args) => (
+  render: () => (
     <View className="gap-2 p-gutter">
-      <SectionLabel {...args} />
-      <Text testID="body-text">Body text for comparison</Text>
+      <WithText>
+        {(t) => (
+          <>
+            <SectionLabel>{t('home.addWords')}</SectionLabel>
+            <Text testID="body-text">{t('home.addWords')}</Text>
+          </>
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<typeof SectionLabel>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SectionLabel>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const heading = await canvas.findByRole('heading', {
-      name: String(args.children),
+      name: t('home.addWords'),
     });
     const style = getComputedStyle(heading);
     const body = getComputedStyle(await canvas.findByTestId('body-text'));

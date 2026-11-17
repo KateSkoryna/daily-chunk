@@ -4,11 +4,12 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { appLanguageOf, textFor, WithText } from '../../lib/story-text';
+import { ticketGapFill } from '../../mocks/gap-fill';
 import { OptionGrid } from '../OptionGrid/OptionGrid';
 import { GapFill } from './GapFill';
 import { gapFillMeta } from './GapFill.meta';
 
-const wordOptions = ['Fahrkarte', 'Fahrkarten', 'Bahnhof', 'Gleis'];
 const noneOption = 'none';
 
 const swatchClasses = {
@@ -23,20 +24,13 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(gapFillMeta) } },
-    controls: { include: ['answer', 'status', 'hint'] },
+    controls: { include: ['answer', 'status'] },
   },
-  args: {
-    before: 'Sie sucht ihre',
-    after: 'in der Tasche.',
-    answer: null,
-    status: 'open',
-    blankLabel: 'Blank',
-    hint: 'She is looking for her ticket in the bag.',
-  },
+  args: { answer: null, status: 'open' },
   argTypes: {
     answer: {
       control: 'select',
-      options: [noneOption, ...wordOptions],
+      options: [noneOption, ...ticketGapFill.options],
       mapping: { [noneOption]: null },
       description: 'The word in the blank, or none while nothing is chosen.',
     },
@@ -45,22 +39,31 @@ const meta = {
       options: ['open', 'correct', 'wrong'],
       description: 'open while choosing; correct or wrong after the check.',
     },
-    hint: {
-      control: 'text',
-      description: 'The sentence in the native language.',
-    },
   },
-  render: ({ answer, status, ...args }) => (
+  render: ({ answer = null, status = 'open' }) => (
     <View className="gap-4 p-gutter">
-      <GapFill answer={answer} status={status} {...args}>
-        <OptionGrid
-          options={wordOptions}
-          value={answer}
-          onSelect={() => undefined}
-          correctAnswer={status === 'open' ? undefined : 'Fahrkarte'}
-          accessibilityLabel="Pick the word"
-        />
-      </GapFill>
+      <WithText>
+        {(t, appLanguage) => (
+          <GapFill
+            before={ticketGapFill.before}
+            after={ticketGapFill.after}
+            answer={answer}
+            status={status}
+            blankLabel={t('gapFill.blank')}
+            hint={ticketGapFill.hints[appLanguage]}
+          >
+            <OptionGrid
+              options={ticketGapFill.options}
+              value={answer}
+              onSelect={() => undefined}
+              correctAnswer={
+                status === 'open' ? undefined : ticketGapFill.answer
+              }
+              accessibilityLabel={t('gapFill.pickWord')}
+            />
+          </GapFill>
+        )}
+      </WithText>
       {(Object.keys(swatchClasses) as (keyof typeof swatchClasses)[]).map(
         (name) => (
           <View
@@ -76,37 +79,41 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof GapFill>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
+    const answer = args.answer ?? null;
     const status = args.status ?? 'open';
     const blank = await canvas.findByTestId('gap-fill-blank');
     const swatch = await canvas.findByTestId(`swatch-${status}`);
     const style = getComputedStyle(blank);
     const swatchColour = getComputedStyle(swatch).backgroundColor;
 
-    expect(blank.getAttribute('aria-label')).toBe(
-      args.answer ?? args.blankLabel,
-    );
+    expect(blank.getAttribute('aria-label')).toBe(answer ?? t('gapFill.blank'));
     expect(toRem(blank.getBoundingClientRect().width)).toBeGreaterThanOrEqual(
       6.875,
     );
     expect(toRem(style.borderBottomWidth)).toBe(0.1875);
     expect(style.borderBottomColor).toBe(swatchColour);
-    if (args.answer !== null) {
-      expect(getComputedStyle(within(blank).getByText(args.answer)).color).toBe(
+    if (answer !== null) {
+      expect(getComputedStyle(within(blank).getByText(answer)).color).toBe(
         status === 'open' ? getComputedStyle(blank).color : swatchColour,
       );
     }
-    for (const word of `${args.before} ${args.after}`.split(' ')) {
+    for (const word of `${ticketGapFill.before} ${ticketGapFill.after}`.split(
+      ' ',
+    )) {
       expect(await canvas.findByText(word)).toBeTruthy();
     }
-    if (args.hint) {
-      expect(await canvas.findByText(args.hint)).toBeTruthy();
-    }
-    expect(canvas.getAllByRole('radio')).toHaveLength(wordOptions.length);
+    expect(
+      await canvas.findByText(ticketGapFill.hints[appLanguageOf(globals)]),
+    ).toBeTruthy();
+    expect(canvas.getAllByRole('radio')).toHaveLength(
+      ticketGapFill.options.length,
+    );
   },
 };
 
@@ -114,20 +121,26 @@ export const Answered: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="gap-6 p-gutter">
-      <GapFill
-        before="Sie sucht ihre"
-        after="in der Tasche."
-        answer="Fahrkarte"
-        status="correct"
-        blankLabel="Blank"
-      />
-      <GapFill
-        before="Sie sucht ihre"
-        after="in der Tasche."
-        answer="Gleis"
-        status="wrong"
-        blankLabel="Blank"
-      />
+      <WithText>
+        {(t) => (
+          <>
+            <GapFill
+              before={ticketGapFill.before}
+              after={ticketGapFill.after}
+              answer={ticketGapFill.answer}
+              status="correct"
+              blankLabel={t('gapFill.blank')}
+            />
+            <GapFill
+              before={ticketGapFill.before}
+              after={ticketGapFill.after}
+              answer="Gleis"
+              status="wrong"
+              blankLabel={t('gapFill.blank')}
+            />
+          </>
+        )}
+      </WithText>
     </View>
   ),
   play: async ({ canvasElement }) => {
@@ -138,7 +151,7 @@ export const Answered: Story = {
     expect(getComputedStyle(correctBlank!).borderBottomColor).not.toBe(
       getComputedStyle(wrongBlank!).borderBottomColor,
     );
-    expect(correctBlank!.getAttribute('aria-label')).toBe('Fahrkarte');
+    expect(correctBlank!.getAttribute('aria-label')).toBe(ticketGapFill.answer);
     expect(wrongBlank!.getAttribute('aria-label')).toBe('Gleis');
   },
 };
@@ -147,12 +160,16 @@ export const LongSentence: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="w-48 p-gutter">
-      <GapFill
-        before="Anna steht am Bahnhof und sucht ihre"
-        after="in der Tasche."
-        answer={null}
-        blankLabel="Blank"
-      />
+      <WithText>
+        {(t) => (
+          <GapFill
+            before="Anna steht am Bahnhof und sucht ihre"
+            after={ticketGapFill.after}
+            answer={null}
+            blankLabel={t('gapFill.blank')}
+          />
+        )}
+      </WithText>
     </View>
   ),
   play: async ({ canvasElement }) => {
