@@ -290,6 +290,8 @@ Border colours: `border-border` (decorative), `border-input` (idle control), `bo
 
 ### 7.4 Hard shadow
 
+Shadows are drawn only by `HardShadow`. The names below are not Tailwind classes (they are not in `tailwind.config.js`); they name the offsets `HardShadow` uses, and metas list them as tokens.
+
 | Token | Offset | Use |
 | --- | --- | --- |
 | `shadow-hard` | 0.25rem 0.25rem 0, `--shadow` | Primary button, active flashcard |
@@ -345,6 +347,7 @@ When adding a component from React Native Reusables (a hand-written one follows 
 | `secondary` | `h-control px-5` | transparent, `border-2 border-ring` (cyan) | `display-btn-sm`, `text-ring` |
 | `ghost` | `h-touch px-5` | none | `label`, `text-muted-foreground` |
 | `destructive` | `h-control px-5` | `bg-destructive` | `display-btn-sm`, `text-destructive-foreground` |
+| `again` | `h-button` | transparent, `border-2 border-highlight` (pink), no shadow (Record, Done) | `display-btn`, `text-highlight` |
 
 Disabled applies to every variant the same way: `bg-popover` fill, `text-muted-foreground` label, no shadow. On `secondary` the border also becomes `bg-popover`'s colour (`border-popover`), so a disabled button never keeps its cyan outline.
 
@@ -380,7 +383,7 @@ Rule: one `default` button per screen.
 | `LogoBadge` | The Sheriff badge (`plan.md` D6): `size-10`, four layers: `text-highlight` shadow star, `text-primary` star with five tip dots, `text-background` disc, `text-foreground` letters DC |
 | `GlitchTitle` | `display-xl` / `display-l` text with a `text-highlight` copy at `translate-x-glitch` and a `text-ring` copy at `-translate-x-glitch` behind it |
 | `Textarea` | `min-h-36 border-2 border-field bg-card p-3`, `body`; an optional trailing control at `bottom-2.5 right-2.5` and `pb-16` |
-| `ListGroup`, `ListGroup.Row` | Group `border-2 border-border`, rows separated by `border-t-2`; row `min-h-touch bg-card px-3 py-2.5 gap-3` with left, body and right slots |
+| `ListGroup`, `ListGroup.Row` | Group `border-2 border-border`, rows separated by `border-t-2`; row `min-h-touch` (3rem, the touch minimum, even where a screen draws 44px) `bg-card px-3 py-2.5 gap-3` with left, body and right slots |
 | `Chip` | `h-control border-2 border-highlight bg-card`, optional pink icon, `option` label; pressable |
 | `Notice` | `border-2 border-dashed border-gender-plural px-3 py-2.5`, `label-sm` in `text-gender-plural` (only for plural notices until a neutral colour is decided); `role="status"` |
 | `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
