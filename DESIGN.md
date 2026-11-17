@@ -300,7 +300,7 @@ Border colours: `border-border` (decorative), `border-input` (idle control), `bo
 
 ### 7.5 Focus
 
-`ring-2 ring-ring ring-offset-2 ring-offset-background` on every interactive element (2 = 0.125rem). On native, `PressableFocus` draws the same ring for keyboard/switch access.
+`ring-2 ring-ring ring-offset-2 ring-offset-background` on every interactive element (2 = 0.125rem). `PressableFocus` draws the same ring on every platform, only for keyboard/switch focus: a mouse click or a tap does not show it (the web's `:focus-visible` rule).
 
 ### 7.6 Scanlines
 
@@ -376,7 +376,7 @@ Rule: one `default` button per screen.
 | `GapFill` | Sentence `body`; blank `min-w-[6.875rem] border-b-3 border-field`; hint `body-sm`; options 2×2 `gap-2 h-control`, `option` style |
 | `RecordButton` | `size-record rounded-full border-3`. Idle `border-highlight` + mic; recording `bg-highlight` + stop + timer; done `border-success` + play + score |
 | `TutorQuote` | `border-2`, `pt-6 px-3.5 pb-3.5`; tab on top border, `label-sm` `text-primary-foreground`. Variants: start `primary`, pass `success` + ✓, fail `destructive` + ✗ |
-| `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `ui` labels with tracking 0.125rem; active `text-primary`, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
+| `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
 | `Screen`, `HardShadow`, `Scanlines`, `PressableFocus` | Wrappers from §6 and §7 |
 
 Arbitrary values such as `min-w-[4.5rem]` are allowed only for component dimensions listed in a component spec. Never use them for colour or font.

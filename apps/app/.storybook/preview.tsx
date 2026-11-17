@@ -34,7 +34,7 @@ const preview: Preview = {
       <I18nextProvider
         i18n={i18nByLanguage[globals.appLanguage as AppLanguage]}
       >
-        <View className="bg-background">
+        <View className="min-h-screen bg-background">
           <Story />
         </View>
       </I18nextProvider>
