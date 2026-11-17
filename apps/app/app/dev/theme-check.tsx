@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { LessonStepper } from '../../src/components/LessonStepper/LessonStepper';
+import { TutorQuote } from '../../src/components/TutorQuote/TutorQuote';
 import { Noun } from '../../src/components/Noun/Noun';
 import { ArticlePicker } from '../../src/components/ArticlePicker/ArticlePicker';
 import { Icon } from '../../src/components/Icon/Icon';
@@ -235,6 +237,27 @@ export default function ThemeCheck() {
           onSelect={() => undefined}
           accessibilityLabel="Answered correct"
         />
+      </View>
+
+      <View className="gap-6">
+        <Text className="font-display text-display-btn text-foreground">
+          Lesson stepper and tutor quote
+        </Text>
+        <LessonStepper
+          total={6}
+          current={3}
+          label="03 / Read the story"
+          xpLabel="+40 XP"
+        />
+        <TutorQuote variant="start" tabLabel="Chunk says">
+          Six tasks. Try to look surprised.
+        </TutorQuote>
+        <TutorQuote variant="pass" tabLabel="Chunk approves">
+          Correct. Chunk pretends he is not impressed.
+        </TutorQuote>
+        <TutorQuote variant="fail" tabLabel="Chunk sighs">
+          Wrong, but the right answer is right there.
+        </TutorQuote>
       </View>
 
       <View className="gap-4">
