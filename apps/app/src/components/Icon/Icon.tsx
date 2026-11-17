@@ -1,20 +1,16 @@
-import { cssInterop, rem } from 'nativewind';
+import { rem } from 'nativewind';
 import { useContext } from 'react';
-import Svg, { Path } from 'react-native-svg';
 
 import { cn } from '../../lib/utils';
 import { TextClassContext } from '../ui/text';
 import type { IconProps } from './icon-props';
+import { Path, Svg } from './svg-interop';
 import {
   iconShapes,
   iconSizeInRem,
   iconStrokeWidth,
   iconViewBox,
 } from './icon-shapes';
-
-cssInterop(Svg, {
-  className: { target: 'style', nativeStyleToProp: { color: 'color' } },
-});
 
 function Icon({ name, label, decorative, className }: IconProps) {
   const parentTextClass = useContext(TextClassContext);
