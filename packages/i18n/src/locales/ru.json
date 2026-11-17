@@ -58,9 +58,13 @@
   "lesson": {
     "stepLabel": "{{step}} / {{task}}",
     "tasks": {
-      "read": "Читай историю"
+      "read": "Читай историю",
+      "flashcards": "Карточки",
+      "listen": "Слушай и повторяй"
     },
-    "xpEarned": "+{{count}} XP"
+    "xpEarned": "+{{count}} XP",
+    "title": "Урок {{number}}",
+    "quit": "Выйти из урока"
   },
   "tutor": {
     "says": "Чанк говорит",
@@ -120,5 +124,22 @@
       "adjective": "прилагательное",
       "other": "слово"
     }
+  },
+  "flashcards": {
+    "cardCount": "Карточка {{current}} из {{total}}",
+    "again": "← Ещё раз",
+    "knewIt": "Знаю →"
+  },
+  "listen": {
+    "stepListen": "Слушай",
+    "stepRepeat": "Повторяй",
+    "steps": "Шаги прослушивания",
+    "phraseCount": "Фраза {{current}} из {{total}} · Повтор {{repeat}} из {{repeatTotal}}",
+    "nextPhrase": "Следующая фраза",
+    "play": "Воспроизвести",
+    "pause": "Пауза",
+    "recordRepeat": "Записать повтор",
+    "waveform": "Аудио, воспроизведено {{played, number(minimumFractionDigits: 1)}} из {{total, number(minimumFractionDigits: 1)}} с",
+    "speed": "{{speed, number}}×"
   }
 }

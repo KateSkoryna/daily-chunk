@@ -52,9 +52,13 @@
   "lesson": {
     "stepLabel": "{{step}} / {{task}}",
     "tasks": {
-      "read": "Read the story"
+      "read": "Read the story",
+      "flashcards": "Flashcards",
+      "listen": "Listen & shadow"
     },
-    "xpEarned": "+{{count}} XP"
+    "xpEarned": "+{{count}} XP",
+    "title": "Lesson {{number}}",
+    "quit": "Quit lesson"
   },
   "tutor": {
     "says": "Chunk says",
@@ -112,5 +116,22 @@
       "adjective": "adjective",
       "other": "word"
     }
+  },
+  "flashcards": {
+    "cardCount": "Card {{current}} of {{total}}",
+    "again": "← Again",
+    "knewIt": "Knew it →"
+  },
+  "listen": {
+    "stepListen": "Listen",
+    "stepRepeat": "Repeat",
+    "steps": "Listening steps",
+    "phraseCount": "Phrase {{current}} of {{total}} · Repeat {{repeat}} of {{repeatTotal}}",
+    "nextPhrase": "Next phrase",
+    "play": "Play",
+    "pause": "Pause",
+    "recordRepeat": "Record your repeat",
+    "waveform": "Audio waveform, {{played, number(minimumFractionDigits: 1)}} of {{total, number(minimumFractionDigits: 1)}} seconds played",
+    "speed": "{{speed, number}}×"
   }
 }
