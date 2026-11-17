@@ -46,6 +46,7 @@ export const derLetzteZug = {
 export const readAloudResult = {
   durationSeconds: 24,
   scorePercent: 86,
+  verdict: 'clear' as 'clear' | 'almost' | 'unclear',
   retryWords: ['Fahrkarte', 'läuft'],
   pronunciationTips: {
     ru: '«äu» звучит как «ой» в слове «бой»: ЛОЙФТ.',
