@@ -93,3 +93,35 @@ export const Default: Story = {
     expect(colours.size).toBe(groups.length);
   },
 };
+
+export const BossProgress: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <View className="p-gutter">
+      <WithText>
+        {(t) => (
+          <LessonStepper
+            variant="progress"
+            total={5}
+            current={3}
+            label={t('home.bossRound', { count: 2 })}
+            xpLabel="3/5"
+          />
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const bar = await canvas.findByRole('progressbar', {
+      name: t('home.bossRound', { count: 2 }),
+    });
+
+    expect(bar.getAttribute('aria-valuemin')).toBe('0');
+    expect(bar.getAttribute('aria-valuenow')).toBe('3');
+    expect(within(bar).getAllByTestId('segment-done')).toHaveLength(3);
+    expect(within(bar).getAllByTestId('segment-upcoming')).toHaveLength(2);
+    expect(within(bar).queryByTestId('segment-current')).toBeNull();
+  },
+};

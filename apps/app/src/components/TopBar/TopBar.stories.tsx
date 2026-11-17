@@ -7,6 +7,7 @@ import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { textFor, WithText } from '../../lib/story-text';
 import { HeaderStats } from '../HeaderStats/HeaderStats';
 import { iconNames } from '../Icon/icon-shapes';
+import { LogoBadge } from '../LogoBadge/LogoBadge';
 import { TopBar } from './TopBar';
 import { topBarMeta } from './TopBar.meta';
 
@@ -70,5 +71,86 @@ export const Default: Story = {
       Math.abs(box.top + box.height / 2 - (stats.top + stats.height / 2)),
     ).toBeLessThan(box.height);
     await userEvent.click(button);
+  },
+};
+
+export const WithLogo: Story = {
+  render: () => (
+    <View className="p-gutter">
+      <WithText>
+        {(t) => (
+          <TopBar
+            left={
+              <TopBar.Button
+                icon="menu"
+                accessibilityLabel={t('nav.menu')}
+                onPress={fn()}
+              />
+            }
+            center={<LogoBadge accessibilityLabel={t('app.name')} />}
+            right={
+              <HeaderStats
+                xp={1240}
+                xpLabel={t('stats.xp')}
+                streakLabel={t('stats.streak', { count: 12 })}
+              />
+            }
+          />
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const button = await canvas.findByRole('button', { name: t('nav.menu') });
+    const logo = (
+      await canvas.findByRole('img', { name: t('app.name') })
+    ).getBoundingClientRect();
+    const stats = (
+      await canvas.findByText(t('stats.streak', { count: 12 }))
+    ).getBoundingClientRect();
+
+    expect(button.getBoundingClientRect().right).toBeLessThan(logo.left);
+    expect(logo.right).toBeLessThan(stats.left);
+  },
+};
+
+export const DictateButton: Story = {
+  render: () => (
+    <View className="flex-row gap-4 p-gutter">
+      <WithText>
+        {(t) => (
+          <>
+            <TopBar.Button
+              icon="menu"
+              accessibilityLabel={t('nav.menu')}
+              onPress={fn()}
+            />
+            <TopBar.Button
+              variant="record"
+              icon="mic"
+              accessibilityLabel={t('home.dictate')}
+              onPress={fn()}
+            />
+          </>
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const plain = await canvas.findByRole('button', { name: t('nav.menu') });
+    const record = await canvas.findByRole('button', {
+      name: t('home.dictate'),
+    });
+
+    expect(getComputedStyle(record).borderTopColor).not.toBe(
+      getComputedStyle(plain).borderTopColor,
+    );
+    expect(toRem(record.getBoundingClientRect().width)).toBeGreaterThanOrEqual(
+      3,
+    );
   },
 };

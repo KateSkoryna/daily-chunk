@@ -8,8 +8,11 @@ export const topBarMeta = {
   spec: 'DESIGN.md §9.3, plan.md §5 (TopBar)',
   props: {
     left: 'What sits on the left, usually a TopBar.Button',
+    center: 'What sits in the middle, such as the LogoBadge on Home',
     right: 'What sits on the right, such as HeaderStats or a counter',
     className: 'Extra classes; layout only',
+    'Button variant':
+      'default (grey border) or record (pink border, for dictating or recording)',
   },
   states: ['default'],
   relationships: {
@@ -18,7 +21,7 @@ export const topBarMeta = {
     usedIn: ['Home', 'Lesson task screens', 'Boss round'],
   },
   tokens: {
-    color: ['input', 'foreground'],
+    color: ['input', 'foreground', 'highlight', 'background'],
     other: ['touch'],
   },
   accessibility: [
