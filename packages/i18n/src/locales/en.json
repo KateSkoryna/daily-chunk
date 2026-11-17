@@ -5,7 +5,14 @@
     "addWords": "01 / Add today's words",
     "wordsLabel": "Words you heard or saw today",
     "wordsPlaceholder": "One per line, any form: Bahnhöfe, ging, schöner…",
-    "dictate": "Dictate words"
+    "dictate": "Dictate words",
+    "chunkLine": "Chunk doesn't look up articles. Articles look up to Chunk. Bring me today's words.",
+    "bossRound_one": "Boss round in {{count}} lesson",
+    "bossRound_other": "Boss round in {{count}} lessons",
+    "wordCount_one": "{{count}} word · min {{min}}",
+    "wordCount_other": "{{count}} words · min {{min}}",
+    "dueForReview": "{{count}} due for review ›",
+    "checkWords": "Check my words"
   },
   "settings": {
     "appLanguage": "App language"
@@ -33,7 +40,8 @@
   },
   "common": {
     "next": "Next",
-    "listen": "Listen"
+    "listen": "Listen",
+    "back": "Back"
   },
   "stats": {
     "xp": "XP",
@@ -82,6 +90,27 @@
     "tomorrowWeak": "Tomorrow · weak"
   },
   "confirm": {
-    "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}."
+    "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}.",
+    "title": "Check words",
+    "intro": "I found the dictionary form, article and translation. Tap a row to fix it.",
+    "wordCount_one": "{{count}} word",
+    "wordCount_other": "{{count}} words",
+    "pluralForms": "Pl. {{forms}}",
+    "startLesson": "Start lesson",
+    "addMore": "+ Add more words"
+  },
+  "partOfSpeech": {
+    "short": {
+      "noun": "NOUN",
+      "verb": "VERB",
+      "adjective": "ADJ",
+      "other": "WORD"
+    },
+    "long": {
+      "noun": "noun",
+      "verb": "verb",
+      "adjective": "adjective",
+      "other": "word"
+    }
   }
 }
