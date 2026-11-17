@@ -8,6 +8,11 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { ArticleChip } from '../../src/components/ArticleChip/ArticleChip';
+import { HeaderStats } from '../../src/components/HeaderStats/HeaderStats';
+import { SectionLabel } from '../../src/components/SectionLabel/SectionLabel';
+import { StatTile } from '../../src/components/StatTile/StatTile';
+import { TabBar } from '../../src/components/TabBar/TabBar';
+import { TopBar } from '../../src/components/TopBar/TopBar';
 import { GapFill } from '../../src/components/GapFill/GapFill';
 import { OptionGrid } from '../../src/components/OptionGrid/OptionGrid';
 import { RecordButton } from '../../src/components/RecordButton/RecordButton';
@@ -32,6 +37,7 @@ export default function ThemeCheck() {
   const otherAppLanguage = appLanguage === 'en' ? 'ru' : 'en';
   const [pressStatus, setPressStatus] = useState('not pressed');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [activeTab, setActiveTab] = useState('home');
   const [pickedWord, setPickedWord] = useState<string | null>(null);
   const [answerTileIds, setAnswerTileIds] = useState<string[]>([]);
   const [recordState, setRecordState] = useState<'idle' | 'recording' | 'done'>(
@@ -245,6 +251,39 @@ export default function ThemeCheck() {
           correctAnswer="neut"
           onSelect={() => undefined}
           accessibilityLabel="Answered correct"
+        />
+      </View>
+
+      <View className="gap-6">
+        <Text className="font-display text-display-btn text-foreground">
+          App chrome
+        </Text>
+        <TopBar
+          left={
+            <TopBar.Button
+              icon="menu"
+              accessibilityLabel="Open menu"
+              onPress={() => undefined}
+            />
+          }
+          right={<HeaderStats xp={1240} xpLabel="XP" streakLabel="STREAK 12" />}
+        />
+        <SectionLabel>01 / Add words</SectionLabel>
+        <View className="flex-row gap-2">
+          <StatTile variant="primary" value="+140" label="XP" />
+          <StatTile variant="success" value="13" label="Day streak" />
+          <StatTile variant="highlight" value="88%" label="Accuracy" />
+        </View>
+        <TabBar
+          accessibilityLabel="Main"
+          activeKey={activeTab}
+          onSelect={setActiveTab}
+          tabs={[
+            { key: 'home', label: 'Home', icon: 'home' },
+            { key: 'lessons', label: 'Lessons', icon: 'book' },
+            { key: 'score', label: 'Score', icon: 'trophy', badge: 5 },
+            { key: 'stats', label: 'Stats', icon: 'chart' },
+          ]}
         />
       </View>
 
