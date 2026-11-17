@@ -5,6 +5,7 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import {
   SentenceBuilder,
   type SentenceBuilderProps,
@@ -59,35 +60,37 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(sentenceBuilderMeta) } },
-    controls: { include: ['answerLabel'] },
+    controls: { disable: true },
   },
   args: {
     answer: [],
     pool: allTiles,
-    answerLabel: 'Your answer',
     onAdd: fn(),
     onRemove: fn(),
   },
-  argTypes: {
-    answerLabel: {
-      control: 'text',
-      description: 'Names the answer line for a screen reader.',
-    },
-  },
-  render: ({ answerLabel, onAdd, onRemove }) => (
-    <BuilderDemo answerLabel={answerLabel} onAdd={onAdd} onRemove={onRemove} />
+  render: ({ onAdd, onRemove }) => (
+    <WithText>
+      {(t) => (
+        <BuilderDemo
+          answerLabel={t('sentenceBuilder.answer')}
+          onAdd={onAdd}
+          onRemove={onRemove}
+        />
+      )}
+    </WithText>
   ),
 } satisfies Meta<typeof SentenceBuilder>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SentenceBuilder>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const answerLine = await canvas.findByRole('group', {
-      name: args.answerLabel,
+      name: t('sentenceBuilder.answer'),
     });
 
     expect(within(answerLine).queryAllByRole('button')).toHaveLength(0);

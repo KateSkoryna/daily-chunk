@@ -7,10 +7,11 @@ import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { Icon } from '../Icon/Icon';
 import { Button, type ButtonVariant } from './button';
+import { textFor, WithText } from '../../lib/story-text';
 import { buttonMeta } from './button.meta';
 import { Text } from './text';
 
-type ButtonStoryArgs = ComponentProps<typeof Button> & { label: string };
+type ButtonStoryArgs = ComponentProps<typeof Button> & { label?: string };
 
 const variants = [
   'default',
@@ -44,7 +45,6 @@ const meta = {
   args: {
     variant: 'default',
     disabled: false,
-    label: 'Next',
     onPress: fn(),
   },
   argTypes: {
@@ -60,14 +60,19 @@ const meta = {
     },
     label: {
       control: 'text',
-      description: 'The label shown inside the button.',
+      description:
+        'The label shown inside the button. Empty: the translated default for the app language.',
     },
   },
   render: ({ label, ...args }) => (
     <View className="items-start gap-4 p-gutter">
-      <Button {...args}>
-        <Text>{label}</Text>
-      </Button>
+      <WithText>
+        {(t) => (
+          <Button {...args}>
+            <Text>{label || t('common.next')}</Text>
+          </Button>
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<ButtonStoryArgs>;
@@ -88,9 +93,9 @@ function clickEvenWhenDisabled(button: HTMLElement) {
 }
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
     const button = await within(canvasElement).findByRole('button', {
-      name: args.label,
+      name: args.label || textFor(globals)('common.next'),
     });
     const variant = args.variant ?? 'default';
     const label = button.querySelector('div') as HTMLElement;
@@ -181,9 +186,9 @@ export const Pressed: Story = {
       },
     },
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
     const button = await within(canvasElement).findByRole('button', {
-      name: args.label,
+      name: args.label || textFor(globals)('common.next'),
     });
     const restingBox = button.getBoundingClientRect();
 
@@ -206,19 +211,23 @@ export const Pressed: Story = {
 };
 
 export const WithIcon: Story = {
-  args: { variant: 'secondary', label: 'Listen' },
+  args: { variant: 'secondary' },
   parameters: { controls: { include: ['variant', 'label'] } },
   render: ({ label, ...args }) => (
     <View className="items-start gap-4 p-gutter">
-      <Button {...args}>
-        <Icon name="speaker" decorative />
-        <Text>{label}</Text>
-      </Button>
+      <WithText>
+        {(t) => (
+          <Button {...args}>
+            <Icon name="speaker" decorative />
+            <Text>{label || t('common.listen')}</Text>
+          </Button>
+        )}
+      </WithText>
     </View>
   ),
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
     const button = await within(canvasElement).findByRole('button', {
-      name: args.label,
+      name: args.label || textFor(globals)('common.listen'),
     });
     const icon = button.querySelector('svg') as SVGElement;
     const label = button.querySelector('div') as HTMLElement;

@@ -5,10 +5,12 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
+import { ticketGapFill } from '../../mocks/gap-fill';
 import { OptionGrid, type OptionGridProps } from './OptionGrid';
 import { optionGridMeta } from './OptionGrid.meta';
 
-const wordOptions = ['Fahrkarte', 'Fahrkarten', 'Bahnhof', 'Gleis'];
+const wordOptions = ticketGapFill.options;
 const noneOption = 'none';
 
 function GridDemo({ value, onSelect, ...props }: OptionGridProps) {
@@ -41,7 +43,6 @@ const meta = {
     value: null,
     correctAnswer: undefined,
     columns: 2,
-    accessibilityLabel: 'Pick the word',
     onSelect: fn(),
   },
   argTypes: {
@@ -64,18 +65,29 @@ const meta = {
       description: 'How many options sit in a row.',
     },
   },
-  render: (args) => <GridDemo key={String(args.value)} {...args} />,
+  render: (args) => (
+    <WithText>
+      {(t) => (
+        <GridDemo
+          key={String(args.value)}
+          {...args}
+          accessibilityLabel={t('gapFill.pickWord')}
+        />
+      )}
+    </WithText>
+  ),
 } satisfies Meta<typeof OptionGrid>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof OptionGrid>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const group = await canvas.findByRole('radiogroup', {
-      name: args.accessibilityLabel,
+      name: t('gapFill.pickWord'),
     });
     const radios = within(group).getAllByRole('radio');
     const columns = args.columns ?? 2;
@@ -109,7 +121,7 @@ export const Default: Story = {
     });
     if (args.value === args.correctAnswer) {
       expect(within(right).getByRole('img').getAttribute('aria-label')).toBe(
-        'Correct',
+        t('answer.correct'),
       );
     } else {
       expect(getComputedStyle(right).borderTopStyle).toBe('dashed');
@@ -120,7 +132,7 @@ export const Default: Story = {
         name: new RegExp(args.value),
       });
       expect(within(picked).getByRole('img').getAttribute('aria-label')).toBe(
-        'Wrong',
+        t('answer.wrong'),
       );
     }
     await userEvent.click(radios[0]!, { pointerEventsCheck: 0 });
@@ -132,32 +144,39 @@ export const Answered: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="gap-6 p-gutter">
-      <OptionGrid
-        options={wordOptions}
-        value="Fahrkarte"
-        correctAnswer="Fahrkarte"
-        onSelect={() => undefined}
-        accessibilityLabel="Answered correct"
-      />
-      <OptionGrid
-        options={wordOptions}
-        value="Gleis"
-        correctAnswer="Fahrkarte"
-        onSelect={() => undefined}
-        accessibilityLabel="Answered wrong"
-      />
+      <WithText>
+        {(t) => (
+          <>
+            <OptionGrid
+              options={wordOptions}
+              value="Fahrkarte"
+              correctAnswer="Fahrkarte"
+              onSelect={() => undefined}
+              accessibilityLabel={t('answer.correct')}
+            />
+            <OptionGrid
+              options={wordOptions}
+              value="Gleis"
+              correctAnswer="Fahrkarte"
+              onSelect={() => undefined}
+              accessibilityLabel={t('answer.wrong')}
+            />
+          </>
+        )}
+      </WithText>
     </View>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const correctGroup = await canvas.findByRole('radiogroup', {
-      name: 'Answered correct',
+      name: t('answer.correct'),
     });
     const wrongGroup = await canvas.findByRole('radiogroup', {
-      name: 'Answered wrong',
+      name: t('answer.wrong'),
     });
     const correctPick = within(correctGroup).getByRole('radio', {
-      name: /^(Correct)?\s*Fahrkarte$/,
+      name: new RegExp(`^(${t('answer.correct')})?\\s*Fahrkarte$`),
     });
     const wrongPick = within(wrongGroup).getByRole('radio', { name: /Gleis/ });
     const revealed = within(wrongGroup).getByRole('radio', {
@@ -166,10 +185,10 @@ export const Answered: Story = {
 
     expect(
       within(correctPick).getByRole('img').getAttribute('aria-label'),
-    ).toBe('Correct');
+    ).toBe(t('answer.correct'));
     expect(getComputedStyle(correctPick).borderTopStyle).toBe('solid');
     expect(within(wrongPick).getByRole('img').getAttribute('aria-label')).toBe(
-      'Wrong',
+      t('answer.wrong'),
     );
     expect(getComputedStyle(revealed).borderTopStyle).toBe('dashed');
     expect(within(revealed).queryByRole('img')).toBeNull();

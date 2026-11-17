@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { WithText } from '../../lib/story-text';
 import { Text } from '../../components/ui/text';
 import { HardShadow } from './HardShadow';
 import { hardShadowMeta } from './HardShadow.meta';
@@ -35,9 +36,13 @@ export const Default: Story = {
     <View className="p-gutter">
       <HardShadow testID="hard-shadow" isShadowHidden={isShadowHidden}>
         <View className="items-center justify-center bg-primary p-4">
-          <Text variant="display-btn" className="text-primary-foreground">
-            Next
-          </Text>
+          <WithText>
+            {(t) => (
+              <Text variant="display-btn" className="text-primary-foreground">
+                {t('common.next')}
+              </Text>
+            )}
+          </WithText>
         </View>
       </HardShadow>
     </View>

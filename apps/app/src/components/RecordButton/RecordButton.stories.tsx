@@ -4,14 +4,15 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { RecordButton, type RecordButtonState } from './RecordButton';
 import { recordButtonMeta } from './RecordButton.meta';
 
-const labels = {
-  idle: 'Start recording',
-  recording: 'Stop recording',
-  done: 'Play your recording',
-} satisfies Record<RecordButtonState, string>;
+const labelKeys = {
+  idle: 'record.start',
+  recording: 'record.stop',
+  done: 'record.play',
+} as const satisfies Record<RecordButtonState, string>;
 
 const swatchClasses = {
   idle: 'bg-highlight',
@@ -30,7 +31,7 @@ const meta = {
   args: {
     state: 'idle',
     size: 'default',
-    accessibilityLabel: labels.idle,
+    accessibilityLabel: '',
     onPress: fn(),
   },
   argTypes: {
@@ -48,11 +49,15 @@ const meta = {
   },
   render: ({ state, ...args }) => (
     <View className="items-start gap-4 p-gutter">
-      <RecordButton
-        {...args}
-        state={state}
-        accessibilityLabel={labels[state]}
-      />
+      <WithText>
+        {(t) => (
+          <RecordButton
+            {...args}
+            state={state}
+            accessibilityLabel={t(labelKeys[state])}
+          />
+        )}
+      </WithText>
       <View
         testID="colour-swatch"
         className={`${swatchClasses[state]} h-4 w-4 opacity-0`}
@@ -63,13 +68,15 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RecordButton>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const state = args.state ?? 'idle';
     const canvas = within(canvasElement);
     const button = await canvas.findByRole('button', {
-      name: labels[args.state],
+      name: t(labelKeys[state]),
     });
     const swatch = await canvas.findByTestId('colour-swatch');
     const style = getComputedStyle(button);
@@ -86,12 +93,12 @@ export const Default: Story = {
     );
     expect(style.borderTopColor).toBe(swatchColour);
     expect(icon.getAttribute('aria-hidden')).toBe('true');
-    if (args.state === 'recording') {
+    if (state === 'recording') {
       expect(style.backgroundColor).toBe(swatchColour);
     } else {
       expect(style.backgroundColor).not.toBe(swatchColour);
     }
-    expect(getComputedStyle(icon).fill !== 'none').toBe(args.state !== 'idle');
+    expect(getComputedStyle(icon).fill !== 'none').toBe(state !== 'idle');
 
     await userEvent.click(button);
     expect(args.onPress).toHaveBeenCalledTimes(1);
@@ -102,39 +109,49 @@ export const AllStates: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="flex-row items-center gap-4 p-gutter">
-      <RecordButton
-        state="idle"
-        accessibilityLabel={labels.idle}
-        onPress={() => undefined}
-      />
-      <RecordButton
-        state="recording"
-        accessibilityLabel={labels.recording}
-        onPress={() => undefined}
-      />
-      <RecordButton
-        state="done"
-        accessibilityLabel={labels.done}
-        onPress={() => undefined}
-      />
-      <RecordButton
-        state="done"
-        size="small"
-        accessibilityLabel="Play the shadowing"
-        onPress={() => undefined}
-      />
+      <WithText>
+        {(t) => (
+          <>
+            <RecordButton
+              state="idle"
+              accessibilityLabel={t(labelKeys.idle)}
+              onPress={() => undefined}
+            />
+            <RecordButton
+              state="recording"
+              accessibilityLabel={t(labelKeys.recording)}
+              onPress={() => undefined}
+            />
+            <RecordButton
+              state="done"
+              accessibilityLabel={t(labelKeys.done)}
+              onPress={() => undefined}
+            />
+            <RecordButton
+              state="done"
+              size="small"
+              accessibilityLabel={t(labelKeys.done)}
+              onPress={() => undefined}
+            />
+          </>
+        )}
+      </WithText>
     </View>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
-    const idle = await canvas.findByRole('button', { name: labels.idle });
+    const idle = await canvas.findByRole('button', {
+      name: t(labelKeys.idle),
+    });
     const recording = await canvas.findByRole('button', {
-      name: labels.recording,
+      name: t(labelKeys.recording),
     });
-    const done = await canvas.findByRole('button', { name: labels.done });
-    const small = await canvas.findByRole('button', {
-      name: 'Play the shadowing',
+    const playButtons = await canvas.findAllByRole('button', {
+      name: t(labelKeys.done),
     });
+    const done = playButtons[0]!;
+    const small = playButtons[1]!;
 
     expect(toRem(small.getBoundingClientRect().width)).toBe(4);
     expect(toRem(idle.getBoundingClientRect().width)).toBe(5);

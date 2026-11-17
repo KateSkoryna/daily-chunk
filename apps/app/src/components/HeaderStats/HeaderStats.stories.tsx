@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { HeaderStats } from './HeaderStats';
 import { headerStatsMeta } from './HeaderStats.meta';
 
@@ -13,34 +14,38 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(headerStatsMeta) } },
-    controls: { include: ['xp', 'xpLabel', 'streakLabel'] },
+    controls: { include: ['xp'] },
   },
-  args: { xp: 1240, xpLabel: 'XP', streakLabel: 'STREAK 12' },
+  args: { xp: 1240 },
   argTypes: {
     xp: { control: 'number', description: 'The XP total.' },
-    xpLabel: { control: 'text', description: 'The word after the number.' },
-    streakLabel: {
-      control: 'text',
-      description: 'The streak line, already translated with its number.',
-    },
   },
   render: (args) => (
     <View className="items-end p-gutter">
-      <HeaderStats {...args} />
+      <WithText>
+        {(t) => (
+          <HeaderStats
+            {...args}
+            xpLabel={t('stats.xp')}
+            streakLabel={t('stats.streak', { count: 12 })}
+          />
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<typeof HeaderStats>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof HeaderStats>;
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
     const canvas = within(canvasElement);
     const number = await canvas.findByText(String(args.xp));
-    const xpLabel = await canvas.findByText(args.xpLabel);
-    const streak = await canvas.findByText(args.streakLabel);
+    const xpLabel = await canvas.findByText(t('stats.xp'));
+    const streak = await canvas.findByText(t('stats.streak', { count: 12 }));
     const numberBox = number.getBoundingClientRect();
     const streakBox = streak.getBoundingClientRect();
 

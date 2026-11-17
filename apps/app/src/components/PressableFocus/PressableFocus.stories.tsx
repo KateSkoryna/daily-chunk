@@ -4,6 +4,7 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { Text } from '../ui/text';
 import { PressableFocus, type PressableFocusProps } from './PressableFocus';
 import { pressableFocusMeta } from './PressableFocus.meta';
@@ -20,7 +21,6 @@ const meta = {
   },
   args: {
     accessibilityRole: 'button',
-    accessibilityLabel: 'Next',
     onPress: fn(),
   },
   argTypes: {
@@ -31,14 +31,23 @@ const meta = {
     },
     accessibilityLabel: {
       control: 'text',
-      description: 'Required when the content is an icon only.',
+      description:
+        'Required when the content is an icon only. Empty: the translated default for the app language.',
     },
   },
   render: (args) => (
     <View className="items-start gap-4 p-gutter">
-      <PressableFocus {...args}>
-        <Text variant="display-btn-sm">{args.accessibilityLabel}</Text>
-      </PressableFocus>
+      <WithText>
+        {(t) => {
+          const label = args.accessibilityLabel || t('common.next');
+
+          return (
+            <PressableFocus {...args} accessibilityLabel={label}>
+              <Text variant="display-btn-sm">{label}</Text>
+            </PressableFocus>
+          );
+        }}
+      </WithText>
       <View testID="ring-colour" className="h-4 w-4 border-2 border-ring" />
     </View>
   ),
@@ -46,11 +55,15 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof PressableFocus>;
 
-function findControl(canvasElement: HTMLElement, args: PressableFocusProps) {
+function findControl(
+  canvasElement: HTMLElement,
+  args: PressableFocusProps,
+  globals: Record<string, unknown>,
+) {
   return within(canvasElement).findByRole(args.accessibilityRole ?? 'button', {
-    name: args.accessibilityLabel ?? undefined,
+    name: args.accessibilityLabel || textFor(globals)('common.next'),
   });
 }
 
@@ -73,8 +86,8 @@ export const Default: Story = {
       },
     },
   },
-  play: async ({ canvasElement, args }) => {
-    const button = await findControl(canvasElement, args);
+  play: async ({ canvasElement, args, globals }) => {
+    const button = await findControl(canvasElement, args, globals);
     const box = button.getBoundingClientRect();
 
     expect(toRem(box.height)).toBeGreaterThanOrEqual(3);
@@ -93,9 +106,9 @@ export const Focused: Story = {
       },
     },
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
     const canvas = within(canvasElement);
-    const button = await findControl(canvasElement, args);
+    const button = await findControl(canvasElement, args, globals);
 
     await userEvent.tab();
     expect(button).toHaveFocus();
@@ -134,8 +147,8 @@ export const Pressed: Story = {
       },
     },
   },
-  play: async ({ canvasElement, args }) => {
-    const button = await findControl(canvasElement, args);
+  play: async ({ canvasElement, args, globals }) => {
+    const button = await findControl(canvasElement, args, globals);
 
     await userEvent.click(button);
     await waitForNextFrame();

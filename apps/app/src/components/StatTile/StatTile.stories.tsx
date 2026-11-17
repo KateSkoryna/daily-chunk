@@ -4,10 +4,19 @@ import { expect, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor, WithText } from '../../lib/story-text';
 import { StatTile, type StatTileVariant } from './StatTile';
 import { statTileMeta } from './StatTile.meta';
 
 const variants = ['primary', 'success', 'highlight'] as const;
+
+const values = { primary: '+140', success: '13', highlight: '88%' } as const;
+
+const labelKeys = {
+  primary: 'stats.xp',
+  success: 'stats.dayStreak',
+  highlight: 'stats.accuracy',
+} as const;
 
 const meta = {
   title: 'Components/StatTile',
@@ -15,9 +24,9 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(statTileMeta) } },
-    controls: { include: ['variant', 'value', 'label'] },
+    controls: { include: ['variant'] },
   },
-  args: { variant: 'primary', value: '+140', label: 'XP' },
+  args: { variant: 'primary' },
   argTypes: {
     variant: {
       control: 'inline-radio',
@@ -25,19 +34,25 @@ const meta = {
       description:
         'primary is filled yellow; success and highlight are outlines.',
     },
-    value: { control: 'text', description: 'The number, as text.' },
-    label: { control: 'text', description: 'The label under the number.' },
   },
-  render: (args) => (
+  render: ({ variant = 'primary' }) => (
     <View className="flex-row p-gutter">
-      <StatTile {...args} />
+      <WithText>
+        {(t) => (
+          <StatTile
+            variant={variant}
+            value={values[variant]}
+            label={t(labelKeys[variant])}
+          />
+        )}
+      </WithText>
     </View>
   ),
 } satisfies Meta<typeof StatTile>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof StatTile>;
 
 function isTransparent(colour: string) {
   return colour === 'transparent' || /,\s*0\)$/.test(colour);
@@ -63,13 +78,15 @@ function expectTile(tile: HTMLElement, variant: StatTileVariant) {
 }
 
 export const Default: Story = {
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const variant = args.variant ?? 'primary';
     const canvas = within(canvasElement);
-    const value = await canvas.findByText(args.value);
-    const label = await canvas.findByText(args.label);
+    const value = await canvas.findByText(values[variant]);
+    const label = await canvas.findByText(t(labelKeys[variant]));
     const tile = tileOf(value);
 
-    expectTile(tile, args.variant);
+    expectTile(tile, variant);
     expect(getComputedStyle(label).color).toBe(getComputedStyle(value).color);
     expect(label.getBoundingClientRect().top).toBeGreaterThan(
       value.getBoundingClientRect().top,
@@ -81,9 +98,18 @@ export const Row: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <View className="flex-row gap-2 p-gutter">
-      <StatTile variant="primary" value="+140" label="XP" />
-      <StatTile variant="success" value="13" label="Day streak" />
-      <StatTile variant="highlight" value="88%" label="Accuracy" />
+      <WithText>
+        {(t) =>
+          variants.map((variant) => (
+            <StatTile
+              key={variant}
+              variant={variant}
+              value={values[variant]}
+              label={t(labelKeys[variant])}
+            />
+          ))
+        }
+      </WithText>
     </View>
   ),
   play: async ({ canvasElement }) => {
