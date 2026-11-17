@@ -4,7 +4,7 @@ export const lessonStepperMeta = {
   name: 'LessonStepper',
   category: 'molecule',
   description:
-    'Shows where the person is in a lesson: one segment per task, a label for the current task and the XP earned so far. Done segments are green, the current one is yellow, upcoming ones are dim. The Boss round uses the same component with 3 segments.',
+    'Shows where the person is in a lesson: one segment per task, a label for the current task and the XP earned so far. Done segments are cyan, the current one is yellow, upcoming ones are dim. The Boss round uses the same component with 3 segments.',
   spec: 'DESIGN.md §9.3, design/system/components/LessonStepper.md',
   props: {
     total:

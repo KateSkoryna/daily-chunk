@@ -7,7 +7,7 @@ export const tutorQuoteMeta = {
     'The tutor’s only voice: one short line in a box with a label tab on the top border. It speaks at the start of a lesson, after a pass or a fail, and on streak milestones. The variant only changes the colour and adds a ✓ or ✗ icon; the layout never changes.',
   spec: 'DESIGN.md §9.3, design/system/components/TutorQuote.md',
   props: {
-    variant: 'start (yellow), pass (green with ✓) or fail (red with ✗)',
+    variant: 'start (yellow), pass (cyan with ✓) or fail (red with ✗)',
     tabLabel:
       'The text on the tab, already translated: the tutor’s name or the result',
     children: 'The tutor’s line, at most 2 short sentences',
@@ -15,7 +15,7 @@ export const tutorQuoteMeta = {
   },
   variants: {
     start: 'Yellow border and tab; the tutor opens a lesson or a milestone',
-    pass: 'Green border and tab with a ✓ icon',
+    pass: 'Cyan border and tab with a ✓ icon',
     fail: 'Red border and tab with a ✗ icon',
   },
   states: ['default'],
