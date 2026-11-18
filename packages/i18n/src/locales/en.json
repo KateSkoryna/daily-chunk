@@ -56,7 +56,9 @@
       "read": "Read the story",
       "flashcards": "Flashcards",
       "listen": "Listen & shadow",
-      "record": "Read aloud"
+      "record": "Read aloud",
+      "gap-fill": "Fill the gap",
+      "translate": "{{from}} → {{to}}"
     },
     "xpEarned": "+{{count}} XP",
     "title": "Lesson {{number}}",
@@ -72,7 +74,11 @@
   },
   "gapFill": {
     "blank": "Blank",
-    "pickWord": "Pick the word"
+    "pickWord": "Pick the word",
+    "articleSection": "A · Pick the article",
+    "wordSection": "B · Pick the word",
+    "pickArticle": "Pick the article",
+    "check": "Check"
   },
   "articlePicker": {
     "label": "Pick the article"
@@ -156,5 +162,17 @@
     "readAloud": "Now read it aloud",
     "translationOn": "{{language}} on",
     "translationOff": "{{language}} off"
+  },
+  "translate": {
+    "use": "Use:",
+    "answerLabel": "Your translation",
+    "dictate": "Answer by voice",
+    "check": "Check",
+    "tryAgain": "Try again",
+    "verdict": {
+      "almost": "Almost · 1 fix",
+      "correct": "Correct"
+    },
+    "correctionLabel": "Correct sentence: {{sentence}}. Change \"{{wrong}}\" to \"{{right}}\"."
   }
 }

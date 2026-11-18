@@ -62,7 +62,9 @@
       "read": "Читай историю",
       "flashcards": "Карточки",
       "listen": "Слушай и повторяй",
-      "record": "Читай вслух"
+      "record": "Читай вслух",
+      "gap-fill": "Заполни пропуск",
+      "translate": "{{from}} → {{to}}"
     },
     "xpEarned": "+{{count}} XP",
     "title": "Урок {{number}}",
@@ -78,7 +80,11 @@
   },
   "gapFill": {
     "blank": "Пропуск",
-    "pickWord": "Выбери слово"
+    "pickWord": "Выбери слово",
+    "articleSection": "A · Выбери артикль",
+    "wordSection": "B · Выбери слово",
+    "pickArticle": "Выбери артикль",
+    "check": "Проверить"
   },
   "articlePicker": {
     "label": "Выбери артикль"
@@ -166,5 +172,17 @@
     "readAloud": "Теперь прочитай вслух",
     "translationOn": "{{language}} вкл",
     "translationOff": "{{language}} выкл"
+  },
+  "translate": {
+    "use": "Используй:",
+    "answerLabel": "Твой перевод",
+    "dictate": "Ответить голосом",
+    "check": "Проверить",
+    "tryAgain": "Ещё раз",
+    "verdict": {
+      "almost": "Почти · 1 правка",
+      "correct": "Верно"
+    },
+    "correctionLabel": "Правильное предложение: {{sentence}}. Замени «{{wrong}}» на «{{right}}»."
   }
 }
