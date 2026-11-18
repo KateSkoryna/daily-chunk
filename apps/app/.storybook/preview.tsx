@@ -28,7 +28,7 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { appLanguage: 'en' },
+  initialGlobals: { appLanguage: import.meta.env.VITE_APP_LANGUAGE ?? 'en' },
   decorators: [
     (Story, { globals }) => (
       <I18nextProvider

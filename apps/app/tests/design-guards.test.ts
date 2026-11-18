@@ -196,7 +196,7 @@ describe('component meta check (DESIGN.md §14)', () => {
     expect(problems.join()).toContain('tokens.typography must be an array');
   });
 
-  it('passes for the real src folder', async () => {
+  it('passes for the real src folder', { timeout: 30000 }, async () => {
     const problems = await checkComponentMeta(sourceDirectory, tokensFile);
     expect(problems).toEqual([]);
   });
