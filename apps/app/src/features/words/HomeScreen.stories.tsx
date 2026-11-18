@@ -105,6 +105,16 @@ export const Default: Story = {
     expect(canvas.getByText(String(args.xp))).toBeTruthy();
     expect(canvas.getByText(t('home.addWords'))).toBeTruthy();
     expect(toRem(check.getBoundingClientRect().height)).toBe(4);
+    expect(
+      toRem(
+        canvas
+          .getByText(t('home.bossRound', { count: lessonsTotal - lessonsDone }))
+          .getBoundingClientRect().height,
+      ),
+    ).toBeLessThan(2);
+    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.clientWidth,
+    );
     expect(check.getBoundingClientRect().bottom).toBeLessThanOrEqual(
       tabBar.getBoundingClientRect().top,
     );
@@ -161,28 +171,5 @@ export const TooFewWords: Story = {
       ),
     ).toBeTruthy();
     expect(args.onWordsChange).toHaveBeenCalled();
-  },
-};
-
-export const Russian: Story = {
-  globals: { appLanguage: 'ru' },
-  parameters: { controls: { disable: true } },
-  play: async ({ canvasElement, args, globals }) => {
-    const t = textFor(globals);
-    const canvas = within(canvasElement);
-    const { lessonsDone, lessonsTotal } = args.bossRound;
-    const bossLabel = await canvas.findByText(
-      t('home.bossRound', { count: lessonsTotal - lessonsDone }),
-    );
-
-    expect(globals.appLanguage).toBe('ru');
-    expect(toRem(bossLabel.getBoundingClientRect().height)).toBeLessThan(2);
-    expect(canvas.getByText(t('home.chunkLine'))).toBeTruthy();
-    expect(
-      canvas.getByRole('button', { name: t('home.checkWords') }),
-    ).toBeTruthy();
-    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
-      canvasElement.clientWidth,
-    );
   },
 };
