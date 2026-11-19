@@ -118,7 +118,15 @@
     "stageClear": "Уровень пройден",
     "addedToReview": "Добавлено в повторение",
     "tomorrow": "Завтра",
-    "tomorrowWeak": "Завтра · слабое"
+    "tomorrowWeak": "Завтра · слабое",
+    "lessonCleared": "Урок {{number}} · пройден",
+    "chunkLine": "Чанк не забывает слова. Слова слишком боятся от него уйти. Ещё {{count}} под замком.",
+    "bossUnlocks_one": "Босс-раунд откроется через {{count}} урок · {{done}}/{{total}}",
+    "bossUnlocks_few": "Босс-раунд откроется через {{count}} урока · {{done}}/{{total}}",
+    "bossUnlocks_many": "Босс-раунд откроется через {{count}} уроков · {{done}}/{{total}}",
+    "bossUnlocks_other": "Босс-раунд откроется через {{count}} урока · {{done}}/{{total}}",
+    "backToBase": "На базу",
+    "replayRecording": "Послушать мою запись"
   },
   "confirm": {
     "pluralNotice": "Ты написал «{{written}}» (мн. ч.). Сохранено как {{saved}}.",

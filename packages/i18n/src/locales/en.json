@@ -110,7 +110,13 @@
     "stageClear": "Stage clear",
     "addedToReview": "Added to review",
     "tomorrow": "Tomorrow",
-    "tomorrowWeak": "Tomorrow · weak"
+    "tomorrowWeak": "Tomorrow · weak",
+    "lessonCleared": "Lesson {{number}} · cleared",
+    "chunkLine": "Chunk doesn't forget words. Words are too scared to leave him. {{count}} more locked up.",
+    "bossUnlocks_one": "Boss round unlocks in {{count}} lesson · {{done}}/{{total}}",
+    "bossUnlocks_other": "Boss round unlocks in {{count}} lessons · {{done}}/{{total}}",
+    "backToBase": "Back to base",
+    "replayRecording": "Replay my recording"
   },
   "confirm": {
     "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}.",
