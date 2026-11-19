@@ -3,14 +3,13 @@ import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage } from '@daily-chunk/languages';
 import { View } from 'react-native';
 
-import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
 import { GlitchTitle } from '../../components/GlitchTitle/GlitchTitle';
 import { Icon } from '../../components/Icon/Icon';
 import { ListGroup } from '../../components/ListGroup/ListGroup';
 import { Notice } from '../../components/Notice/Notice';
-import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
 import { Screen } from '../../components/Screen/Screen';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { WordTag } from '../../components/WordTag/WordTag';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 import { displayedWord } from '../../lib/displayed-word';
@@ -59,7 +58,7 @@ function ConfirmScreen({
           <ListGroup.Row
             key={word.id}
             onPress={() => onEditWord(word.id)}
-            left={<WordTag word={word} />}
+            left={<WordTag word={word} className="min-w-14" />}
             right={<Icon name="pencil" decorative className="text-ring" />}
           >
             <Text variant="word-l">{displayedWord(word)}</Text>
@@ -91,26 +90,6 @@ function ConfirmScreen({
         </Button>
       </View>
     </Screen>
-  );
-}
-
-function WordTag({ word }: { word: Word }) {
-  const { t } = useTranslation();
-
-  if (!word.gender) {
-    return (
-      <PartOfSpeechChip
-        label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
-        className="min-w-14"
-      />
-    );
-  }
-  return (
-    <ArticleChip
-      gender={word.gender}
-      targetLanguage={word.targetLanguage}
-      className="min-w-14"
-    />
   );
 }
 

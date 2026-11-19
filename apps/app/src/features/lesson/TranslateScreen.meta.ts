@@ -28,8 +28,7 @@ export const translateScreenMeta = {
     composedOf: [
       'Screen',
       'LessonHeader',
-      'ArticleChip',
-      'PartOfSpeechChip',
+      'WordTag',
       'Textarea',
       'TopBar',
       'AnswerFeedback',

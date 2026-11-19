@@ -4,14 +4,13 @@ import type { NativeLanguage, TargetLanguage } from '@daily-chunk/languages';
 import { View } from 'react-native';
 
 import { AnswerFeedback } from '../../components/AnswerFeedback/AnswerFeedback';
-import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
 import { CorrectionSentence } from '../../components/CorrectionSentence/CorrectionSentence';
 import { Icon } from '../../components/Icon/Icon';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
-import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
 import { Screen } from '../../components/Screen/Screen';
 import { Textarea } from '../../components/Textarea/Textarea';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { WordTag } from '../../components/WordTag/WordTag';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 import { splitAroundWord } from '../../lib/split-around-word';
@@ -43,20 +42,9 @@ type TranslateScreenProps = {
 };
 
 function WordToUse({ word }: { word: Word }) {
-  const { t } = useTranslation();
-
   return (
     <View className="flex-row items-center gap-2">
-      {word.gender ? (
-        <ArticleChip
-          gender={word.gender}
-          targetLanguage={word.targetLanguage}
-        />
-      ) : (
-        <PartOfSpeechChip
-          label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
-        />
-      )}
+      <WordTag word={word} />
       <Text variant="option">{word.lemma}</Text>
     </View>
   );
