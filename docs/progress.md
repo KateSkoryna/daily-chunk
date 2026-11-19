@@ -644,7 +644,7 @@ One branch for the whole phase: `feat/phase-2-screens`, one commit per step, one
 | 2.4  | DONE   | `feat/phase-2-screens` |
 | 2.5  | DONE   | `feat/phase-2-screens` |
 | 2.6  | DONE   | `feat/phase-2-screens` |
-| 2.7  | TODO   | `feat/phase-2-screens` |
+| 2.7  | DONE   | `feat/phase-2-screens` |
 
 ### 2.1 Core domain types
 
@@ -718,3 +718,40 @@ One branch for the whole phase: `feat/phase-2-screens`, one commit per step, one
 
 - Scrolling: one `Screen` with a `ScrollView`, done once in step 3.x. `DESIGN.md` rows and the `retry` icon from phase 2: approved. Keyboard list of the underlined words on Read: step 3.9.
 - No `Russian` stories. `npm test` now runs the stories twice (`storybook-en`, `storybook-ru`; the toolbar language comes from `VITE_APP_LANGUAGE` in `.storybook/preview.tsx`). Removed `Russian` from Home (its checks moved into `Default`) and renamed the Confirm one to `OtherPartOfSpeech` (the long tag). The Russian run showed that the Confirm tags are not all the same width (`ПРИЛ` is wider than 3.5rem), so `Default` now checks each tag is at least 3.5rem. The meta check test got a 30 s timeout (it timed out under the heavier run). 242 tests (98 files).
+
+### 2.7 Done screen and phase report
+
+- Result: `DoneScreen` (`src/features/lesson/`, meta, story `Screens/Done` with `Default`) and the phase 2 report below. The screen shows the lesson cleared line, the glitch title, three `StatTile`s (+140 XP, 13 day streak, 88%), Chunk's line in a `TutorQuote`, the four words in a `ListGroup` with when they return (the weak `Fahrkarte` is pink "Tomorrow · weak"), the Boss round line and the buttons. No new base component except `WordTag`.
+- `WordTag` (meta, story): the tag that starts a word row. It was written three times (Confirm, Translate, Done), so it is one component now and Confirm and Translate use it. New strings (EN and RU, **the Russian is mine, please read it**): `done.lessonCleared`, `done.chunkLine`, `done.bossUnlocks` (plural), `done.backToBase`, `done.replayRecording`.
+- Screenshots at 390 × 844: `docs/screenshots/phase-2/done-design.png` / `done-story-en.png` / `done-story-ru.png`.
+- Differences, all named: fonts (`DESIGN.md` §5.1); Chunk's line writes the number as `4` where the design writes "Four"; the title is one line, the design breaks it into `STAGE` and `CLEAR`; the review words use the tag chips of the other screens (the design colours only the article text and draws no chip); the words are in the `option` style, the design uses a smaller size; the replay button shows a cyan focus ring in the screenshot (the play test leaves the focus there; same artifact as before); the English page is 849px tall (5px over) and the Russian 895px (the scrolling decision, step 3.x).
+- Open for the owner: (1) `DESIGN.md` §9.3 got rows for `WordTag` and `DoneScreen`, please confirm. (2) The "weak" word is a mock flag (`doneDemo.weakWordIds`); in phase 3 the SRS decides it.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 7 languages, 10 core, 16 i18n, 246 app (102 files; each story runs in English and in Russian); `npx prettier --check .` → exit 0.
+
+## Phase 2 report
+
+Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
+
+| Step | Status | In one line                                                                                                    |
+| ---- | ------ | -------------------------------------------------------------------------------------------------------------- |
+| 2.1  | DONE   | `Word`, `Lesson`, `ReviewLog`, `Profile`, `LanguagePair` types in `packages/core`, type tests                  |
+| 2.2  | DONE   | `src/mocks/` with the demo copy (four words, lesson 13, 1240 XP, "Der letzte Zug"), typed by `core`            |
+| 2.3  | DONE   | Home and Confirm screens; `PartOfSpeechChip`                                                                   |
+| 2.4  | DONE   | Flashcards and Listen screens; `LessonHeader`, `StepIndicator`, `Waveform`, `PlaybackControls`; `again` button |
+| 2.5  | DONE   | Read and Record screens; `Toggle`, `StoryText`, `WordPopover`; `retry` icon                                    |
+| 2.6  | DONE   | Gap fill and Translate screens; `AnswerFeedback`, `CorrectionSentence`                                         |
+| 2.7  | DONE   | Done screen; `WordTag`; this report                                                                            |
+
+### Evidence
+
+- Nine screens as controlled components with a meta and stories (`Screens/Home`, `Confirm`, `Flashcards`, `Listen`, `Read`, `Record`, `GapFill`, `Translate`, `Done`): they take data and callbacks as props, take text from i18n and content from `src/mocks`.
+- 11 new components with a meta and a story (`PartOfSpeechChip`, `LessonHeader`, `StepIndicator`, `Waveform`, `PlaybackControls`, `Toggle`, `StoryText`, `WordPopover`, `AnswerFeedback`, `CorrectionSentence`, `WordTag`) and the `retry` icon; 20 learning notes in `docs/learn/` (one new: `screens-as-stories.md`).
+- `npm test`: 7 languages, 10 core, 16 i18n, 246 app (102 files). Every story runs twice, in English and in Russian, with an accessibility check. Screenshots of every screen (design vs story, EN and RU) are in `docs/screenshots/phase-2/`.
+- Owner decisions in this phase: one branch for the phase; no `Russian` stories (tests run in both languages); scrolling comes once in step 3.x; the keyboard list of the underlined words on Read comes in step 3.9; `DESIGN.md` rows up to 2.6 and the `retry` icon are approved.
+
+### Open for the owner (all of phase 2)
+
+- `DESIGN.md` §9.3 rows for `WordTag`, `DoneScreen` (2.7).
+- Check on the A54: the Handjet «Э» for the digit 3, the Android underline of the story words, the Gap fill sentence at 320px.
+- Read the Russian strings I wrote in steps 2.3 to 2.7.
+- Open from 2.3: the notice that uppercases German words; the `verspätet` grammar note; whether to remove the `shadow-hard` token names.
