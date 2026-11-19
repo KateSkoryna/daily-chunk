@@ -9,5 +9,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@daily-chunk/i18n": "*",
+    "@daily-chunk/languages": "*"
   }
 }

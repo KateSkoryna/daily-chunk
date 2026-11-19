@@ -1,4 +1,6 @@
+import type { NativeLanguage, TargetLanguage } from '@daily-chunk/languages';
+
 export type LanguagePair = {
-  targetLanguage: 'de';
-  nativeLanguage: 'ru' | 'en';
+  targetLanguage: TargetLanguage;
+  nativeLanguage: NativeLanguage;
 };

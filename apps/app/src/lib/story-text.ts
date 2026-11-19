@@ -5,7 +5,7 @@ import {
 } from '@daily-chunk/i18n';
 import type { ReactNode } from 'react';
 
-type Translate = ReturnType<typeof useTranslation>['t'];
+export type Translate = ReturnType<typeof useTranslation>['t'];
 
 export function WithText({
   children,

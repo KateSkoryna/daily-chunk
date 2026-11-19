@@ -7,7 +7,18 @@
     "addWords": "01 / Добавь новые слова",
     "wordsLabel": "Слова, которые встретились тебе сегодня",
     "wordsPlaceholder": "По одному в строке, в любой форме: Bahnhöfe, ging, schöner…",
-    "dictate": "Надиктовать слова"
+    "dictate": "Надиктовать слова",
+    "chunkLine": "Чанк не ищет артикли. Артикли равняются на Чанка. Принеси мне слова на сегодня.",
+    "bossRound_one": "Босс-раунд через {{count}} урок",
+    "bossRound_few": "Босс-раунд через {{count}} урока",
+    "bossRound_many": "Босс-раунд через {{count}} уроков",
+    "bossRound_other": "Босс-раунд через {{count}} урока",
+    "wordCount_one": "{{count}} слово · минимум {{min}}",
+    "wordCount_few": "{{count}} слова · минимум {{min}}",
+    "wordCount_many": "{{count}} слов · минимум {{min}}",
+    "wordCount_other": "{{count}} слова · минимум {{min}}",
+    "dueForReview": "{{count}} на повторение ›",
+    "checkWords": "Проверить слова"
   },
   "settings": {
     "appLanguage": "Язык приложения"
@@ -35,7 +46,9 @@
   },
   "common": {
     "next": "Далее",
-    "listen": "Слушать"
+    "listen": "Слушать",
+    "back": "Назад",
+    "continue": "Продолжить"
   },
   "stats": {
     "xp": "XP",
@@ -46,9 +59,16 @@
   "lesson": {
     "stepLabel": "{{step}} / {{task}}",
     "tasks": {
-      "read": "Читай историю"
+      "read": "Читай историю",
+      "flashcards": "Карточки",
+      "listen": "Слушай и повторяй",
+      "record": "Читай вслух",
+      "gap-fill": "Заполни пропуск",
+      "translate": "{{from}} → {{to}}"
     },
-    "xpEarned": "+{{count}} XP"
+    "xpEarned": "+{{count}} XP",
+    "title": "Урок {{number}}",
+    "quit": "Выйти из урока"
   },
   "tutor": {
     "says": "Чанк говорит",
@@ -60,7 +80,11 @@
   },
   "gapFill": {
     "blank": "Пропуск",
-    "pickWord": "Выбери слово"
+    "pickWord": "Выбери слово",
+    "articleSection": "A · Выбери артикль",
+    "wordSection": "B · Выбери слово",
+    "pickArticle": "Выбери артикль",
+    "check": "Проверить"
   },
   "articlePicker": {
     "label": "Выбери артикль"
@@ -72,7 +96,20 @@
     "start": "Начать запись",
     "stop": "Остановить запись",
     "play": "Воспроизвести запись",
-    "retry": "Повторить {{word}}"
+    "retry": "Повторить {{word}}",
+    "retryThese": "Повтори эти",
+    "recordAgain": "Записать ещё раз",
+    "wordsToRetry_one": "{{count}} слово на повтор",
+    "wordsToRetry_few": "{{count}} слова на повтор",
+    "wordsToRetry_many": "{{count}} слов на повтор",
+    "wordsToRetry_other": "{{count}} слова на повтор",
+    "verdict": {
+      "clear": "Чёткая речь",
+      "almost": "Почти чётко",
+      "unclear": "Плохо слышно"
+    },
+    "chunkLine": "Когда Чанк говорит «ü», точки умляута встают по стойке смирно. Сегодня {{score}}. Теперь добей «{{word}}».",
+    "chunkLineClean": "Когда Чанк говорит «ü», точки умляута встают по стойке смирно. Сегодня {{score}}."
   },
   "app": {
     "name": "Daily Chunk"
@@ -81,9 +118,79 @@
     "stageClear": "Уровень пройден",
     "addedToReview": "Добавлено в повторение",
     "tomorrow": "Завтра",
-    "tomorrowWeak": "Завтра · слабое"
+    "tomorrowWeak": "Завтра · слабое",
+    "lessonCleared": "Урок {{number}} · пройден",
+    "chunkLine": "Чанк не забывает слова. Слова слишком боятся от него уйти. Ещё {{count}} под замком.",
+    "bossUnlocks_one": "Босс-раунд откроется через {{count}} урок · {{done}}/{{total}}",
+    "bossUnlocks_few": "Босс-раунд откроется через {{count}} урока · {{done}}/{{total}}",
+    "bossUnlocks_many": "Босс-раунд откроется через {{count}} уроков · {{done}}/{{total}}",
+    "bossUnlocks_other": "Босс-раунд откроется через {{count}} урока · {{done}}/{{total}}",
+    "backToBase": "На базу",
+    "replayRecording": "Послушать мою запись"
   },
   "confirm": {
-    "pluralNotice": "Ты написал «{{written}}» (мн. ч.). Сохранено как {{saved}}."
+    "pluralNotice": "Ты написал «{{written}}» (мн. ч.). Сохранено как {{saved}}.",
+    "title": "Проверь слова",
+    "intro": "Я нашёл начальную форму, артикль и перевод. Нажми на строку, чтобы исправить.",
+    "wordCount_one": "{{count}} слово",
+    "wordCount_few": "{{count}} слова",
+    "wordCount_many": "{{count}} слов",
+    "wordCount_other": "{{count}} слова",
+    "pluralForms": "мн. {{forms}}",
+    "startLesson": "Начать урок",
+    "addMore": "+ Добавить ещё слова"
+  },
+  "partOfSpeech": {
+    "short": {
+      "noun": "СУЩ",
+      "verb": "ГЛ",
+      "adjective": "ПРИЛ",
+      "other": "СЛОВО"
+    },
+    "long": {
+      "noun": "существительное",
+      "verb": "глагол",
+      "adjective": "прилагательное",
+      "other": "слово"
+    }
+  },
+  "flashcards": {
+    "cardCount": "Карточка {{current}} из {{total}}",
+    "again": "← Ещё раз",
+    "knewIt": "Знаю →"
+  },
+  "listen": {
+    "stepListen": "Слушай",
+    "stepRepeat": "Повторяй",
+    "steps": "Шаги прослушивания",
+    "phraseCount": "Фраза {{current}} из {{total}} · Повтор {{repeat}} из {{repeatTotal}}",
+    "nextPhrase": "Следующая фраза",
+    "play": "Воспроизвести",
+    "pause": "Пауза",
+    "recordRepeat": "Записать повтор",
+    "waveform": "Аудио, воспроизведено {{played, number(minimumFractionDigits: 1)}} из {{total, number(minimumFractionDigits: 1)}} с",
+    "speed": "{{speed, number}}×"
+  },
+  "wordPopover": {
+    "label": "Слово: {{word}}",
+    "play": "Произнести {{word}}"
+  },
+  "read": {
+    "hint": "Нажми на подчёркнутое слово, чтобы увидеть карточку",
+    "readAloud": "Теперь прочитай вслух",
+    "translationOn": "{{language}} вкл",
+    "translationOff": "{{language}} выкл"
+  },
+  "translate": {
+    "use": "Используй:",
+    "answerLabel": "Твой перевод",
+    "dictate": "Ответить голосом",
+    "check": "Проверить",
+    "tryAgain": "Ещё раз",
+    "verdict": {
+      "almost": "Почти · 1 правка",
+      "correct": "Верно"
+    },
+    "correctionLabel": "Правильное предложение: {{sentence}}. Замени «{{wrong}}» на «{{right}}»."
   }
 }

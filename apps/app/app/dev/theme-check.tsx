@@ -274,6 +274,7 @@ export default function ThemeCheck() {
           accessibilityLabel="Words"
           trailing={
             <TopBar.Button
+              variant="record"
               icon="mic"
               accessibilityLabel="Dictate words"
               onPress={() => undefined}

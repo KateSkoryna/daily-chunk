@@ -39,7 +39,7 @@ const meta = {
     name: {
       control: 'select',
       options: iconNames,
-      description: 'Which icon to draw. The set is fixed (15 icons).',
+      description: 'Which icon to draw. The set is fixed (16 icons).',
     },
     label: {
       control: 'text',

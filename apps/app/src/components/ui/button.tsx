@@ -7,13 +7,15 @@ import { cn } from '@/lib/utils';
 import { HardShadow } from '@/theme/HardShadow/HardShadow';
 import { useState } from 'react';
 
-type ButtonVariant = 'default' | 'secondary' | 'ghost' | 'destructive';
+type ButtonVariant =
+  'default' | 'secondary' | 'ghost' | 'destructive' | 'again';
 
 const buttonClasses = {
   default: 'h-button w-full bg-primary',
   secondary: 'h-control border-2 border-ring px-5',
   ghost: 'h-touch px-5',
   destructive: 'h-control bg-destructive px-5',
+  again: 'h-button border-2 border-highlight px-5',
 } satisfies Record<ButtonVariant, string>;
 
 const labelClasses = {
@@ -22,6 +24,7 @@ const labelClasses = {
   ghost: 'font-pixel text-label uppercase text-muted-foreground',
   destructive:
     'font-display text-display-btn-sm uppercase text-destructive-foreground',
+  again: 'font-display text-display-btn uppercase text-highlight',
 } satisfies Record<ButtonVariant, string>;
 
 const disabledButtonClasses = 'bg-popover border-popover';

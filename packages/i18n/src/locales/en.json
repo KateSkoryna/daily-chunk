@@ -5,7 +5,14 @@
     "addWords": "01 / Add today's words",
     "wordsLabel": "Words you heard or saw today",
     "wordsPlaceholder": "One per line, any form: Bahnhöfe, ging, schöner…",
-    "dictate": "Dictate words"
+    "dictate": "Dictate words",
+    "chunkLine": "Chunk doesn't look up articles. Articles look up to Chunk. Bring me today's words.",
+    "bossRound_one": "Boss round in {{count}} lesson",
+    "bossRound_other": "Boss round in {{count}} lessons",
+    "wordCount_one": "{{count}} word · min {{min}}",
+    "wordCount_other": "{{count}} words · min {{min}}",
+    "dueForReview": "{{count}} due for review ›",
+    "checkWords": "Check my words"
   },
   "settings": {
     "appLanguage": "App language"
@@ -33,7 +40,9 @@
   },
   "common": {
     "next": "Next",
-    "listen": "Listen"
+    "listen": "Listen",
+    "back": "Back",
+    "continue": "Continue"
   },
   "stats": {
     "xp": "XP",
@@ -44,9 +53,16 @@
   "lesson": {
     "stepLabel": "{{step}} / {{task}}",
     "tasks": {
-      "read": "Read the story"
+      "read": "Read the story",
+      "flashcards": "Flashcards",
+      "listen": "Listen & shadow",
+      "record": "Read aloud",
+      "gap-fill": "Fill the gap",
+      "translate": "{{from}} → {{to}}"
     },
-    "xpEarned": "+{{count}} XP"
+    "xpEarned": "+{{count}} XP",
+    "title": "Lesson {{number}}",
+    "quit": "Quit lesson"
   },
   "tutor": {
     "says": "Chunk says",
@@ -58,7 +74,11 @@
   },
   "gapFill": {
     "blank": "Blank",
-    "pickWord": "Pick the word"
+    "pickWord": "Pick the word",
+    "articleSection": "A · Pick the article",
+    "wordSection": "B · Pick the word",
+    "pickArticle": "Pick the article",
+    "check": "Check"
   },
   "articlePicker": {
     "label": "Pick the article"
@@ -70,7 +90,18 @@
     "start": "Start recording",
     "stop": "Stop recording",
     "play": "Play your recording",
-    "retry": "Retry {{word}}"
+    "retry": "Retry {{word}}",
+    "retryThese": "Retry these",
+    "recordAgain": "Record again",
+    "wordsToRetry_one": "{{count}} word to retry",
+    "wordsToRetry_other": "{{count}} words to retry",
+    "verdict": {
+      "clear": "Clear speech",
+      "almost": "Almost clear",
+      "unclear": "Hard to hear"
+    },
+    "chunkLine": "When Chunk says \"ü\", the umlaut dots stand at attention. {{score}} today. Now go get \"{{word}}\".",
+    "chunkLineClean": "When Chunk says \"ü\", the umlaut dots stand at attention. {{score}} today."
   },
   "app": {
     "name": "Daily Chunk"
@@ -79,9 +110,75 @@
     "stageClear": "Stage clear",
     "addedToReview": "Added to review",
     "tomorrow": "Tomorrow",
-    "tomorrowWeak": "Tomorrow · weak"
+    "tomorrowWeak": "Tomorrow · weak",
+    "lessonCleared": "Lesson {{number}} · cleared",
+    "chunkLine": "Chunk doesn't forget words. Words are too scared to leave him. {{count}} more locked up.",
+    "bossUnlocks_one": "Boss round unlocks in {{count}} lesson · {{done}}/{{total}}",
+    "bossUnlocks_other": "Boss round unlocks in {{count}} lessons · {{done}}/{{total}}",
+    "backToBase": "Back to base",
+    "replayRecording": "Replay my recording"
   },
   "confirm": {
-    "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}."
+    "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}.",
+    "title": "Check words",
+    "intro": "I found the dictionary form, article and translation. Tap a row to fix it.",
+    "wordCount_one": "{{count}} word",
+    "wordCount_other": "{{count}} words",
+    "pluralForms": "Pl. {{forms}}",
+    "startLesson": "Start lesson",
+    "addMore": "+ Add more words"
+  },
+  "partOfSpeech": {
+    "short": {
+      "noun": "NOUN",
+      "verb": "VERB",
+      "adjective": "ADJ",
+      "other": "WORD"
+    },
+    "long": {
+      "noun": "noun",
+      "verb": "verb",
+      "adjective": "adjective",
+      "other": "word"
+    }
+  },
+  "flashcards": {
+    "cardCount": "Card {{current}} of {{total}}",
+    "again": "← Again",
+    "knewIt": "Knew it →"
+  },
+  "listen": {
+    "stepListen": "Listen",
+    "stepRepeat": "Repeat",
+    "steps": "Listening steps",
+    "phraseCount": "Phrase {{current}} of {{total}} · Repeat {{repeat}} of {{repeatTotal}}",
+    "nextPhrase": "Next phrase",
+    "play": "Play",
+    "pause": "Pause",
+    "recordRepeat": "Record your repeat",
+    "waveform": "Audio waveform, {{played, number(minimumFractionDigits: 1)}} of {{total, number(minimumFractionDigits: 1)}} seconds played",
+    "speed": "{{speed, number}}×"
+  },
+  "wordPopover": {
+    "label": "Word: {{word}}",
+    "play": "Play {{word}}"
+  },
+  "read": {
+    "hint": "Tap an underlined word for its card",
+    "readAloud": "Now read it aloud",
+    "translationOn": "{{language}} on",
+    "translationOff": "{{language}} off"
+  },
+  "translate": {
+    "use": "Use:",
+    "answerLabel": "Your translation",
+    "dictate": "Answer by voice",
+    "check": "Check",
+    "tryAgain": "Try again",
+    "verdict": {
+      "almost": "Almost · 1 fix",
+      "correct": "Correct"
+    },
+    "correctionLabel": "Correct sentence: {{sentence}}. Change \"{{wrong}}\" to \"{{right}}\"."
   }
 }

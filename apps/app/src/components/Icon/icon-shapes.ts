@@ -35,6 +35,7 @@ export const iconShapes = {
       'M7 4 H17 V10 a5 5 0 0 1 -10 0 Z M7 6 H4 V8 a3 3 0 0 0 3 3 M17 6 H20 V8 a3 3 0 0 1 -3 3 M12 15 V19 M8 20 H16',
     ],
   },
+  retry: { paths: ['M20 12 a8 8 0 1 1 -2.5 -5.8', 'M20 4 V9 H15'] },
   chart: { paths: ['M5 20 V13 M11 20 V6 M17 20 V10 M2 21 H22'] },
 } satisfies Record<string, { paths: string[]; isFilled?: boolean }>;
 

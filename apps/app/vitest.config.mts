@@ -25,8 +25,31 @@ export default defineConfig({
             configDir: path.join(currentDirectory, '.storybook'),
           }),
         ],
+        define: {
+          'import.meta.env.VITE_APP_LANGUAGE': JSON.stringify('en'),
+        },
         test: {
-          name: 'storybook',
+          name: 'storybook-en',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }],
+          },
+        },
+      },
+      {
+        extends: true,
+        plugins: [
+          storybookTest({
+            configDir: path.join(currentDirectory, '.storybook'),
+          }),
+        ],
+        define: {
+          'import.meta.env.VITE_APP_LANGUAGE': JSON.stringify('ru'),
+        },
+        test: {
+          name: 'storybook-ru',
           browser: {
             enabled: true,
             headless: true,
