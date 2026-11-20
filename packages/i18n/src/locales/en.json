@@ -180,5 +180,25 @@
       "correct": "Correct"
     },
     "correctionLabel": "Correct sentence: {{sentence}}. Change \"{{wrong}}\" to \"{{right}}\"."
+  },
+  "menu": {
+    "title": "App menu",
+    "close": "Close menu",
+    "account": "My account",
+    "lessons": "My lessons",
+    "review": "Review",
+    "wordBank": "Word bank",
+    "boss": "Boss round",
+    "settings": "Settings",
+    "help": "Help & feedback"
+  },
+  "leaveLesson": {
+    "title": "Leave the lesson?",
+    "body": "Your progress in this lesson will be lost.",
+    "stay": "Keep going",
+    "leave": "Leave"
+  },
+  "placeholder": {
+    "comingSoon": "This screen is built in a later step."
   }
 }

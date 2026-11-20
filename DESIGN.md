@@ -397,9 +397,11 @@ Rule: one `default` button per screen.
 | `WordTag` | The tag that starts a word row: `ArticleChip` for a word with a gender, `PartOfSpeechChip` for any other; chosen from the word; a list passes `min-w-14` so every tag in it has the same width |
 | `AnswerFeedback` | Box under a checked typed answer: `border-2 mt-1.5 gap-2.5 px-3.5 pb-3.5 pt-6`; `border-success` (right) or `border-highlight` (almost); a tab on the top border (`-top-[0.8125rem] left-3 px-2`, `label-sm` in `text-primary-foreground`) with a check or cross icon; `role="status"` |
 | `CorrectionSentence` | The answer in `body` with the wrong word `text-highlight line-through` and the right word after it `font-content-semibold text-success underline decoration-success` |
-| `HomeScreen`, `ConfirmScreen`, `FlashcardsScreen`, `ListenScreen`, `ReadScreen`, `RecordScreen`, `GapFillScreen`, `TranslateScreen`, `DoneScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
+| `HomeScreen`, `ConfirmScreen`, `FlashcardsScreen`, `ListenScreen`, `ReadScreen`, `RecordScreen`, `GapFillScreen`, `TranslateScreen`, `DoneScreen`, `PlaceholderScreen` | Built from the components above; padding by `Screen`; sections `gap-section` (Confirm `gap-4`); the primary button sits at the bottom (`mt-auto`); the tab bar is part of the navigation layout, not of the screen |
 | `Notice` | `border-2 border-dashed border-gender-plural px-3 py-2.5`, `label-sm` in `text-gender-plural` (only for plural notices until a neutral colour is decided); `role="status"` |
 | `TabBar` | Custom Expo Router `tabBar`. `h-tabbar` + safe area, top `border-2 border-border`, `caption` labels (1.125rem) with tracking 0.125rem; active `text-primary` with a `border-t-3 border-primary` bar that replaces the top border over that tab, else `text-muted-foreground`; badge `bg-highlight`. Desktop: rail |
+| `Drawer` | Burger menu over a `bg-background/80` scrim: panel `w-4/5 max-w-xs` from the left, `bg-popover border-r-2 border-primary px-5 pb-6 pt-screen-top gap-5`, `HardShadow`; header with `LogoBadge`, the app name in `display-btn-sm` and a close `TopBar.Button`; items `min-h-touch px-2 border-b-2 border-border`, `label` text, an `Icon` in `text-ring` before the label, optional `bg-highlight px-1.5` badge in `caption`; closes by scrim, close button, Escape or back |
+| `AlertDialog` | Question over a `bg-background/80` scrim: `border-2 border-border bg-popover p-4 gap-4` with `HardShadow`, title in `display-btn`, description in `body` `text-muted-foreground`, footer `gap-3` with the destructive `Button` first and a `secondary` one for "keep going"; Escape closes |
 | `Screen`, `HardShadow`, `Scanlines`, `PressableFocus` | Wrappers from §6 and §7 |
 
 Arbitrary values such as `min-w-[4.5rem]` are allowed only for component dimensions listed in a component spec. Never use them for colour or font.
@@ -605,7 +607,7 @@ Reduced motion (`useReducedMotion` / `prefers-reduced-motion`): no flip (swap fa
 
 ## 12. Icons
 
-Inline SVG via `react-native-svg` on phones and a plain `<svg>` on web: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set (16): back, cross, check, play, pause, stop, mic, speaker, pencil, menu, lock, home, book, trophy, chart, retry. Play, pause and stop are the only filled icons. No emoji.
+Inline SVG via `react-native-svg` on phones and a plain `<svg>` on web: 24 viewBox, stroke 2, square caps and joins, `currentColor`, no fill. Rendered at `size-6` (1.5rem) inside a `touch` target. Colour comes from the parent text class (`text-ring`, `text-muted-foreground`). Set (22): back, cross, check, play, pause, stop, mic, speaker, pencil, menu, lock, home, book, trophy, chart, retry, account, lessons, wordBank, boss, settings, help. Play, pause and stop are the only filled icons. No emoji.
 
 ---
 

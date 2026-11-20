@@ -37,6 +37,23 @@ export const iconShapes = {
   },
   retry: { paths: ['M20 12 a8 8 0 1 1 -2.5 -5.8', 'M20 4 V9 H15'] },
   chart: { paths: ['M5 20 V13 M11 20 V6 M17 20 V10 M2 21 H22'] },
+  account: {
+    paths: [
+      'M12 12 a4 4 0 1 0 0 -8 a4 4 0 0 0 0 8 M4 21 V19 a6 6 0 0 1 16 0 V21',
+    ],
+  },
+  lessons: { paths: ['M4 5 H10 V19 H4 Z M14 5 H20 V19 H14 Z'] },
+  wordBank: { paths: ['M5 4 H19 V20 H5 Z M9 8 H15 M9 12 H15 M9 16 H13'] },
+  boss: { paths: ['M5 20 V4 M5 5 H18 L15 9 L18 13 H5'] },
+  settings: {
+    paths: ['M4 6 H20 M4 12 H20 M4 18 H20 M8 4 V8 M15 10 V14 M10 16 V20'],
+  },
+  help: {
+    paths: [
+      'M12 21 a9 9 0 1 0 0 -18 a9 9 0 0 0 0 18',
+      'M9.5 9 a2.5 2.5 0 1 1 3.5 2.3 C12.4 11.6 12 12.2 12 13 M12 17 V17.5',
+    ],
+  },
 } satisfies Record<string, { paths: string[]; isFilled?: boolean }>;
 
 export type IconName = keyof typeof iconShapes;

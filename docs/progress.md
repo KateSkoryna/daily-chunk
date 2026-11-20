@@ -755,3 +755,29 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 - Check on the A54: the Handjet «Э» for the digit 3, the Android underline of the story words, the Gap fill sentence at 320px.
 - Read the Russian strings I wrote in steps 2.3 to 2.7.
 - Open from 2.3: the notice that uppercases German words; the `verspätet` grammar note; whether to remove the `shadow-hard` token names.
+
+## Phase 3: core loop in the app
+
+Branches are one per step (phase 3 is back to the normal rule).
+
+| Step     | Status | Branch                  |
+| -------- | ------ | ----------------------- |
+| 3.1      | DONE   | `feat/navigation-shell` |
+| 3.2      | TODO   | `feat/storage`          |
+| 3.3      | TODO   | `feat/srs-scheduler`    |
+| 3.4      | TODO   | `feat/ai-mocks`         |
+| 3.5      | TODO   | `feat/home-screen`      |
+| 3.6–3.13 | TODO   | `feat/<screen>-screen`  |
+| 3.14     | TODO   | `chore/phase-3-review`  |
+
+### 3.1 Navigation shell
+
+- Owner decisions (asked first, `DESIGN.md` had no drawer, dialog or e2e rule): own `Drawer` component without a new library; `AlertDialog` from React Native Reusables (`@rn-primitives/alert-dialog`, restyled once); web e2e as a Playwright script on the exported app.
+- Result: `app/(tabs)/` (Expo Router `Tabs` with our `TabBar`: Home `/`, `/lessons`, `/score`, `/stats`) and the `Drawer` opened by the burger button. Drawer items: account, lessons, review, word bank, boss round, settings, help (opens settings, as in `Menu.dc.html`). `app/[page].tsx` covers `/account`, `/review`, `/word-bank`, `/boss`, `/settings`, `/confirm`; `app/lesson/[task].tsx` covers the seven lesson routes; every one shows `PlaceholderScreen` until its step builds the real screen (a real file such as `app/lesson/read.tsx` wins over the bracket file). `app/lesson/_layout.tsx` stops leaving the lesson with `usePreventRemove` and shows `LeaveLessonDialog` (Keep going / Leave); the Done route is not guarded.
+- New components with meta and stories: `TabPlaceholder` (`Default`; the four tab route files are one line each and share it), `Drawer` (`Default`, `Closed`), `ui/alert-dialog` (`Default`), `LeaveLessonDialog` (`Default`, `LeavePressed`), `PlaceholderScreen` (`Default`, `WithBackButton`). `PortalHost` added to the root layout (native dialogs need it). `story-tabs.ts` became `features/navigation/main-tabs.ts` (the tab key `home` is now `index`, the route name). The old placeholder home with the theme-check link is gone; `/dev/theme-check` still opens by URL.
+- E2E: `apps/app/e2e/navigation.mjs` (`npm run e2e`, Nx target `e2e` runs `export:web` first; CI runs it in the `test` job after the Playwright install). It clicks every tab, opens every drawer item, closes the drawer with Escape, and checks the leave prompt (Keep going stays, Leave goes home, Done has no prompt). The first run found two real faults: the tab key `home` did not match the route `index`, and the Done check needed the pathname because the placeholder route is `[task]`.
+- New strings (EN and RU, **the Russian is mine, please read it**): `menu.*`, `leaveLesson.*`, `placeholder.comingSoon`. Learning note: `docs/learn/navigation-shell.md`.
+- Named differences from `Menu.dc.html`: the drawer items have icons (six new ones drawn from the paths in `Menu.dc.html`: `account`, `lessons`, `wordBank`, `boss`, `settings`, `help`; the icon set is now 22; Review reuses `retry`), no badges, no profile card and no log out (4.9 and the account step), the shadow is the standard 0.25rem `HardShadow` (design 6px), the panel is 80% wide up to 20rem (design 312px of 390px), the scrim is `bg-background/80`.
+- Open for the owner: (1) `DESIGN.md` §9.3 rows for `Drawer`, `AlertDialog` and `PlaceholderScreen`: approved by the owner. (2) Icons for the drawer items: approved by the owner; the six new icons are added and `DESIGN.md` §10 lists the set of 22.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 7 languages, 10 core, 16 i18n, 260 app (110 files; each story runs in English and Russian); `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → "navigation e2e passed"; `actionlint .github/workflows/ci.yml` → exit 0; `npx prettier --check .` → exit 0; `build-storybook` and `npx expo export --platform android` → exit 0.
+- Review: 0 blocking, 2 medium, 4 low. Fixed: `z-50` removed from the dialog overlay (the portal already stacks on top); the e2e now also checks the browser Back button (history entry, then `page.goBack()` shows the prompt); `alert-dialog.tsx` imports `HardShadow` by relative path. Left, named: the scrim and the close button are both named "Close menu" (hiding the scrim made the focus trap put the focus on the hidden scrim, which is worse); "Help & feedback" opens settings like the design until 4.9; the Android hardware back button is not covered by the web e2e (the `Modal` `onRequestClose` and `usePreventRemove` handle it; check on the A54).
