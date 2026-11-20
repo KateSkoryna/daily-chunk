@@ -23,7 +23,6 @@ const meta = {
     nativeLanguage: 'en',
     pluralInput: homeDemo.pluralInput,
     onBack: fn(),
-    onEditWord: fn(),
     onStartLesson: fn(),
     onAddMore: fn(),
   },
@@ -46,7 +45,7 @@ export const Default: Story = {
     const nativeLanguage = appLanguageOf(globals);
     const canvas = within(canvasElement);
     const list = await canvas.findByRole('list');
-    const rows = within(list).getAllByRole('button');
+    const rows = within(list).getAllByRole('listitem');
     const adjective = demoWords.find(
       (word) => word.partOfSpeech === 'adjective',
     )!;
@@ -94,7 +93,6 @@ export const Default: Story = {
     );
     expect(getComputedStyle(notice).borderTopStyle).toBe('dashed');
 
-    await userEvent.click(rows[1]!);
     await userEvent.click(
       canvas.getByRole('button', { name: t('common.back') }),
     );
@@ -105,7 +103,6 @@ export const Default: Story = {
       canvas.getByRole('button', { name: t('confirm.addMore') }),
     );
 
-    expect(args.onEditWord).toHaveBeenCalledWith('word-fahrkarte');
     expect(args.onBack).toHaveBeenCalledTimes(1);
     expect(args.onStartLesson).toHaveBeenCalledTimes(1);
     expect(args.onAddMore).toHaveBeenCalledTimes(1);
@@ -119,7 +116,7 @@ export const SingleWord: Story = {
     const canvas = within(canvasElement);
     const list = await canvas.findByRole('list');
 
-    expect(within(list).getAllByRole('button')).toHaveLength(1);
+    expect(within(list).getAllByRole('listitem')).toHaveLength(1);
     expect(canvas.getByText(t('confirm.wordCount', { count: 1 }))).toBeTruthy();
     expect(canvas.queryByRole('status')).toBeNull();
   },

@@ -19,7 +19,6 @@ type ConfirmScreenProps = {
   nativeLanguage: NativeLanguage;
   pluralInput?: { typed: string; savedWordId: string };
   onBack: () => void;
-  onEditWord: (wordId: string) => void;
   onStartLesson: () => void;
   onAddMore: () => void;
 };
@@ -29,7 +28,6 @@ function ConfirmScreen({
   nativeLanguage,
   pluralInput,
   onBack,
-  onEditWord,
   onStartLesson,
   onAddMore,
 }: ConfirmScreenProps) {
@@ -57,9 +55,7 @@ function ConfirmScreen({
         {words.map((word) => (
           <ListGroup.Row
             key={word.id}
-            onPress={() => onEditWord(word.id)}
             left={<WordTag word={word} className="min-w-14" />}
-            right={<Icon name="pencil" decorative className="text-ring" />}
           >
             <Text variant="word-l">{displayedWord(word)}</Text>
             <Text variant="body-sm">
