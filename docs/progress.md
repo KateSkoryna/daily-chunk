@@ -764,7 +764,7 @@ Branches are one per step (phase 3 is back to the normal rule).
 | -------- | ------ | ----------------------- |
 | 3.1      | DONE   | `feat/navigation-shell` |
 | 3.2      | DONE   | `feat/storage`          |
-| 3.3      | TODO   | `feat/srs-scheduler`    |
+| 3.3      | DONE   | `feat/srs-scheduler`    |
 | 3.4      | TODO   | `feat/ai-mocks`         |
 | 3.5      | TODO   | `feat/home-screen`      |
 | 3.6–3.13 | TODO   | `feat/<screen>-screen`  |
@@ -794,3 +794,14 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Not in scope: words, lessons, SRS tables (their steps), the Home screen using it (3.5), Zustand, sync.
 - Review: 0 blocking, 2 medium, 2 low. Fixed: `getStorage` no longer keeps a failed open forever (it clears the cached promise and rethrows, so the next call retries); the check page shows `error: ...` when storage fails. Left, named: any host of the web app must send `Cross-Origin-Embedder-Policy: credentialless` and `Cross-Origin-Opener-Policy: same-origin` (the e2e server does; EAS Hosting gets them from `dist/_expo/.routes.json`, written by the `expo-router` plugin in `app.json`; to be checked when the web preview is deployed, step 3.14); the e2e does not open the database twice in one page (a reload reopens it and reruns `migrate`, which covers it).
 - Left, named: the web database lives in the browser's private storage, so clearing site data deletes it; the Android and iOS behaviour is the same SQLite file and is not run in an automated test here (the Android export builds; open `/dev/storage-check` on the A54 to check it).
+
+### 3.3 SRS scheduler
+
+- Owner decisions (asked first, no file defined XP or streak): XP only for a finished lesson, plus a bonus at streak milestones; the streak counts lessons only.
+- Result: `packages/core/src/srs.ts` (`scheduleAfterAnswer`, `isDueForReview`, `daysUntilReviewByStage`: 1, 3, 7, 14, 21 days (owner changed 30 to 21); wrong goes to stage 1; correct at the 21 day stage sets `learnedAt`) and `progress.ts` (`progressAfterLesson`: 100 XP per lesson; streak +1 if the last lesson was yesterday, unchanged on the same day, reset to 1 otherwise; streak bonus 30/60/100/200/300/500 XP at 3/7/14/21/50/100 days). Dates: `lastStudyDate` is `YYYY-MM-DD` local day passed by the caller; review times are UTC ISO strings.
+- The bonus numbers and milestone days are confirmed by the owner (constants `lessonXp` and `streakBonusXp`).
+- Coverage: `@vitest/coverage-v8` added to `core`; `vitest.config.mts` enforces 80%; `core` `test` runs with `--coverage`.
+- Learning note: `docs/learn/srs-and-progress.md`.
+- Not in scope: saving words or logs, the lesson generator, the Done screen using the real numbers.
+- Evidence: `npm test -w @daily-chunk/core` → 3 files, 42 tests (table tests for every stage transition: stages 0 to 4 correct, every stage wrong, stage 5 correct = learned; streak yesterday, same day, gap of 1 and 2 days, first lesson, month and year boundary, every bonus milestone); coverage 96.42% statements, 100% branches, 100% functions, 96.15% lines (threshold 80%; the only uncovered file is `word.ts`, types only). `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 7 languages, 10 core (now 42), 16 i18n, 265 app; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
+- Review: 1 blocking, 3 medium, 5 low. Fixed: `coverage/` added to `.gitignore`; evidence above; tests for the same-day streak 0, the clock behind the last lesson date, a gap of two days and a year boundary; test title and the double import. Left, named: `millisecondsPerDay` is defined in both files (two lines); the stage cast in `srs.ts` stays (the stage is 0 to 4 there). The owner confirmed the bonus numbers.

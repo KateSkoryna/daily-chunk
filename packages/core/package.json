@@ -8,10 +8,13 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --coverage --passWithNoTests"
   },
   "dependencies": {
     "@daily-chunk/i18n": "*",
     "@daily-chunk/languages": "*"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.1.0"
   }
 }

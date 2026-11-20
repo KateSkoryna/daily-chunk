@@ -7,3 +7,11 @@ export type { ProfileStorage, Storage } from './storage';
 export type { Translations } from './translations';
 export { partsOfSpeech } from './word';
 export type { PartOfSpeech, ReviewStage, Word } from './word';
+export { lessonXp, progressAfterLesson, streakBonusXp } from './progress';
+export type { ProgressAfterLesson } from './progress';
+export {
+  isDueForReview,
+  daysUntilReviewByStage,
+  scheduleAfterAnswer,
+} from './srs';
+export type { ReviewSchedule } from './srs';
