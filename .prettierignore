@@ -7,3 +7,5 @@ storybook-static/
 package-lock.json
 .expo/
 expo-env.d.ts
+apps/app/drizzle/migrations.js
+apps/app/drizzle/meta

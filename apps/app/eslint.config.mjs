@@ -3,6 +3,6 @@ import { designRules } from './eslint.design-rules.mjs';
 
 export default [
   ...expoConfig,
-  { ignores: ['dist/**', '.expo/**', 'storybook-static/**'] },
+  { ignores: ['dist/**', '.expo/**', 'storybook-static/**', 'drizzle/**'] },
   designRules,
 ];

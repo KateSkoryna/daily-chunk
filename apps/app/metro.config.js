@@ -7,6 +7,10 @@ if (!config.resolver.assetExts.includes('wasm')) {
   config.resolver.assetExts.push('wasm');
 }
 
+if (!config.resolver.sourceExts.includes('sql')) {
+  config.resolver.sourceExts.push('sql');
+}
+
 const enhanceMiddleware = config.server.enhanceMiddleware;
 config.server.enhanceMiddleware = (middleware, metroServer) => {
   const enhancedMiddleware = enhanceMiddleware

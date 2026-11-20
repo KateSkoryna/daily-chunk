@@ -46,6 +46,8 @@
     "@types/react": "~19.3.0",
     "@vitest/browser": "^5.1.0",
     "@vitest/browser-playwright": "^5.1.0",
+    "babel-plugin-inline-import": "^3.0.0",
+    "drizzle-kit": "^0.31.11",
     "playwright": "^1.65.0",
     "storybook": "^10.6.6",
     "tailwindcss": "^3.4.19",
@@ -61,7 +63,8 @@
     "lint": "eslint .",
     "check-meta": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-meta.mjs",
     "export:web": "expo export --platform web",
-    "e2e": "node e2e/navigation.mjs",
+    "db:generate": "drizzle-kit generate",
+    "e2e": "node e2e/navigation.mjs && node e2e/storage.mjs",
     "test": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o storybook-static"
