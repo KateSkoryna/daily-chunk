@@ -5,6 +5,7 @@ import { GlitchTitle } from '../../components/GlitchTitle/GlitchTitle';
 import { HeaderStats } from '../../components/HeaderStats/HeaderStats';
 import { LessonStepper } from '../../components/LessonStepper/LessonStepper';
 import { LogoBadge } from '../../components/LogoBadge/LogoBadge';
+import { Notice } from '../../components/Notice/Notice';
 import { PressableFocus } from '../../components/PressableFocus/PressableFocus';
 import { Screen } from '../../components/Screen/Screen';
 import { SectionLabel } from '../../components/SectionLabel/SectionLabel';
@@ -21,6 +22,7 @@ type HomeScreenProps = {
   bossRound: { lessonsDone: number; lessonsTotal: number };
   words: string;
   minimumWords: number;
+  notice?: string;
   onWordsChange: (words: string) => void;
   onDictate: () => void;
   onOpenMenu: () => void;
@@ -40,6 +42,7 @@ function HomeScreen({
   bossRound,
   words,
   minimumWords,
+  notice,
   onWordsChange,
   onDictate,
   onOpenMenu,
@@ -98,6 +101,7 @@ function HomeScreen({
             />
           }
         />
+        {notice && <Notice>{notice}</Notice>}
         <View className="flex-row items-center justify-between">
           <Text variant="caption" className="uppercase">
             {t('home.wordCount', { count: wordCount, min: minimumWords })}

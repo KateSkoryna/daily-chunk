@@ -14,6 +14,8 @@ export const homeScreenMeta = {
     words: 'The text in the text area, one word per line',
     minimumWords:
       'How many words a lesson needs; below it the button is disabled',
+    notice:
+      'Optional message shown in a Notice under the text area, for example that dictation is not available yet or that no words were recognised',
     onWordsChange: 'Called with the new text',
     onDictate: 'Called by the mic button',
     onOpenMenu: 'Called by the menu button',
@@ -21,7 +23,7 @@ export const homeScreenMeta = {
     onOpenBossRound: 'Called by the Boss round progress',
     onCheckWords: 'Called by the primary button',
   },
-  states: ['default', 'too few words'],
+  states: ['default', 'too few words', 'notice'],
   relationships: {
     composedOf: [
       'Screen',
@@ -33,6 +35,7 @@ export const homeScreenMeta = {
       'LessonStepper',
       'SectionLabel',
       'Textarea',
+      'Notice',
       'Button',
     ],
     pairsWith: ['TabBar', 'ConfirmScreen'],

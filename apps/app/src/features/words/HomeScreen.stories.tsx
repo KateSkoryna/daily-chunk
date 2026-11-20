@@ -173,3 +173,22 @@ export const TooFewWords: Story = {
     expect(args.onWordsChange).toHaveBeenCalled();
   },
 };
+
+export const DictationNotice: Story = {
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <WithText>
+      {(t) => <HomeDemo {...args} notice={t('home.dictationComingSoon')} />}
+    </WithText>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const notice = await canvas.findByRole('status');
+
+    expect(notice.textContent).toBe(t('home.dictationComingSoon'));
+    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.clientWidth,
+    );
+  },
+};
