@@ -16,7 +16,7 @@ A German vocabulary trainer for Russian speakers, in the "Arcade Night" look. Yo
 | Done | Tutor quote, XP, streak. Words enter spaced repetition. | |
 
 **Review and tests**
-- Spaced repetition: a word comes back after 1, 3, 7, 14 and 30 days. Correct at the 30-day review = *learned* (auto, no button).
+- Spaced repetition: a word comes back after 1, 3, 7, 14 and 21 days. Correct at the 21-day review = *learned* (auto, no button).
 - **Daily digest**: one push per day at a time you pick, listing due words; tap opens the review.
 - **Word of the moment**: optional extra push showing one word + article + translation (no action).
 - **Every 5th lesson: Boss round test** covering the last 5 lessons: (a) RU word → type German, (b) choose the right word from 3, (c) build a sentence from shuffled tiles.
