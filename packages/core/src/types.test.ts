@@ -9,6 +9,7 @@ import type { LanguagePair } from './language-pair';
 import type { Lesson } from './lesson';
 import type { Profile } from './profile';
 import type { ReviewLog } from './review-log';
+import type { Storage } from './storage';
 import type { Word } from './word';
 
 describe('LanguagePair', () => {
@@ -125,5 +126,17 @@ describe('Profile', () => {
     };
 
     expect(profile.appLanguage).not.toBe(profile.languages.nativeLanguage);
+  });
+});
+
+describe('Storage', () => {
+  it('reads and saves the profile with promises', () => {
+    expectTypeOf<Storage['profile']['get']>().returns.resolves.toEqualTypeOf<
+      Profile | undefined
+    >();
+    expectTypeOf<Storage['profile']['save']>().parameters.toEqualTypeOf<
+      [Profile]
+    >();
+    expectTypeOf<Storage['profile']['save']>().returns.resolves.toBeVoid();
   });
 });

@@ -10,6 +10,7 @@ const contentTypes = {
   '.png': 'image/png',
   '.ttf': 'font/ttf',
   '.ico': 'image/x-icon',
+  '.wasm': 'application/wasm',
 };
 
 function findPage(folder, segments) {
@@ -44,6 +45,8 @@ export function serveDist(distFolder) {
 
     response.writeHead(200, {
       'content-type': contentTypes[extname(file)] ?? 'text/plain',
+      'cross-origin-embedder-policy': 'credentialless',
+      'cross-origin-opener-policy': 'same-origin',
     });
     response.end(readFileSync(file));
   });
