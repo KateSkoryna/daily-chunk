@@ -1,3 +1,4 @@
+import type { Lesson } from './lesson';
 import type { Profile } from './profile';
 import type { Word } from './word';
 
@@ -11,7 +12,13 @@ export type WordStorage = {
   saveMany: (words: Word[]) => Promise<void>;
 };
 
+export type LessonStorage = {
+  list: () => Promise<Lesson[]>;
+  save: (lesson: Lesson) => Promise<void>;
+};
+
 export type Storage = {
   profile: ProfileStorage;
   words: WordStorage;
+  lessons: LessonStorage;
 };
