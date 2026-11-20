@@ -382,7 +382,7 @@ Rule: one `default` button per screen.
 | `TutorQuote` | `border-2`, `pt-6 px-3.5 pb-3.5`; tab on top border, `label-sm` `text-primary-foreground`. Variants: start `primary`, pass `success` + ✓, fail `destructive` + ✗ |
 | `LogoBadge` | The Sheriff badge (`plan.md` D6): `size-10`, four layers: `text-highlight` shadow star, `text-primary` star with five tip dots, `text-background` disc, `text-foreground` letters DC |
 | `GlitchTitle` | `display-xl` / `display-l` text with a `text-highlight` copy at `translate-x-glitch` and a `text-ring` copy at `-translate-x-glitch` behind it |
-| `Textarea` | `min-h-36 border-2 border-field bg-card p-3`, `body`; an optional trailing control at `bottom-2.5 right-2.5` and `pb-16` |
+| `Textarea` | `min-h-36 border-2 border-field bg-card p-3`, `body`; an optional trailing control at `bottom-2.5 right-2.5` and `pb-16`. On the web its scrollbar is thin (`scrollbar-width: thin`) with the thumb in `line-strong` and a transparent track, set once for every `textarea` in `global.css` (owner, 2026-11-20); phones keep the system scrollbar |
 | `ListGroup`, `ListGroup.Row` | Group `border-2 border-border`, rows separated by `border-t-2`; row `min-h-touch` (3rem, the touch minimum, even where a screen draws 44px) `bg-card px-3 py-2.5 gap-3` with left, body and right slots |
 | `Chip` | `h-control border-2 border-highlight bg-card`, optional pink icon, `option` label; pressable |
 | `PartOfSpeechChip` | Tag for a word without an article (adjective, verb): `h-8 px-2.5 border-2 border-dashed border-muted-foreground`, `chip` style in `text-muted-foreground`; the label is the part of speech from i18n. Sits where `ArticleChip` sits |

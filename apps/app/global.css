@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  textarea {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--line-strong)) transparent;
+  }
+
   :root {
     /* palette */
     --bg-000: 251 44% 9.8%;
