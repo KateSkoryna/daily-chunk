@@ -152,6 +152,15 @@ describe('Storage', () => {
     >();
     expectTypeOf<Storage['profile']['save']>().returns.resolves.toBeVoid();
   });
+
+  it('lists words and saves many at once with promises', () => {
+    expectTypeOf<Storage['words']['list']>().returns.resolves.toEqualTypeOf<
+      Word[]
+    >();
+    expectTypeOf<Storage['words']['saveMany']>().parameters.toEqualTypeOf<
+      [Word[]]
+    >();
+  });
 });
 
 describe('AI requests', () => {
