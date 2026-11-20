@@ -8,6 +8,13 @@
       "when": 1795173407171,
       "tag": "0000_create_profile",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795179309468,
+      "tag": "0001_create_words",
+      "breakpoints": true
     }
   ]
 }
