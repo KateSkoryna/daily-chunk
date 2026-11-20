@@ -41,7 +41,11 @@ try {
   for (const tab of tabs) {
     await tabBar.getByRole('tab', { name: tab.name }).click();
     await page.waitForURL((url) => url.pathname === tab.path);
-    await page.getByRole('heading', { name: tab.name }).waitFor();
+    await (
+      tab.path === '/'
+        ? page.getByRole('textbox', { name: 'Words you heard or saw today' })
+        : page.getByRole('heading', { name: tab.name })
+    ).waitFor();
     assert.equal(
       await tabBar
         .getByRole('tab', { name: tab.name })

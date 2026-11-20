@@ -19,3 +19,5 @@
 - On native, a font family is a single file, so each weight is its own class (`font-content` vs `font-content-semibold`).
 - `rem` in build-time values (padding, sizes) uses `inlineRem`. Breakpoints are checked while the app runs, with a separate `rem` that starts at 14. See `docs/progress.md` step 0.3.
 - Never write hex colours or px values in app code. Use the token classes.
+
+**Native gotcha:** a class that sets a CSS variable, such as `translate-x-1`, must not appear only after the first render. NativeWind then has to rebuild the component and prints a warning, and printing it can crash in dev with a misleading error ("Couldn't find a LinkingContext context"). Give the component the default in the same place: `pressed ? 'translate-x-1' : 'translate-x-0'`, never `pressed && 'translate-x-1'`. The primary `Button` does this for its pressed shift.

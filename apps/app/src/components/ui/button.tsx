@@ -82,7 +82,9 @@ function Button({
           isShadowHidden={disabled || isPressedDown}
           className={cn(
             'w-full desktop:max-w-button-max',
-            isPressedDown && 'translate-x-1 translate-y-1',
+            isPressedDown
+              ? 'translate-x-1 translate-y-1'
+              : 'translate-x-0 translate-y-0',
           )}
         >
           {pressable}

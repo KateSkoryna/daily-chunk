@@ -1,11 +1,13 @@
 import type { Storage } from '@daily-chunk/core';
+import { asc } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
 import { openDatabaseAsync } from 'expo-sqlite';
 
 import migrations from '../../drizzle/migrations';
 import { toProfile, toProfileRow } from './profile-row';
-import { profileTable } from './schema';
+import { profileTable, wordTable } from './schema';
+import { toWord, toWordRow } from './word-row';
 
 export async function createSqliteStorage(
   databaseName = 'daily-chunk.db',
@@ -26,6 +28,24 @@ export async function createSqliteStorage(
           .insert(profileTable)
           .values(row)
           .onConflictDoUpdate({ target: profileTable.id, set: row });
+      },
+    },
+    words: {
+      list: async () => {
+        const rows = await database
+          .select()
+          .from(wordTable)
+          .orderBy(asc(wordTable.createdAt), asc(wordTable.id));
+        return rows.map(toWord);
+      },
+      saveMany: async (words) => {
+        for (const word of words) {
+          const row = toWordRow(word);
+          await database
+            .insert(wordTable)
+            .values(row)
+            .onConflictDoUpdate({ target: wordTable.id, set: row });
+        }
       },
     },
   };
