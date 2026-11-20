@@ -46,3 +46,11 @@ export {
   wordIdFor,
 } from './create-records';
 export { currentLessonNumber, startLesson } from './start-lesson';
+export {
+  answerFlashcard,
+  createFlashcardSession,
+  flashcardResult,
+  flashcardsDone,
+  isFlashcardSessionDone,
+} from './flashcards';
+export type { FlashcardSession } from './flashcards';
