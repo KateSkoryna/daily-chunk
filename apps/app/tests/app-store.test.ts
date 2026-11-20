@@ -273,4 +273,49 @@ describe('app store', () => {
     );
     expect(savedLessons.size).toBe(0);
   });
+
+  it('saves a task result on the open lesson', async () => {
+    const { store, savedLessons } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Bahnhof\nFahrkarte\nGleis');
+    await store.getState().startLesson();
+
+    await store
+      .getState()
+      .saveTaskResult('flashcards', { correct: 2, total: 3 });
+
+    expect(savedLessons.get('lesson-1')?.taskResults).toEqual({
+      flashcards: { correct: 2, total: 3 },
+    });
+    expect(store.getState().lessons[0]?.taskResults.flashcards).toEqual({
+      correct: 2,
+      total: 3,
+    });
+  });
+
+  it('keeps the other task results when one is saved', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis');
+    await store.getState().startLesson();
+    await store
+      .getState()
+      .saveTaskResult('flashcards', { correct: 1, total: 1 });
+
+    await store.getState().saveTaskResult('listen', { correct: 3, total: 4 });
+
+    expect(store.getState().lessons[0]?.taskResults).toEqual({
+      flashcards: { correct: 1, total: 1 },
+      listen: { correct: 3, total: 4 },
+    });
+  });
+
+  it('refuses a task result when no lesson is open', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+
+    await expect(
+      store.getState().saveTaskResult('flashcards', { correct: 1, total: 1 }),
+    ).rejects.toThrow('There is no open lesson');
+  });
 });
