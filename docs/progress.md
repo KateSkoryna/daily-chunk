@@ -760,15 +760,15 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step     | Status         | Branch                  |
-| -------- | -------------- | ----------------------- |
-| 3.1      | WAITING-REVIEW | `feat/navigation-shell` |
-| 3.2      | TODO           | `feat/storage`          |
-| 3.3      | TODO           | `feat/srs-scheduler`    |
-| 3.4      | TODO           | `feat/ai-mocks`         |
-| 3.5      | TODO           | `feat/home-screen`      |
-| 3.6–3.13 | TODO           | `feat/<screen>-screen`  |
-| 3.14     | TODO           | `chore/phase-3-review`  |
+| Step     | Status | Branch                  |
+| -------- | ------ | ----------------------- |
+| 3.1      | DONE   | `feat/navigation-shell` |
+| 3.2      | TODO   | `feat/storage`          |
+| 3.3      | TODO   | `feat/srs-scheduler`    |
+| 3.4      | TODO   | `feat/ai-mocks`         |
+| 3.5      | TODO   | `feat/home-screen`      |
+| 3.6–3.13 | TODO   | `feat/<screen>-screen`  |
+| 3.14     | TODO   | `chore/phase-3-review`  |
 
 ### 3.1 Navigation shell
 
