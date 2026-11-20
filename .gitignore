@@ -5,3 +5,5 @@ node_modules/
 dist/
 .nx/
 storybook-static/
+coverage/
+.vitest/
