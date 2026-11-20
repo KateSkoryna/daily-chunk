@@ -6,10 +6,10 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { TabBar } from '../../components/TabBar/TabBar';
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
-import { storyTabs } from '../../lib/story-tabs';
 import { textFor, WithText } from '../../lib/story-text';
 import { homeDemo } from '../../mocks/home';
 import { demoProfile } from '../../mocks/profile';
+import { mainTabs } from '../navigation/main-tabs';
 import { HomeScreen, type HomeScreenProps } from './HomeScreen';
 import { homeScreenMeta } from './HomeScreen.meta';
 
@@ -29,8 +29,8 @@ function HomeDemo({ words, onWordsChange, ...props }: HomeScreenProps) {
       <WithText>
         {(t) => (
           <TabBar
-            tabs={storyTabs(t)}
-            activeKey="home"
+            tabs={mainTabs(t)}
+            activeKey="index"
             accessibilityLabel={t('nav.main')}
             onSelect={fn()}
           />

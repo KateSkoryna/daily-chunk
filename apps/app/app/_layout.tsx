@@ -14,6 +14,7 @@ import {
 } from '@daily-chunk/i18n';
 import { useFonts } from 'expo-font';
 import { getLocales } from 'expo-localization';
+import { PortalHost } from '@rn-primitives/portal';
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { rem } from 'nativewind';
@@ -66,6 +67,7 @@ export default function RootLayout() {
         <View className="flex-1 bg-background">
           <StatusBar style="light" />
           <Stack screenOptions={{ headerShown: false }} />
+          <PortalHost />
         </View>
       </ThemeProvider>
     </I18nextProvider>
