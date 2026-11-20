@@ -765,7 +765,7 @@ Branches are one per step (phase 3 is back to the normal rule).
 | 3.1      | DONE   | `feat/navigation-shell` |
 | 3.2      | DONE   | `feat/storage`          |
 | 3.3      | DONE   | `feat/srs-scheduler`    |
-| 3.4      | TODO   | `feat/ai-mocks`         |
+| 3.4      | DONE   | `feat/ai-mocks`         |
 | 3.5      | TODO   | `feat/home-screen`      |
 | 3.6–3.13 | TODO   | `feat/<screen>-screen`  |
 | 3.14     | TODO   | `chore/phase-3-review`  |
@@ -805,3 +805,12 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Not in scope: saving words or logs, the lesson generator, the Done screen using the real numbers.
 - Evidence: `npm test -w @daily-chunk/core` → 3 files, 42 tests (table tests for every stage transition: stages 0 to 4 correct, every stage wrong, stage 5 correct = learned; streak yesterday, same day, gap of 1 and 2 days, first lesson, month and year boundary, every bonus milestone); coverage 96.42% statements, 100% branches, 100% functions, 96.15% lines (threshold 80%; the only uncovered file is `word.ts`, types only). `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 7 languages, 10 core (now 42), 16 i18n, 265 app; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
 - Review: 1 blocking, 3 medium, 5 low. Fixed: `coverage/` added to `.gitignore`; evidence above; tests for the same-day streak 0, the clock behind the last lesson date, a gap of two days and a year boundary; test title and the double import. Left, named: `millisecondsPerDay` is defined in both files (two lines); the stage cast in `srs.ts` stays (the stage is 0 to 4 there). The owner confirmed the bonus numbers.
+
+### 3.4 AI mocks
+
+- Result: `packages/core/src/ai.ts` with `AiService` (`normaliseWords`, `generateStory`, `generateGapSentences`, `checkTranslation`, `scorePronunciation`) and a request and response type for each. Every request extends `AiRequest` (`languages: LanguagePair`). Responses hold one native language only (`translation`, `hint`, `explanation`, `tip` are strings). `NormalisedWord` has `typedText` and `wasPluralised` for the Confirm notice. `apps/app/src/ai/mock-ai-service.ts` (`createMockAiService`) returns the demo content from `src/mocks/` in the requested native language; it knows only the four demo words and the demo translation mistake.
+- Shapes are my proposal (the plan lists only the five jobs): `GapSentence` has `wordId`, `before`, `after`, `answer`, `options`, `hint`; `TranslationCheckResponse` is `isCorrect` plus an optional `correction` (`wrongWord`, `rightWord`, `corrected`, `explanation`); `PronunciationResponse` is `scorePercent`, `verdict`, `retryWords`, `tip`. Please say if a screen will need more; the real functions in phase 5 follow these.
+- Learning note: `docs/learn/ai-service-and-mocks.md`.
+- Not in scope: calling the service from a screen (3.5 and the screen steps), Edge Functions, Zustand wiring.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 7 languages, 16 i18n, 46 core (type tests for the language pair on every request, the missing-languages error, one native language per response), 275 app (9 new mock tests: normalise with plural flag and unknown words, story and gap hint in `ru` and `en`, translation correction and accepted answer, pronunciation); `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
+- Review: 0 blocking, 5 medium, 6 low. Fixed: status table; `wasPluralised` is now true only when a plural form was typed (documented in the learn note; the mock no longer compares with the lemma); the limits of the mock (ignores `targetLanguage`, `words` and `prompt`, knows only the demo words) are in the learn note; tests for a plural flag, the Russian gap hint and that the gap `wordId`s exist. Left, named for the screen steps: nothing generates the RU to DE prompt or the words to use on Translate (the screen reads them from content for now); `GapSentence` has no gender role for article colour; `highlightedWords` has no word ids; Record gets `retryWords` only, no per-word result.

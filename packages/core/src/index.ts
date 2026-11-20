@@ -15,3 +15,22 @@ export {
   scheduleAfterAnswer,
 } from './srs';
 export type { ReviewSchedule } from './srs';
+export type {
+  AiRequest,
+  AiService,
+  GapSentence,
+  GapSentencesRequest,
+  GapSentencesResponse,
+  NormalisedWord,
+  NormaliseRequest,
+  NormaliseResponse,
+  PronunciationRequest,
+  PronunciationResponse,
+  PronunciationVerdict,
+  StoryParagraph,
+  StoryRequest,
+  StoryResponse,
+  TranslationCheckRequest,
+  TranslationCheckResponse,
+  TranslationCorrection,
+} from './ai';

@@ -4,6 +4,19 @@ import {
 } from '@daily-chunk/languages';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
+import type {
+  AiRequest,
+  AiService,
+  GapSentencesRequest,
+  NormaliseRequest,
+  NormaliseResponse,
+  PronunciationRequest,
+  StoryParagraph,
+  StoryRequest,
+  StoryResponse,
+  TranslationCheckRequest,
+  TranslationCheckResponse,
+} from './ai';
 import { lessonTaskTypes } from './lesson';
 import type { LanguagePair } from './language-pair';
 import type { Lesson } from './lesson';
@@ -138,5 +151,39 @@ describe('Storage', () => {
       [Profile]
     >();
     expectTypeOf<Storage['profile']['save']>().returns.resolves.toBeVoid();
+  });
+});
+
+describe('AI requests', () => {
+  it('every call carries the language pair', () => {
+    expectTypeOf<AiRequest['languages']>().toEqualTypeOf<LanguagePair>();
+    expectTypeOf<NormaliseRequest>().toMatchTypeOf<AiRequest>();
+    expectTypeOf<StoryRequest>().toMatchTypeOf<AiRequest>();
+    expectTypeOf<GapSentencesRequest>().toMatchTypeOf<AiRequest>();
+    expectTypeOf<TranslationCheckRequest>().toMatchTypeOf<AiRequest>();
+    expectTypeOf<PronunciationRequest>().toMatchTypeOf<AiRequest>();
+  });
+
+  it('rejects a request without the language pair', () => {
+    // @ts-expect-error languages are required
+    const request: NormaliseRequest = { typedText: 'Bahnhof' };
+
+    expect(request.typedText).toBe('Bahnhof');
+  });
+
+  it('has one method per AI job, each returning a promise', () => {
+    expectTypeOf<
+      AiService['normaliseWords']
+    >().returns.resolves.toEqualTypeOf<NormaliseResponse>();
+    expectTypeOf<
+      AiService['generateStory']
+    >().returns.resolves.toEqualTypeOf<StoryResponse>();
+    expectTypeOf<
+      AiService['checkTranslation']
+    >().returns.resolves.toEqualTypeOf<TranslationCheckResponse>();
+  });
+
+  it('returns one native translation, not one per language', () => {
+    expectTypeOf<StoryParagraph['translation']>().toEqualTypeOf<string>();
   });
 });
