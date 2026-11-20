@@ -8,8 +8,8 @@
 
 ## What is in this repo
 
-- `apps/app/app/_layout.tsx`: wraps every screen (a `Stack` for now).
-- `apps/app/app/index.tsx`: the `/` screen.
+- `apps/app/app/_layout.tsx`: wraps every screen (a `Stack`).
+- `apps/app/app/(tabs)/`: the four main screens with the tab bar; see `navigation-shell.md`.
 - `apps/app/app.json`: app name, icons, plugins.
 - The same code runs on Android, iOS and web (`react-native-web` draws React Native components as HTML).
 
