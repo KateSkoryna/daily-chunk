@@ -4,7 +4,8 @@
     "lint": { "cache": true },
     "typecheck": { "cache": true },
     "check-meta": { "cache": true },
-    "test": { "cache": true }
+    "test": { "cache": true },
+    "e2e": { "dependsOn": ["export:web"], "cache": false }
   },
   "defaultBase": "main"
 }

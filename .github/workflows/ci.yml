@@ -49,6 +49,7 @@ jobs:
         working-directory: apps/app
         timeout-minutes: 5
       - run: npx nx affected -t test --base="$NX_BASE" --head=HEAD
+      - run: npx nx run @daily-chunk/app:e2e
 
   build:
     name: build
