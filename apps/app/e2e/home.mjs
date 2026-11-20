@@ -55,6 +55,16 @@ try {
   assert.equal(pathname(), '/');
   assert.equal(await wordsField.inputValue(), '');
 
+  await page.goto(`${server.url}/confirm`);
+  await page.getByText('der Bahnhof', { exact: true }).waitFor();
+  assert.equal(await page.getByRole('button', { name: /^Edit/ }).count(), 0);
+  await page.getByRole('button', { name: 'Start lesson' }).click();
+  await page.waitForURL('**/lesson/flashcards');
+  await page.getByRole('heading', { name: 'Lesson 1' }).waitFor();
+
+  await page.goto(`${server.url}/confirm`);
+  await page.getByText('der Bahnhof', { exact: true }).waitFor();
+
   assert.deepEqual(problems, []);
   console.log('home e2e passed');
 } finally {

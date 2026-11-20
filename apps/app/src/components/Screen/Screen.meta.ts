@@ -4,7 +4,7 @@ export const screenMeta = {
   name: 'Screen',
   category: 'molecule',
   description:
-    'The ground of a page: background, scanlines and the screen padding.',
+    'The ground of a page: background, scanlines and the screen padding. The content scrolls when it is taller than the screen, and it moves up out of the way of the on-screen keyboard.',
   spec: 'DESIGN.md §6, §7.6, §8',
   props: {
     className: 'Extra classes for the content area; layout only',
@@ -26,7 +26,10 @@ export const screenMeta = {
       '16',
     ],
   },
-  accessibility: ['A plain container with no role of its own'],
+  accessibility: [
+    'A plain container with no role of its own',
+    'Taps on buttons still work while the keyboard is open',
+  ],
   aiHints: {
     useWhen: ['As the root of every screen'],
     avoidWhen: [

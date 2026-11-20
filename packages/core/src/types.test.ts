@@ -153,6 +153,15 @@ describe('Storage', () => {
     expectTypeOf<Storage['profile']['save']>().returns.resolves.toBeVoid();
   });
 
+  it('lists and saves lessons with promises', () => {
+    expectTypeOf<Storage['lessons']['list']>().returns.resolves.toEqualTypeOf<
+      Lesson[]
+    >();
+    expectTypeOf<Storage['lessons']['save']>().parameters.toEqualTypeOf<
+      [Lesson]
+    >();
+  });
+
   it('lists words and saves many at once with promises', () => {
     expectTypeOf<Storage['words']['list']>().returns.resolves.toEqualTypeOf<
       Word[]

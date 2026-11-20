@@ -1,5 +1,7 @@
 import type {
   LanguagePair,
+  LessonTaskType,
+  TaskResult,
   PartOfSpeech,
   ReviewStage,
   Translations,
@@ -47,4 +49,16 @@ export const wordTable = sqliteTable('word', {
   learnedAt: text('learned_at'),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
+});
+
+export const lessonTable = sqliteTable('lesson', {
+  id: text('id').primaryKey(),
+  number: integer('number').notNull(),
+  wordIds: text('word_ids', { mode: 'json' }).$type<string[]>().notNull(),
+  taskResults: text('task_results', { mode: 'json' })
+    .$type<Partial<Record<LessonTaskType, TaskResult>>>()
+    .notNull(),
+  xpEarned: integer('xp_earned').notNull(),
+  startedAt: text('started_at'),
+  completedAt: text('completed_at'),
 });

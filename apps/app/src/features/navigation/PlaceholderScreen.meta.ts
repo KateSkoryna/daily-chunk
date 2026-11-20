@@ -4,7 +4,7 @@ export const placeholderScreenMeta = {
   name: 'PlaceholderScreen',
   category: 'organism',
   description:
-    'A stand-in for a screen that is built in a later step: a button in the top corner (menu, back or close), the screen title and one line saying it comes later. It lets every route of the navigation exist and be tested before its real screen does. Each real screen replaces it.',
+    'A stand-in for a screen that is built in a later step: an action in the top corner (menu, back or close, each with its word), the screen title and one line saying it comes later. It lets every route of the navigation exist and be tested before its real screen does. Each real screen replaces it.',
   spec: 'plan.md step 3.1',
   props: {
     title: 'The screen name, already translated',

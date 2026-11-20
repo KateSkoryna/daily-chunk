@@ -9,3 +9,5 @@
 **Where state lives:** only app-wide data is here. The text in the Home text area is local state of the Home route.
 
 **Words in storage:** the `word` table (`drizzle/0001_create_words.sql`, made by `npm run db:generate`); translations are stored as JSON text per native language. A word id is `word-<language>-<lemma in lower case>`, so typing a word twice finds the same word.
+
+**Lessons:** `startLesson()` in the store saves a lesson (`lesson` table) with the ids of the new words. There is one open lesson at a time: starting again reuses it with the current words. The pure rule is `startLesson` in `packages/core/src/start-lesson.ts`.

@@ -39,7 +39,7 @@
     "lessons": "Lessons",
     "score": "Score",
     "stats": "Stats",
-    "menu": "Open menu"
+    "menu": "Menu"
   },
   "common": {
     "next": "Next",
@@ -124,7 +124,7 @@
   "confirm": {
     "pluralNotice": "You wrote \"{{written}}\" (plural). Saved as {{saved}}.",
     "title": "Check words",
-    "intro": "I found the dictionary form, article and translation. Tap a row to fix it.",
+    "intro": "I found the dictionary form, article and translation. Check them, then start.",
     "wordCount_one": "{{count}} word",
     "wordCount_other": "{{count}} words",
     "pluralForms": "Pl. {{forms}}",

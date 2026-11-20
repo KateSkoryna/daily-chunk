@@ -18,7 +18,7 @@ export const homeScreenMeta = {
       'Optional message shown in a Notice under the text area, for example that dictation is not available yet or that no words were recognised',
     onWordsChange: 'Called with the new text',
     onDictate: 'Called by the mic button',
-    onOpenMenu: 'Called by the menu button',
+    onOpenMenu: 'Called by the menu action (icon and the word Menu)',
     onOpenReview: 'Called by the due for review link',
     onOpenBossRound: 'Called by the Boss round progress',
     onCheckWords: 'Called by the primary button',

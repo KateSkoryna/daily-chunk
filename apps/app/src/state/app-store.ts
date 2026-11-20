@@ -2,8 +2,10 @@ import {
   createInitialProfile,
   createWordFromNormalised,
   isNewWord,
+  startLesson as buildLesson,
   wordIdFor,
   type AiService,
+  type Lesson,
   type Profile,
   type Storage,
   type Word,
@@ -17,9 +19,11 @@ export type AppState = {
   status: 'idle' | 'loading' | 'ready' | 'error';
   profile: Profile | undefined;
   words: Word[];
+  lessons: Lesson[];
   pluralInput: PluralInput | undefined;
   load: (appLanguage: AppLanguage) => Promise<void>;
   addTypedWords: (typedText: string) => Promise<number>;
+  startLesson: () => Promise<Lesson>;
 };
 
 type AppStoreDependencies = {
@@ -33,6 +37,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
     status: 'idle',
     profile: undefined,
     words: [],
+    lessons: [],
     pluralInput: undefined,
 
     load: async (appLanguage) => {
@@ -49,7 +54,12 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
             now(),
           );
         if (!savedProfile) await storage.profile.save(profile);
-        set({ status: 'ready', profile, words: await storage.words.list() });
+        set({
+          status: 'ready',
+          profile,
+          words: await storage.words.list(),
+          lessons: await storage.lessons.list(),
+        });
       } catch {
         set({ status: 'error' });
       }
@@ -103,6 +113,23 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
       return get().words.filter(
         (word) => typedWordIds.has(word.id) && isNewWord(word),
       ).length;
+    },
+
+    startLesson: async () => {
+      const { words, lessons } = get();
+      const lesson = buildLesson(lessons, words.filter(isNewWord), now());
+      if (lesson.wordIds.length === 0) {
+        throw new Error('A lesson needs at least one word');
+      }
+      const storage = await getStorage();
+      await storage.lessons.save(lesson);
+      set((state) => ({
+        lessons: [
+          ...state.lessons.filter((saved) => saved.id !== lesson.id),
+          lesson,
+        ],
+      }));
+      return lesson;
     },
   }));
 }

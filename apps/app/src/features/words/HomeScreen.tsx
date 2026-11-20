@@ -59,9 +59,9 @@ function HomeScreen({
     <Screen className="gap-section">
       <TopBar
         left={
-          <TopBar.Button
+          <TopBar.Action
             icon="menu"
-            accessibilityLabel={t('nav.menu')}
+            label={t('nav.menu')}
             onPress={onOpenMenu}
           />
         }

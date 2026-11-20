@@ -1,14 +1,17 @@
-import type { Profile, Storage, Word } from '@daily-chunk/core';
+import type { Lesson, Profile, Storage, Word } from '@daily-chunk/core';
 import { describe, expect, it, vi } from 'vitest';
 
 import { createMockAiService } from '../src/ai/mock-ai-service';
 import { createAppStore } from '../src/state/app-store';
 
 function createFakeStorage(
-  initial: { profile?: Profile; words?: Word[] } = {},
+  initial: { profile?: Profile; words?: Word[]; lessons?: Lesson[] } = {},
 ) {
   let profile = initial.profile;
   const words = new Map((initial.words ?? []).map((word) => [word.id, word]));
+  const lessons = new Map(
+    (initial.lessons ?? []).map((lesson) => [lesson.id, lesson]),
+  );
   const storage: Storage = {
     profile: {
       get: async () => profile,
@@ -22,18 +25,24 @@ function createFakeStorage(
         next.forEach((word) => words.set(word.id, word));
       },
     },
+    lessons: {
+      list: async () => [...lessons.values()],
+      save: async (lesson) => {
+        lessons.set(lesson.id, lesson);
+      },
+    },
   };
-  return { storage, savedWords: words };
+  return { storage, savedWords: words, savedLessons: lessons };
 }
 
 function createStoreWith(initial?: Parameters<typeof createFakeStorage>[0]) {
-  const { storage, savedWords } = createFakeStorage(initial);
+  const { storage, savedWords, savedLessons } = createFakeStorage(initial);
   const store = createAppStore({
     getStorage: async () => storage,
     ai: createMockAiService(),
     now: () => new Date('2026-11-20T10:00:00.000Z'),
   });
-  return { store, storage, savedWords };
+  return { store, storage, savedWords, savedLessons };
 }
 
 describe('app store', () => {
@@ -204,5 +213,64 @@ describe('app store', () => {
     const { store } = createStoreWith();
 
     expect(await store.getState().addTypedWords('Gleis')).toBe(0);
+  });
+
+  it('starts lesson 1 with the new words and saves it', async () => {
+    const { store, savedLessons } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Bahnhof\nFahrkarte\nGleis');
+
+    const lesson = await store.getState().startLesson();
+
+    expect(lesson).toMatchObject({
+      id: 'lesson-1',
+      number: 1,
+      wordIds: ['word-de-bahnhof', 'word-de-fahrkarte', 'word-de-gleis'],
+      completedAt: null,
+    });
+    expect(savedLessons.get('lesson-1')).toEqual(lesson);
+    expect(store.getState().lessons).toEqual([lesson]);
+  });
+
+  it('keeps one open lesson when the lesson is started twice', async () => {
+    const { store, savedLessons } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Bahnhof\nFahrkarte');
+    await store.getState().startLesson();
+    await store.getState().addTypedWords('Gleis');
+
+    const lesson = await store.getState().startLesson();
+
+    expect(savedLessons.size).toBe(1);
+    expect(lesson.wordIds).toHaveLength(3);
+    expect(store.getState().lessons).toHaveLength(1);
+  });
+
+  it('loads the saved lessons on a later start', async () => {
+    const first = createStoreWith();
+    await first.store.getState().load('en');
+    await first.store.getState().addTypedWords('Gleis');
+    await first.store.getState().startLesson();
+    const second = createAppStore({
+      getStorage: async () => first.storage,
+      ai: createMockAiService(),
+      now: () => new Date(),
+    });
+
+    await second.getState().load('en');
+
+    expect(second.getState().lessons.map((lesson) => lesson.id)).toEqual([
+      'lesson-1',
+    ]);
+  });
+
+  it('does not start a lesson without words', async () => {
+    const { store, savedLessons } = createStoreWith();
+    await store.getState().load('en');
+
+    await expect(store.getState().startLesson()).rejects.toThrow(
+      'A lesson needs at least one word',
+    );
+    expect(savedLessons.size).toBe(0);
   });
 });

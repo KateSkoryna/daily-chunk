@@ -4,7 +4,7 @@ export const tabPlaceholderMeta = {
   name: 'TabPlaceholder',
   category: 'organism',
   description:
-    'The stand-in for a main tab screen that is built in a later step: the tab title and a menu button that opens the burger menu. It takes the title from i18n and the menu from the menu context, so each tab route file is one line. Each real tab screen replaces it.',
+    'The stand-in for a main tab screen that is built in a later step: the tab title and a Menu action that opens the burger menu. It takes the title from i18n and the menu from the menu context, so each tab route file is one line. Each real tab screen replaces it.',
   spec: 'plan.md step 3.1',
   props: {
     titleKey:

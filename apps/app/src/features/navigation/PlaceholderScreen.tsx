@@ -26,9 +26,9 @@ function PlaceholderScreen({
     <Screen className="gap-section">
       <TopBar
         left={
-          <TopBar.Button
+          <TopBar.Action
             icon={buttonIcon}
-            accessibilityLabel={buttonLabel}
+            label={buttonLabel}
             onPress={onButtonPress}
           />
         }
