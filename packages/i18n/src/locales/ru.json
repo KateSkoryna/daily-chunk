@@ -160,7 +160,7 @@
   "flashcards": {
     "cardCount": "Карточка {{current}} из {{total}}",
     "again": "← Ещё раз",
-    "knewIt": "Знаю →"
+    "next": "Дальше →"
   },
   "listen": {
     "stepListen": "Слушай",

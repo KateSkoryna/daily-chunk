@@ -36,4 +36,8 @@ describe('getTargetLanguagePack', () => {
   it('captions a plural form with (Pl.)', () => {
     expect(getTargetLanguagePack('de').pluralCaption).toBe('(Pl.)');
   });
+
+  it('names the voice language used to read German words aloud', () => {
+    expect(getTargetLanguagePack('de').speechLocale).toBe('de-DE');
+  });
 });

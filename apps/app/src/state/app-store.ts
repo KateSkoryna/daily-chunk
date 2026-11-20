@@ -6,6 +6,8 @@ import {
   wordIdFor,
   type AiService,
   type Lesson,
+  type LessonTaskType,
+  type TaskResult,
   type Profile,
   type Storage,
   type Word,
@@ -24,6 +26,7 @@ export type AppState = {
   load: (appLanguage: AppLanguage) => Promise<void>;
   addTypedWords: (typedText: string) => Promise<number>;
   startLesson: () => Promise<Lesson>;
+  saveTaskResult: (task: LessonTaskType, result: TaskResult) => Promise<void>;
 };
 
 type AppStoreDependencies = {
@@ -130,6 +133,24 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         ],
       }));
       return lesson;
+    },
+
+    saveTaskResult: async (task, result) => {
+      const openLesson = get().lessons.find(
+        (lesson) => lesson.completedAt === null,
+      );
+      if (!openLesson) throw new Error('There is no open lesson');
+      const updatedLesson: Lesson = {
+        ...openLesson,
+        taskResults: { ...openLesson.taskResults, [task]: result },
+      };
+      const storage = await getStorage();
+      await storage.lessons.save(updatedLesson);
+      set((state) => ({
+        lessons: state.lessons.map((lesson) =>
+          lesson.id === updatedLesson.id ? updatedLesson : lesson,
+        ),
+      }));
     },
   }));
 }

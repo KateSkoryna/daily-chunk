@@ -53,14 +53,15 @@ const meta = {
   args: {
     lessonNumber: lessonThirteen.number,
     xp: stepXpDemo.flashcards,
-    cards: demoWords,
-    cardIndex: 0,
+    word: demoWords[0]!,
+    cardNumber: 1,
+    cardTotal: demoWords.length,
     isFlipped: false,
     nativeLanguage: 'en',
     onFlip: fn(),
     onListen: fn(),
     onAgain: fn(),
-    onKnewIt: fn(),
+    onNext: fn(),
     onClose: fn(),
   },
   render: (args) => <FlashcardsDemo {...args} />,
@@ -75,7 +76,7 @@ export const Default: Story = {
     const t = textFor(globals);
     const nativeLanguage = appLanguageOf(globals);
     const canvas = within(canvasElement);
-    const word = args.cards[0]!;
+    const { word } = args;
     const front = await canvas.findByTestId('word-card-front');
     const back = canvas.getByTestId('word-card-back');
     const card = canvas.getByRole('button', { name: new RegExp(word.lemma) });
@@ -83,7 +84,16 @@ export const Default: Story = {
     expect(
       canvas.getByText(t('flashcards.cardCount', { current: 1, total: 4 })),
     ).toBeTruthy();
-    expect(within(front).getByText(displayedWord(word))).toBeTruthy();
+    expect(within(front).getByText(word.lemma)).toBeTruthy();
+    expect(within(front).queryByText(displayedWord(word))).toBeNull();
+    const articleBox = within(front).getByText('der').getBoundingClientRect();
+    const lemmaBox = within(front)
+      .getByText(word.lemma)
+      .getBoundingClientRect();
+    expect(articleBox.right).toBeLessThanOrEqual(lemmaBox.left);
+    expect(Math.abs(articleBox.top - lemmaBox.top)).toBeLessThan(
+      lemmaBox.height,
+    );
     expect(within(front).getByText(word.forms!)).toBeTruthy();
     expect(
       within(front).getByText(word.translations[nativeLanguage]!),
@@ -117,7 +127,7 @@ export const Default: Story = {
       canvas.getByRole('button', { name: t('flashcards.again') }),
     );
     await userEvent.click(
-      canvas.getByRole('button', { name: t('flashcards.knewIt') }),
+      canvas.getByRole('button', { name: t('flashcards.next') }),
     );
     await userEvent.click(
       canvas.getByRole('button', { name: t('lesson.quit') }),
@@ -125,13 +135,13 @@ export const Default: Story = {
 
     expect(args.onListen).toHaveBeenCalledTimes(1);
     expect(args.onAgain).toHaveBeenCalledTimes(1);
-    expect(args.onKnewIt).toHaveBeenCalledTimes(1);
+    expect(args.onNext).toHaveBeenCalledTimes(1);
     expect(args.onClose).toHaveBeenCalledTimes(1);
   },
 };
 
 export const WordWithoutArticle: Story = {
-  args: { cards: [verspaetet], cardIndex: 0 },
+  args: { word: verspaetet, cardTotal: 1 },
   play: async ({ canvasElement, args, globals }) => {
     const t = textFor(globals);
     const nativeLanguage = appLanguageOf(globals);
@@ -142,7 +152,7 @@ export const WordWithoutArticle: Story = {
     expect(getComputedStyle(tag.parentElement!).borderTopStyle).toBe('dashed');
     expect(within(front).getByText('verspätet')).toBeTruthy();
     expect(
-      within(front).getByText(args.cards[0]!.translations[nativeLanguage]!),
+      within(front).getByText(args.word.translations[nativeLanguage]!),
     ).toBeTruthy();
     expect(within(front).queryByText(/die |der |das /)).toBeNull();
     expect(

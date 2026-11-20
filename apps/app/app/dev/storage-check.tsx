@@ -1,4 +1,4 @@
-import type { Profile } from '@daily-chunk/core';
+import type { Lesson, Profile } from '@daily-chunk/core';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -9,6 +9,7 @@ export default function StorageCheck() {
   const [loaded, setLoaded] = useState<Profile | undefined | 'loading'>(
     'loading',
   );
+  const [lessons, setLessons] = useState<Lesson[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const saveProfile = async () => {
@@ -25,6 +26,9 @@ export default function StorageCheck() {
     getStorage()
       .then((storage) => storage.profile.get())
       .then(setLoaded)
+      .then(getStorage)
+      .then((storage) => storage.lessons.list())
+      .then(setLessons)
       .catch((error: unknown) => setErrorMessage(String(error)));
   }, []);
 
@@ -42,6 +46,18 @@ export default function StorageCheck() {
               ? `profile: ${loaded.id}, xp ${loaded.xp}, ${loaded.languages.nativeLanguage} to ${loaded.languages.targetLanguage}`
               : 'profile: none'}
       </Text>
+      {lessons.map((lesson) => (
+        <Text
+          key={lesson.id}
+          className="font-content text-body text-muted-foreground"
+        >
+          {`lesson: ${lesson.id}${Object.entries(lesson.taskResults)
+            .map(
+              ([task, result]) => ` ${task} ${result.correct}/${result.total}`,
+            )
+            .join('')}`}
+        </Text>
+      ))}
       <Pressable
         accessibilityRole="button"
         onPress={saveProfile}

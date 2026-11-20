@@ -60,7 +60,7 @@ try {
   assert.equal(await page.getByRole('button', { name: /^Edit/ }).count(), 0);
   await page.getByRole('button', { name: 'Start lesson' }).click();
   await page.waitForURL('**/lesson/flashcards');
-  await page.getByRole('heading', { name: 'Lesson 1' }).waitFor();
+  await page.getByText('Lesson 1', { exact: true }).waitFor();
 
   await page.goto(`${server.url}/confirm`);
   await page.getByText('der Bahnhof', { exact: true }).waitFor();

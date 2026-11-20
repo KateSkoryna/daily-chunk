@@ -76,13 +76,13 @@ try {
     .getByRole('navigation', { name: 'App menu' })
     .waitFor({ state: 'hidden' });
 
-  await openApp('/lesson/flashcards');
+  await openApp('/lesson/listen');
   await page.getByRole('button', { name: 'Quit lesson' }).click();
   const dialog = page.getByRole('alertdialog');
   await dialog.getByText('Leave the lesson?').waitFor();
   await dialog.getByRole('button', { name: 'Keep going' }).click();
   await dialog.waitFor({ state: 'hidden' });
-  assert.equal(pathname(), '/lesson/flashcards');
+  assert.equal(pathname(), '/lesson/listen');
 
   await page.getByRole('button', { name: 'Quit lesson' }).click();
   await dialog.getByRole('button', { name: 'Leave' }).click();
@@ -90,14 +90,14 @@ try {
 
   await openApp('/');
   await page.evaluate(() => {
-    window.history.pushState({}, '', '/lesson/flashcards');
+    window.history.pushState({}, '', '/lesson/listen');
     window.dispatchEvent(new PopStateEvent('popstate'));
   });
   await page.getByRole('button', { name: 'Quit lesson' }).waitFor();
   await page.goBack();
   await dialog.getByText('Leave the lesson?').waitFor();
   await dialog.getByRole('button', { name: 'Keep going' }).click();
-  assert.equal(pathname(), '/lesson/flashcards');
+  assert.equal(pathname(), '/lesson/listen');
 
   await openApp('/lesson/done');
   await page.getByRole('button', { name: 'Quit lesson' }).click();
