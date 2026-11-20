@@ -6,7 +6,8 @@ import { openDatabaseAsync } from 'expo-sqlite';
 
 import migrations from '../../drizzle/migrations';
 import { toProfile, toProfileRow } from './profile-row';
-import { profileTable, wordTable } from './schema';
+import { toLesson, toLessonRow } from './lesson-row';
+import { lessonTable, profileTable, wordTable } from './schema';
 import { toWord, toWordRow } from './word-row';
 
 export async function createSqliteStorage(
@@ -46,6 +47,22 @@ export async function createSqliteStorage(
             .values(row)
             .onConflictDoUpdate({ target: wordTable.id, set: row });
         }
+      },
+    },
+    lessons: {
+      list: async () => {
+        const rows = await database
+          .select()
+          .from(lessonTable)
+          .orderBy(asc(lessonTable.number));
+        return rows.map(toLesson);
+      },
+      save: async (lesson) => {
+        const row = toLessonRow(lesson);
+        await database
+          .insert(lessonTable)
+          .values(row)
+          .onConflictDoUpdate({ target: lessonTable.id, set: row });
       },
     },
   };

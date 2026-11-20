@@ -15,6 +15,13 @@
       "when": 1795179309468,
       "tag": "0001_create_words",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795184367578,
+      "tag": "0002_create_lessons",
+      "breakpoints": true
     }
   ]
 }
