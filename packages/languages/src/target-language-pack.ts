@@ -5,4 +5,5 @@ export type TargetLanguagePack = {
   pluralTagLabel: string;
   pluralCaption: string;
   pickerGenders: readonly PickerGender[];
+  speechLocale: string;
 };

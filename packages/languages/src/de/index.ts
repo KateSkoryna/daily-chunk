@@ -5,4 +5,5 @@ export const germanPack = {
   pluralTagLabel: 'die · Pl.',
   pluralCaption: '(Pl.)',
   pickerGenders: ['masc', 'fem', 'neut'],
+  speechLocale: 'de-DE',
 } satisfies TargetLanguagePack;
