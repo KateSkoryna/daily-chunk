@@ -763,7 +763,7 @@ Branches are one per step (phase 3 is back to the normal rule).
 | Step     | Status | Branch                  |
 | -------- | ------ | ----------------------- |
 | 3.1      | DONE   | `feat/navigation-shell` |
-| 3.2      | TODO   | `feat/storage`          |
+| 3.2      | DONE   | `feat/storage`          |
 | 3.3      | TODO   | `feat/srs-scheduler`    |
 | 3.4      | TODO   | `feat/ai-mocks`         |
 | 3.5      | TODO   | `feat/home-screen`      |
