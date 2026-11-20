@@ -29,7 +29,7 @@ const pathname = () => new URL(page.url()).pathname;
 const openApp = async (path) => {
   await page.goto(server.url + path);
   await page
-    .getByRole('button', { name: 'Open menu' })
+    .getByRole('button', { name: 'Menu', exact: true })
     .or(page.getByRole('button', { name: /Back|Quit lesson/ }))
     .first()
     .waitFor();
@@ -57,7 +57,7 @@ try {
 
   for (const item of drawerItems) {
     await openApp('/');
-    await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.getByRole('button', { name: 'Menu', exact: true }).click();
     const menu = page.getByRole('navigation', { name: 'App menu' });
     await menu.waitFor();
     await menu.getByRole('link', { name: item.name }).click();
@@ -66,7 +66,7 @@ try {
   }
 
   await openApp('/');
-  await page.getByRole('button', { name: 'Open menu' }).click();
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await page.getByRole('navigation', { name: 'App menu' }).waitFor();
   await page.waitForFunction(
     () => document.activeElement?.getAttribute('aria-label') === 'Close menu',

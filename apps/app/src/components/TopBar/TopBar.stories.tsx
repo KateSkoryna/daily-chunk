@@ -154,3 +154,48 @@ export const DictateButton: Story = {
     );
   },
 };
+
+export const LabelledAction: Story = {
+  render: () => (
+    <View className="p-gutter">
+      <WithText>
+        {(t) => (
+          <TopBar
+            left={
+              <TopBar.Action
+                icon="cross"
+                label={t('lesson.quit')}
+                onPress={fn()}
+              />
+            }
+            right={
+              <HeaderStats
+                xp={1240}
+                xpLabel={t('stats.xp')}
+                streakLabel={t('stats.streak', { count: 12 })}
+              />
+            }
+          />
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const action = await canvas.findByRole('button', {
+      name: t('lesson.quit'),
+    });
+    const box = action.getBoundingClientRect();
+
+    expect(action.textContent).toBe(t('lesson.quit'));
+    expect(action.querySelector('svg')?.getAttribute('aria-hidden')).toBe(
+      'true',
+    );
+    expect(toRem(box.height)).toBeGreaterThanOrEqual(3);
+    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.clientWidth,
+    );
+    await userEvent.click(action);
+  },
+};

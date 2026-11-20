@@ -5,7 +5,8 @@ import { cn } from '../../lib/utils';
 import { Icon } from '../Icon/Icon';
 import type { IconName } from '../Icon/icon-shapes';
 import { PressableFocus } from '../PressableFocus/PressableFocus';
-import { TextClassContext } from '../ui/text';
+import { Button } from '../ui/button';
+import { Text, TextClassContext } from '../ui/text';
 
 type TopBarProps = {
   left?: ReactNode;
@@ -66,7 +67,33 @@ function TopBarButton({
   );
 }
 
+type TopBarActionProps = {
+  icon: IconName;
+  label: string;
+  onPress: () => void;
+};
+
+function TopBarAction({ icon, label, onPress }: TopBarActionProps) {
+  return (
+    <Button
+      variant="ghost"
+      accessibilityLabel={label}
+      onPress={onPress}
+      className="px-0"
+    >
+      <Icon name={icon} decorative />
+      <Text>{label}</Text>
+    </Button>
+  );
+}
+
 TopBar.Button = TopBarButton;
+TopBar.Action = TopBarAction;
 
 export { TopBar };
-export type { TopBarButtonProps, TopBarButtonVariant, TopBarProps };
+export type {
+  TopBarActionProps,
+  TopBarButtonProps,
+  TopBarButtonVariant,
+  TopBarProps,
+};

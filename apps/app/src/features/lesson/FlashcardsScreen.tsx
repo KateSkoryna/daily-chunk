@@ -11,6 +11,7 @@ import { Icon } from '../../components/Icon/Icon';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
 import { Screen } from '../../components/Screen/Screen';
+import { TopBar } from '../../components/TopBar/TopBar';
 import { WordCard } from '../../components/WordCard/WordCard';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
@@ -105,13 +106,11 @@ function FlashcardsScreen({
     <Screen className="gap-4">
       <LessonHeader
         left={
-          <Button
-            variant="ghost"
-            accessibilityLabel={t('lesson.quit')}
+          <TopBar.Action
+            icon="cross"
+            label={t('lesson.quit')}
             onPress={onClose}
-          >
-            <Icon name="cross" decorative />
-          </Button>
+          />
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
