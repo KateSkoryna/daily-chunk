@@ -148,7 +148,7 @@
   "flashcards": {
     "cardCount": "Card {{current}} of {{total}}",
     "again": "← Again",
-    "knewIt": "Knew it →"
+    "next": "Next →"
   },
   "listen": {
     "stepListen": "Listen",

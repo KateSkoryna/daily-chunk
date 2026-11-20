@@ -15,21 +15,24 @@ import { TopBar } from '../../components/TopBar/TopBar';
 import { WordCard } from '../../components/WordCard/WordCard';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
-import { displayedWord } from '../../lib/displayed-word';
 
 type FlashcardsScreenProps = {
   lessonNumber: number;
   xp: number;
-  cards: Word[];
-  cardIndex: number;
+  word: Word;
+  cardNumber: number;
+  cardTotal: number;
   isFlipped: boolean;
   nativeLanguage: NativeLanguage;
   onFlip: () => void;
   onListen: () => void;
   onAgain: () => void;
-  onKnewIt: () => void;
+  onNext: () => void;
   onClose: () => void;
 };
+
+// h-9 is the height of the tallest letters of the word and mb-2.5 lifts the box from the bottom of the word's line to its baseline
+const articleBoxClasses = 'mb-2.5 h-9 self-end';
 
 function CardFront({
   word,
@@ -43,17 +46,21 @@ function CardFront({
 
   return (
     <View className="flex-1 justify-center gap-2">
-      {word.gender ? (
-        <ArticleChip
-          gender={word.gender}
-          targetLanguage={word.targetLanguage}
-        />
-      ) : (
-        <PartOfSpeechChip
-          label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
-        />
-      )}
-      <Text variant="word-xl">{displayedWord(word)}</Text>
+      <View className="flex-row flex-wrap items-end gap-3">
+        {word.gender ? (
+          <ArticleChip
+            gender={word.gender}
+            targetLanguage={word.targetLanguage}
+            className={articleBoxClasses}
+          />
+        ) : (
+          <PartOfSpeechChip
+            label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
+            className={articleBoxClasses}
+          />
+        )}
+        <Text variant="word-xl">{word.lemma}</Text>
+      </View>
       {word.forms && (
         <View className="flex-row items-baseline gap-2">
           <Text variant="word-l" className="text-gender-plural">
@@ -89,18 +96,18 @@ function CardBack({
 function FlashcardsScreen({
   lessonNumber,
   xp,
-  cards,
-  cardIndex,
+  word,
+  cardNumber,
+  cardTotal,
   isFlipped,
   nativeLanguage,
   onFlip,
   onListen,
   onAgain,
-  onKnewIt,
+  onNext,
   onClose,
 }: FlashcardsScreenProps) {
   const { t } = useTranslation();
-  const word = cards[cardIndex]!;
 
   return (
     <Screen className="gap-4">
@@ -123,8 +130,8 @@ function FlashcardsScreen({
       />
       <Text variant="caption" className="uppercase">
         {t('flashcards.cardCount', {
-          current: cardIndex + 1,
-          total: cards.length,
+          current: cardNumber,
+          total: cardTotal,
         })}
       </Text>
       <WordCard
@@ -146,8 +153,8 @@ function FlashcardsScreen({
           </Button>
         </View>
         <View className="flex-1">
-          <Button onPress={onKnewIt}>
-            <Text>{t('flashcards.knewIt')}</Text>
+          <Button onPress={onNext}>
+            <Text>{t('flashcards.next')}</Text>
           </Button>
         </View>
       </View>
