@@ -1,7 +1,7 @@
 import type { Word } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import type { GenderRole, NativeLanguage } from '@daily-chunk/languages';
-import { Text as NativeText, View } from 'react-native';
+import { Platform, Text as NativeText, View } from 'react-native';
 
 import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
 import { CardNavigator } from '../../components/CardNavigator/CardNavigator';
@@ -28,6 +28,13 @@ const underlineClasses = {
   neut: 'decoration-gender-neut',
   plural: 'decoration-gender-plural',
 } satisfies Record<GenderRole, string>;
+
+const dotsSpacing = Platform.OS === 'web' ? undefined : '-my-2';
+
+const phraseCardShape =
+  Platform.OS === 'web'
+    ? 'min-h-flashcard desktop:aspect-square desktop:min-h-0'
+    : 'aspect-square';
 
 type ListenScreenProps = {
   lessonNumber: number;
@@ -132,77 +139,85 @@ function ListenScreen({
         onSelect={(selected) => onStepSelect(selected === 2 ? 2 : 1)}
       />
       <View>
-        <Text variant="caption" className="uppercase">
-          {t('listen.phraseCount', {
-            current: phrase.current,
-            total: phrase.total,
-            repeat: repeat.current,
-            repeatTotal: repeat.total,
-          })}
-        </Text>
-        <ItemDots
-          labels={Array.from({ length: phrase.total }, (_, index) =>
-            t('listen.goToPhrase', { number: index + 1 }),
-          )}
-          current={phrase.current}
-          groupLabel={t('listen.phrases')}
-          onSelect={onPhraseSelect}
-        />
-      </View>
-      <CardNavigator
-        isFirst={isFirstPhrase}
-        isLast={isLastPhrase}
-        previousLabel={t('listen.previousPhrase')}
-        nextLabel={t('listen.nextPhrase')}
-        swipeHint={t('listen.swipeHint')}
-        onPrevious={onPrevious}
-        onNext={onNext}
-      >
-        <View className="min-h-flashcard gap-3.5 desktop:aspect-square desktop:min-h-0 border-2 border-border bg-card p-6">
-          <View className="flex-1 justify-center gap-3.5">
-            <View className="flex-row items-center gap-2.5">
-              {word.gender ? (
-                <ArticleChip
-                  gender={word.gender}
-                  targetLanguage={word.targetLanguage}
-                />
-              ) : (
-                <PartOfSpeechChip
-                  label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
-                />
-              )}
-              <Text variant="word-l">{displayedWord(word)}</Text>
-            </View>
-            <Text variant="reading">
-              {parts ? (
-                <>
-                  {parts.before}
-                  <NativeText className={cn('underline', underline)}>
-                    {highlightedWord}
-                  </NativeText>
-                  {parts.after}
-                </>
-              ) : (
-                word.sentence
-              )}
-            </Text>
-            <Text variant="body-sm">
-              {word.sentenceTranslations[nativeLanguage]}
-            </Text>
-          </View>
-          {step === 1 && (
-            <Waveform
-              className="h-6"
-              bars={playback.bars}
-              progress={playback.playedSeconds / playback.durationSeconds}
-              accessibilityLabel={t('listen.waveform', {
-                played: playback.playedSeconds,
-                total: playback.durationSeconds,
-              })}
-            />
-          )}
+        <View>
+          <Text variant="caption" className="uppercase">
+            {t('listen.phraseCount', {
+              current: phrase.current,
+              total: phrase.total,
+              repeat: repeat.current,
+              repeatTotal: repeat.total,
+            })}
+          </Text>
+          <ItemDots
+            className={dotsSpacing}
+            labels={Array.from({ length: phrase.total }, (_, index) =>
+              t('listen.goToPhrase', { number: index + 1 }),
+            )}
+            current={phrase.current}
+            groupLabel={t('listen.phrases')}
+            onSelect={onPhraseSelect}
+          />
         </View>
-      </CardNavigator>
+        <CardNavigator
+          isFirst={isFirstPhrase}
+          isLast={isLastPhrase}
+          previousLabel={t('listen.previousPhrase')}
+          nextLabel={t('listen.nextPhrase')}
+          swipeHint={t('listen.swipeHint')}
+          onPrevious={onPrevious}
+          onNext={onNext}
+        >
+          <View
+            className={cn(
+              'gap-3.5 border-2 border-border bg-card p-6',
+              phraseCardShape,
+            )}
+          >
+            <View className="flex-1 justify-center gap-3.5">
+              <View className="flex-row items-center gap-2.5">
+                {word.gender ? (
+                  <ArticleChip
+                    gender={word.gender}
+                    targetLanguage={word.targetLanguage}
+                  />
+                ) : (
+                  <PartOfSpeechChip
+                    label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
+                  />
+                )}
+                <Text variant="word-l">{displayedWord(word)}</Text>
+              </View>
+              <Text variant="reading">
+                {parts ? (
+                  <>
+                    {parts.before}
+                    <NativeText className={cn('underline', underline)}>
+                      {highlightedWord}
+                    </NativeText>
+                    {parts.after}
+                  </>
+                ) : (
+                  word.sentence
+                )}
+              </Text>
+              <Text variant="body-sm">
+                {word.sentenceTranslations[nativeLanguage]}
+              </Text>
+            </View>
+            {step === 1 && (
+              <Waveform
+                className="h-6"
+                bars={playback.bars}
+                progress={playback.playedSeconds / playback.durationSeconds}
+                accessibilityLabel={t('listen.waveform', {
+                  played: playback.playedSeconds,
+                  total: playback.durationSeconds,
+                })}
+              />
+            )}
+          </View>
+        </CardNavigator>
+      </View>
       {step === 1 ? (
         <PlaybackControls
           speedLabel={t('listen.speed', { speed: playback.speed })}

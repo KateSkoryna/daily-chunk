@@ -27,7 +27,7 @@ export const cardNavigatorMeta = {
   },
   tokens: {
     color: ['muted-foreground'],
-    typography: ['caption'],
+    typography: ['body-sm'],
     spacing: ['2'],
   },
   accessibility: [

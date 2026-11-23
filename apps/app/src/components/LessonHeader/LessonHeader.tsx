@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { LessonStepper } from '../LessonStepper/LessonStepper';
 import { Text } from '../ui/text';
+
+const headerGap = Platform.OS === 'web' ? 'gap-4' : 'gap-2 desktop:gap-4';
 
 type LessonHeaderProps = {
   left?: ReactNode;
@@ -28,7 +30,7 @@ function LessonHeader({
   onStepSelect,
 }: LessonHeaderProps) {
   return (
-    <View className="gap-4">
+    <View className={headerGap}>
       <View className="min-h-touch flex-row items-center gap-2">
         <View className="flex-1 items-start">{left}</View>
         <Text variant="label" className="text-muted-foreground">

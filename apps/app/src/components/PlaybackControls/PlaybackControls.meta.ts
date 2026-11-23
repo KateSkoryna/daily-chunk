@@ -26,7 +26,7 @@ export const playbackControlsMeta = {
   tokens: {
     color: ['input', 'ring', 'primary-foreground'],
     typography: ['ui'],
-    other: ['control', 'record', 'border-3'],
+    other: ['control', 'border-3'],
     spacing: ['4'],
   },
   accessibility: [

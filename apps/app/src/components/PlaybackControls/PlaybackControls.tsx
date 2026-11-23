@@ -35,7 +35,7 @@ function PlaybackControls({
           accessibilityRole="button"
           accessibilityLabel={isPlaying ? pauseLabel : playLabel}
           onPress={onTogglePlay}
-          className="size-record items-center justify-center rounded-full border-3 border-ring bg-ring"
+          className="size-control items-center justify-center rounded-full border-3 border-ring bg-ring"
         >
           <Icon name={isPlaying ? 'pause' : 'play'} decorative />
         </PressableFocus>
