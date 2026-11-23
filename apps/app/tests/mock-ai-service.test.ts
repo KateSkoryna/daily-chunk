@@ -31,6 +31,24 @@ describe('mock AI service', () => {
     expect(words[0]).toMatchObject({ typedText: 'Bahnhöfe', gender: 'masc' });
   });
 
+  it('finds words typed in lower case and keeps the dictionary spelling', async () => {
+    const { words } = await ai.normaliseWords({
+      languages: russian,
+      typedText: 'bahnhof\nbahnhöfe\nVERSPÄTET',
+    });
+
+    expect(words.map((word) => word.lemma)).toEqual([
+      'Bahnhof',
+      'Bahnhof',
+      'verspätet',
+    ]);
+    expect(words.map((word) => word.wasPluralised)).toEqual([
+      false,
+      true,
+      false,
+    ]);
+  });
+
   it('skips blank lines and words it does not know', async () => {
     const { words } = await ai.normaliseWords({
       languages: russian,

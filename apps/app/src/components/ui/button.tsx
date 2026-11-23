@@ -81,7 +81,7 @@ function Button({
         <HardShadow
           isShadowHidden={disabled || isPressedDown}
           className={cn(
-            'w-full desktop:max-w-button-max',
+            'w-full desktop:max-w-button-max desktop:self-center',
             isPressedDown
               ? 'translate-x-1 translate-y-1'
               : 'translate-x-0 translate-y-0',

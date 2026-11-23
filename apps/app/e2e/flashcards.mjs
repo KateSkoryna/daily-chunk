@@ -46,31 +46,58 @@ try {
   await page.getByRole('button', { name: /Bahnhof/ }).click();
   await page.getByText('Ich warte am Bahnhof.').waitFor();
 
-  await page.getByRole('button', { name: 'Listen' }).click();
+  await page.getByRole('button', { name: 'Listen', exact: true }).click();
   assert.deepEqual(await page.evaluate(() => window.spokenTexts), [
     { text: 'Ich warte am Bahnhof.', language: 'de-DE' },
   ]);
 
-  step('answer Again');
-  await page.getByRole('button', { name: '← Again' }).click();
-  await showsCard(1, 'Fahrkarte');
+  step('go to the next card');
+  await page.getByRole('button', { name: 'Next card' }).click();
+  await showsCard(2, 'Fahrkarte');
 
-  step('answer Next on card 1');
-  await page.getByRole('button', { name: 'Next →' }).click();
-  await showsCard(2, 'Gleis');
+  step('go back to the previous card');
+  assert.notEqual(
+    await page
+      .getByRole('button', { name: 'Previous card' })
+      .getAttribute('aria-disabled'),
+    'true',
+  );
+  await page.getByRole('button', { name: 'Previous card' }).click();
+  await showsCard(1, 'Bahnhof');
+  assert.equal(
+    await page
+      .getByRole('button', { name: 'Previous card' })
+      .getAttribute('aria-disabled'),
+    'true',
+  );
 
-  step('answer Next on card 2');
-  await page.getByRole('button', { name: 'Next →' }).click();
-  await showsCard(3, 'Bahnhof');
+  step('go through all cards');
+  await page.getByRole('button', { name: 'Next card' }).click();
+  await showsCard(2, 'Fahrkarte');
+  await page.getByRole('button', { name: 'Next card' }).click();
+  await showsCard(3, 'Gleis');
 
-  step('answer Next on the last card');
-  await page.getByRole('button', { name: 'Next →' }).click();
+  step('jump to a card with the dots');
+  await page.getByRole('button', { name: 'Card 3', exact: true }).click();
+  await showsCard(3, 'Gleis');
+  await page.getByRole('button', { name: 'Card 2', exact: true }).click();
+  await showsCard(2, 'Fahrkarte');
+  await page.getByRole('button', { name: 'Card 3', exact: true }).click();
+  await showsCard(3, 'Gleis');
+
+  step('finish on the last card');
+  await page.getByRole('button', { name: 'Next section →' }).click();
   await page.waitForURL('**/lesson/listen');
   assert.equal(pathname(), '/lesson/listen');
 
+  step('come back to the flashcards');
+  await page.goBack();
+  await page.waitForURL('**/lesson/flashcards');
+  await showsCard(1, 'Bahnhof');
+
   step('read the saved result');
   await page.goto(`${server.url}/dev/storage-check`);
-  await page.getByText('lesson: lesson-1 flashcards 2/3').waitFor();
+  await page.getByText('lesson: lesson-1 flashcards 3/3').waitFor();
 
   assert.deepEqual(problems, []);
   console.log('flashcards e2e passed');

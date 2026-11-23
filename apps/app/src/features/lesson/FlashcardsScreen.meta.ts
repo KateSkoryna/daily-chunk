@@ -4,7 +4,7 @@ export const flashcardsScreenMeta = {
   name: 'FlashcardsScreen',
   category: 'organism',
   description:
-    'Task 1 of the lesson: one word card at a time. Tap the card to flip it, listen to the word, then say if you knew it or want to see it again. The screen owns neither the current card nor the flip: both come in as props.',
+    'Task 1 of the lesson: one word card at a time. Tap the card to flip it, listen to the word, then go to the next card, or back to the previous one. The screen owns neither the current card nor the flip: both come in as props.',
   spec: 'design/screens/Flashcards.dc.html (S3), plan.md §4',
   props: {
     lessonNumber: 'The number of the lesson, for the header',
@@ -12,12 +12,23 @@ export const flashcardsScreenMeta = {
     word: 'The word on the card',
     cardNumber: 'The position shown in the counter, counting from 1',
     cardTotal: 'How many words the lesson has, for the counter',
+    isFirstCard:
+      'Whether this is the first card; the previous button is disabled then',
     isFlipped: 'Whether the back (the example sentence) is shown',
     nativeLanguage: 'Which translation to show',
     onFlip: 'Called when the card is pressed',
     onListen: 'Called by the listen button',
-    onAgain: 'Called by the again button',
-    onNext: 'Called by the primary button: the card is done',
+    onCardSelect: 'Called with the card (from 1) whose dot was tapped',
+    onPrevious: 'Called by the previous button',
+    isLastCard: 'True on the last card; the next card button is disabled',
+    onNextSection:
+      'Called by the primary button: finish the cards and go to the next section',
+    onNext: 'Called by the next card button',
+    taskNames:
+      'The names of the six tasks, already translated, for the stepper buttons',
+    onTaskSelect:
+      'Called with the task (from 1) whose stepper segment was tapped',
+    onBack: 'Called by the back button: the list of lesson tasks',
     onClose: 'Called by the quit button',
   },
   states: ['word side', 'sentence side', 'word without an article'],

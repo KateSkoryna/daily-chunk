@@ -65,7 +65,21 @@
     },
     "xpEarned": "+{{count}} XP",
     "title": "Lesson {{number}}",
-    "quit": "Quit lesson"
+    "somethingFailed": "Chunk tripped over something. Try again.",
+    "quit": "Quit",
+    "goToTask": "Go to: {{task}}",
+    "overviewIntro": "Six tasks. Start with any of them.",
+    "overviewStart": "Start",
+    "taskDone": "Done",
+    "taskDescriptions": {
+      "flashcards": "Flip each word and hear it",
+      "listen": "Hear a sentence, then say it back",
+      "read": "Read a short story with your words",
+      "record": "Read the story aloud",
+      "gap-fill": "Fill in the missing article and word",
+      "translate": "Translate a sentence"
+    },
+    "nextSection": "Next section →"
   },
   "tutor": {
     "says": "Chunk says",
@@ -147,20 +161,31 @@
   },
   "flashcards": {
     "cardCount": "Card {{current}} of {{total}}",
-    "again": "← Again",
-    "next": "Next →"
+    "goToCard": "Card {{number}}",
+    "cards": "Cards",
+    "previousCard": "Previous card",
+    "nextCard": "Next card",
+    "swipeHint": "Swipe the card left or right to change it"
   },
   "listen": {
     "stepListen": "Listen",
     "stepRepeat": "Repeat",
     "steps": "Listening steps",
     "phraseCount": "Phrase {{current}} of {{total}} · Repeat {{repeat}} of {{repeatTotal}}",
-    "nextPhrase": "Next phrase",
     "play": "Play",
     "pause": "Pause",
+    "microphoneDenied": "Chunk cannot hear you. Allow the microphone in the settings.",
     "recordRepeat": "Record your repeat",
+    "playRecording": "Play my recording",
+    "recordAgain": "Record again",
+    "stopRecording": "Stop recording",
     "waveform": "Audio waveform, {{played, number(minimumFractionDigits: 1)}} of {{total, number(minimumFractionDigits: 1)}} seconds played",
-    "speed": "{{speed, number}}×"
+    "speed": "{{speed, number(minimumFractionDigits: 2)}}×",
+    "goToPhrase": "Phrase {{number}}",
+    "phrases": "Phrases",
+    "previousPhrase": "Previous phrase",
+    "nextPhrase": "Next phrase",
+    "swipeHint": "Swipe the phrase card left or right to change it"
   },
   "wordPopover": {
     "label": "Word: {{word}}",

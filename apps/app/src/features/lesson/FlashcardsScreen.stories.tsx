@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { toRem } from '../../lib/browser-rem';
 import { displayedWord } from '../../lib/displayed-word';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { lessonStepNames } from '../../lib/lesson-step-names';
 import { appLanguageOf, textFor, WithText } from '../../lib/story-text';
 import { lessonThirteen, stepXpDemo } from '../../mocks/lesson';
 import { demoWords, verspaetet } from '../../mocks/words';
@@ -25,9 +25,10 @@ function FlashcardsDemo({
   return (
     <View className="min-h-screen">
       <WithText>
-        {(_t, appLanguage) => (
+        {(t, appLanguage) => (
           <FlashcardsScreen
             {...props}
+            taskNames={lessonStepNames(t, appLanguage, 'de')}
             nativeLanguage={appLanguage}
             isFlipped={flipped}
             onFlip={() => {
@@ -54,14 +55,21 @@ const meta = {
     lessonNumber: lessonThirteen.number,
     xp: stepXpDemo.flashcards,
     word: demoWords[0]!,
-    cardNumber: 1,
+    cardNumber: 2,
     cardTotal: demoWords.length,
+    isFirstCard: false,
     isFlipped: false,
     nativeLanguage: 'en',
     onFlip: fn(),
     onListen: fn(),
-    onAgain: fn(),
+    onCardSelect: fn(),
+    onPrevious: fn(),
+    isLastCard: false,
     onNext: fn(),
+    onNextSection: fn(),
+    taskNames: [],
+    onTaskSelect: fn(),
+    onBack: fn(),
     onClose: fn(),
   },
   render: (args) => <FlashcardsDemo {...args} />,
@@ -82,7 +90,7 @@ export const Default: Story = {
     const card = canvas.getByRole('button', { name: new RegExp(word.lemma) });
 
     expect(
-      canvas.getByText(t('flashcards.cardCount', { current: 1, total: 4 })),
+      canvas.getByText(t('flashcards.cardCount', { current: 2, total: 4 })),
     ).toBeTruthy();
     expect(within(front).getByText(word.lemma)).toBeTruthy();
     expect(within(front).queryByText(displayedWord(word))).toBeNull();
@@ -99,17 +107,22 @@ export const Default: Story = {
       within(front).getByText(word.translations[nativeLanguage]!),
     ).toBeTruthy();
     expect(back.getAttribute('aria-hidden')).toBe('true');
-    expect(toRem(card.getBoundingClientRect().height)).toBeGreaterThanOrEqual(
-      22.5,
+    expect(card.getBoundingClientRect().height).toBeCloseTo(
+      card.getBoundingClientRect().width,
+      0,
     );
-    expect(
-      canvas.getByRole('progressbar', {
-        name: t('lesson.stepLabel', {
-          step: '01',
-          task: t('lesson.tasks.flashcards'),
-        }),
+    const stepper = canvas.getByRole('toolbar', {
+      name: t('lesson.stepLabel', {
+        step: '01',
+        task: t('lesson.tasks.flashcards'),
       }),
-    ).toBeTruthy();
+    });
+    const segments = within(stepper).getAllByRole('button');
+
+    expect(segments).toHaveLength(6);
+    expect(segments[0]).toHaveAttribute('aria-current', 'step');
+    await userEvent.click(segments[4]!);
+    expect(args.onTaskSelect).toHaveBeenCalledWith(5);
 
     await userEvent.click(card);
     expect(args.onFlip).toHaveBeenCalledTimes(1);
@@ -124,24 +137,28 @@ export const Default: Story = {
       canvas.getByRole('button', { name: t('common.listen') }),
     );
     await userEvent.click(
-      canvas.getByRole('button', { name: t('flashcards.again') }),
+      canvas.getByRole('button', { name: t('flashcards.previousCard') }),
     );
     await userEvent.click(
-      canvas.getByRole('button', { name: t('flashcards.next') }),
+      canvas.getByRole('button', { name: t('flashcards.nextCard') }),
+    );
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('lesson.nextSection') }),
     );
     await userEvent.click(
       canvas.getByRole('button', { name: t('lesson.quit') }),
     );
 
     expect(args.onListen).toHaveBeenCalledTimes(1);
-    expect(args.onAgain).toHaveBeenCalledTimes(1);
+    expect(args.onPrevious).toHaveBeenCalledTimes(1);
     expect(args.onNext).toHaveBeenCalledTimes(1);
+    expect(args.onNextSection).toHaveBeenCalledTimes(1);
     expect(args.onClose).toHaveBeenCalledTimes(1);
   },
 };
 
 export const WordWithoutArticle: Story = {
-  args: { word: verspaetet, cardTotal: 1 },
+  args: { word: verspaetet, cardNumber: 1, cardTotal: 1, isFirstCard: true },
   play: async ({ canvasElement, args, globals }) => {
     const t = textFor(globals);
     const nativeLanguage = appLanguageOf(globals);
@@ -158,5 +175,44 @@ export const WordWithoutArticle: Story = {
     expect(
       canvas.getByText(t('flashcards.cardCount', { current: 1, total: 1 })),
     ).toBeTruthy();
+  },
+};
+
+export const FirstCard: Story = {
+  args: { cardNumber: 1, isFirstCard: true },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const previous = await canvas.findByRole('button', {
+      name: t('flashcards.previousCard'),
+    });
+
+    expect(previous.getAttribute('aria-disabled')).toBe('true');
+    expect(getComputedStyle(previous).pointerEvents).toBe('none');
+    expect(args.onPrevious).not.toHaveBeenCalled();
+    expect(
+      canvas.getByRole('button', { name: t('flashcards.nextCard') }),
+    ).toBeTruthy();
+    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.clientWidth,
+    );
+  },
+};
+
+export const LastCard: Story = {
+  args: { cardNumber: 4, cardTotal: 4, isLastCard: true },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const next = await canvas.findByRole('button', {
+      name: t('flashcards.nextCard'),
+    });
+
+    expect(next.getAttribute('aria-disabled')).toBe('true');
+    expect(args.onNext).not.toHaveBeenCalled();
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('lesson.nextSection') }),
+    );
+    expect(args.onNextSection).toHaveBeenCalledTimes(1);
   },
 };

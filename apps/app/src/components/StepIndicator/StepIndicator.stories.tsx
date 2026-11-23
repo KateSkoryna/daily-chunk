@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { View } from 'react-native';
-import { expect, within } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { textFor, WithText } from '../../lib/story-text';
@@ -86,5 +86,24 @@ export const SecondStep: Story = {
     expect(getComputedStyle(second.parentElement!).backgroundColor).not.toBe(
       getComputedStyle(first.parentElement!).backgroundColor,
     );
+  },
+};
+
+export const Tabs: Story = {
+  args: { onSelect: fn() },
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const list = await canvas.findByRole('tablist', {
+      name: t('listen.steps'),
+    });
+    const [first, second] = within(list).getAllByRole('tab');
+
+    expect(first).toHaveAttribute('aria-selected', 'true');
+    expect(second).toHaveAttribute('aria-selected', 'false');
+    await userEvent.click(second!);
+
+    expect(args.onSelect).toHaveBeenCalledWith(2);
   },
 };

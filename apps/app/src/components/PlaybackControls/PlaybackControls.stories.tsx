@@ -14,29 +14,21 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     docs: { description: { component: metaToMarkdown(playbackControlsMeta) } },
-    controls: { include: ['isPlaying', 'recordState'] },
+    controls: { include: ['isPlaying'] },
   },
   args: {
     speedLabel: '',
     isPlaying: false,
     playLabel: '',
     pauseLabel: '',
-    recordState: 'idle',
-    recordLabel: '',
     onSpeedPress: fn(),
     onTogglePlay: fn(),
-    onRecord: fn(),
   },
   argTypes: {
     isPlaying: {
       control: 'boolean',
       description:
         'Whether the clip is playing: the middle button shows pause.',
-    },
-    recordState: {
-      control: 'inline-radio',
-      options: ['idle', 'recording', 'done'],
-      description: 'What the record button shows.',
     },
   },
   render: (args) => (
@@ -48,7 +40,6 @@ const meta = {
             speedLabel={t('listen.speed', { speed: 0.75 })}
             playLabel={t('listen.play')}
             pauseLabel={t('listen.pause')}
-            recordLabel={t('listen.recordRepeat')}
           />
         )}
       </WithText>
@@ -70,28 +61,19 @@ export const Default: Story = {
     const toggle = canvas.getByRole('button', {
       name: args.isPlaying ? t('listen.pause') : t('listen.play'),
     });
-    const record = canvas.getByRole('button', {
-      name: t('listen.recordRepeat'),
-    });
 
     expect(toRem(toggle.getBoundingClientRect().width)).toBe(5);
     expect(toRem(toggle.getBoundingClientRect().height)).toBe(5);
-    expect(toRem(record.getBoundingClientRect().width)).toBe(4);
     expect(toRem(speed.getBoundingClientRect().height)).toBe(3.5);
     expect(speed.getBoundingClientRect().right).toBeLessThan(
       toggle.getBoundingClientRect().left,
     );
-    expect(toggle.getBoundingClientRect().right).toBeLessThan(
-      record.getBoundingClientRect().left,
-    );
 
     await userEvent.click(speed);
     await userEvent.click(toggle);
-    await userEvent.click(record);
 
     expect(args.onSpeedPress).toHaveBeenCalledTimes(1);
     expect(args.onTogglePlay).toHaveBeenCalledTimes(1);
-    expect(args.onRecord).toHaveBeenCalledTimes(1);
   },
 };
 

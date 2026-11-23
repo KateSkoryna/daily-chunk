@@ -1,42 +1,40 @@
 import type { TaskResult } from './lesson';
 
 export type FlashcardSession = {
-  queue: string[];
-  total: number;
-  missedWordIds: string[];
+  wordIds: string[];
+  index: number;
 };
 
 export function createFlashcardSession(wordIds: string[]): FlashcardSession {
-  return { queue: [...wordIds], total: wordIds.length, missedWordIds: [] };
+  return { wordIds: [...wordIds], index: 0 };
 }
 
-export function answerFlashcard(
+export function isFirstFlashcard(session: FlashcardSession): boolean {
+  return session.index === 0;
+}
+
+export function isLastFlashcard(session: FlashcardSession): boolean {
+  return session.index >= session.wordIds.length - 1;
+}
+
+export function nextFlashcard(session: FlashcardSession): FlashcardSession {
+  if (isLastFlashcard(session)) return session;
+  return { ...session, index: session.index + 1 };
+}
+
+export function previousFlashcard(session: FlashcardSession): FlashcardSession {
+  if (isFirstFlashcard(session)) return session;
+  return { ...session, index: session.index - 1 };
+}
+
+export function goToFlashcard(
   session: FlashcardSession,
-  isKnown: boolean,
+  index: number,
 ): FlashcardSession {
-  const [currentWordId, ...rest] = session.queue;
-  if (currentWordId === undefined) return session;
-  if (isKnown) return { ...session, queue: rest };
-  return {
-    ...session,
-    queue: [...rest, currentWordId],
-    missedWordIds: session.missedWordIds.includes(currentWordId)
-      ? session.missedWordIds
-      : [...session.missedWordIds, currentWordId],
-  };
-}
-
-export function isFlashcardSessionDone(session: FlashcardSession): boolean {
-  return session.queue.length === 0;
-}
-
-export function flashcardsDone(session: FlashcardSession): number {
-  return session.total - new Set(session.queue).size;
+  if (index < 0 || index >= session.wordIds.length) return session;
+  return { ...session, index };
 }
 
 export function flashcardResult(session: FlashcardSession): TaskResult {
-  return {
-    correct: session.total - session.missedWordIds.length,
-    total: session.total,
-  };
+  return { correct: session.wordIds.length, total: session.wordIds.length };
 }

@@ -16,10 +16,13 @@ import { demoWords } from '../mocks/words';
 function findDemoWord(
   typedWord: string,
 ): { word: Word; wasPluralised: boolean } | undefined {
-  const exactMatch = demoWords.find((word) => word.lemma === typedWord);
+  const typedLowerCase = typedWord.toLowerCase();
+  const exactMatch = demoWords.find(
+    (word) => word.lemma.toLowerCase() === typedLowerCase,
+  );
   if (exactMatch) return { word: exactMatch, wasPluralised: false };
   const pluralMatch = demoWords.find((word) =>
-    word.forms?.endsWith(` ${typedWord}`),
+    word.forms?.toLowerCase().endsWith(` ${typedLowerCase}`),
   );
   return pluralMatch && { word: pluralMatch, wasPluralised: true };
 }

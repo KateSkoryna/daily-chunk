@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 function expectedPaddingInRem() {
   const viewportInRem = window.innerWidth / rootFontSizeInPixels();
-  if (viewportInRem >= 64) return { top: 4, side: 3, bottom: 1 };
+  if (viewportInRem >= 64) return { top: 1.5, side: 3, bottom: 2.5 };
   if (viewportInRem >= 37.5) return { top: 3.5, side: 2, bottom: 1 };
   return { top: 3.5, side: 1.5, bottom: 1 };
 }

@@ -1,78 +1,66 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  answerFlashcard,
   createFlashcardSession,
+  goToFlashcard,
   flashcardResult,
-  flashcardsDone,
-  isFlashcardSessionDone,
+  isFirstFlashcard,
+  isLastFlashcard,
+  nextFlashcard,
+  previousFlashcard,
 } from './flashcards';
 
 const wordIds = ['a', 'b', 'c'];
 
 describe('flashcard session', () => {
-  it('starts with every word in the queue and nothing missed', () => {
+  it('starts on the first card', () => {
     expect(createFlashcardSession(wordIds)).toEqual({
-      queue: ['a', 'b', 'c'],
-      total: 3,
-      missedWordIds: [],
+      wordIds: ['a', 'b', 'c'],
+      index: 0,
     });
   });
 
-  it('takes a known word out of the queue', () => {
-    const session = answerFlashcard(createFlashcardSession(wordIds), true);
+  it('goes to the next card and back to the previous one', () => {
+    const second = nextFlashcard(createFlashcardSession(wordIds));
 
-    expect(session.queue).toEqual(['b', 'c']);
-    expect(session.missedWordIds).toEqual([]);
+    expect(second.index).toBe(1);
+    expect(previousFlashcard(second).index).toBe(0);
   });
 
-  it('puts a missed word at the end of the queue and remembers it', () => {
-    const session = answerFlashcard(createFlashcardSession(wordIds), false);
+  it('stays on the first card when going back from it', () => {
+    const first = createFlashcardSession(wordIds);
 
-    expect(session.queue).toEqual(['b', 'c', 'a']);
-    expect(session.missedWordIds).toEqual(['a']);
+    expect(isFirstFlashcard(first)).toBe(true);
+    expect(previousFlashcard(first)).toBe(first);
   });
 
-  it('remembers a word once however often it is missed', () => {
-    let session = createFlashcardSession(['a']);
-    session = answerFlashcard(session, false);
-    session = answerFlashcard(session, false);
+  it('stays on the last card when going forward from it', () => {
+    const last = nextFlashcard(nextFlashcard(createFlashcardSession(wordIds)));
 
-    expect(session.queue).toEqual(['a']);
-    expect(session.missedWordIds).toEqual(['a']);
+    expect(isLastFlashcard(last)).toBe(true);
+    expect(nextFlashcard(last)).toBe(last);
+    expect(last.index).toBe(2);
   });
 
-  it('is done when every word has been known', () => {
-    let session = createFlashcardSession(['a', 'b']);
-    session = answerFlashcard(session, true);
-    expect(isFlashcardSessionDone(session)).toBe(false);
-    session = answerFlashcard(session, true);
+  it('knows a one card session is both first and last', () => {
+    const only = createFlashcardSession(['a']);
 
-    expect(isFlashcardSessionDone(session)).toBe(true);
+    expect(isFirstFlashcard(only)).toBe(true);
+    expect(isLastFlashcard(only)).toBe(true);
   });
 
-  it('ignores an answer when the queue is empty', () => {
-    const done = createFlashcardSession([]);
-
-    expect(answerFlashcard(done, true)).toBe(done);
+  it('scores every card as seen', () => {
+    expect(flashcardResult(createFlashcardSession(wordIds))).toEqual({
+      correct: 3,
+      total: 3,
+    });
   });
 
-  it('counts the words known so far, not the answers given', () => {
-    let session = createFlashcardSession(wordIds);
-    session = answerFlashcard(session, false);
-    expect(flashcardsDone(session)).toBe(0);
-    session = answerFlashcard(session, true);
+  it('jumps to a card and ignores a card that does not exist', () => {
+    const session = createFlashcardSession(wordIds);
 
-    expect(flashcardsDone(session)).toBe(1);
-  });
-
-  it('scores the words known on the first try', () => {
-    let session = createFlashcardSession(wordIds);
-    session = answerFlashcard(session, false);
-    session = answerFlashcard(session, true);
-    session = answerFlashcard(session, true);
-    session = answerFlashcard(session, true);
-
-    expect(flashcardResult(session)).toEqual({ correct: 2, total: 3 });
+    expect(goToFlashcard(session, 2).index).toBe(2);
+    expect(goToFlashcard(session, 3)).toBe(session);
+    expect(goToFlashcard(session, -1)).toBe(session);
   });
 });

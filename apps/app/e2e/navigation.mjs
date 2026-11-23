@@ -30,7 +30,7 @@ const openApp = async (path) => {
   await page.goto(server.url + path);
   await page
     .getByRole('button', { name: 'Menu', exact: true })
-    .or(page.getByRole('button', { name: /Back|Quit lesson/ }))
+    .or(page.getByRole('button', { name: /Back|Quit/ }))
     .first()
     .waitFor();
 };
@@ -76,31 +76,31 @@ try {
     .getByRole('navigation', { name: 'App menu' })
     .waitFor({ state: 'hidden' });
 
-  await openApp('/lesson/listen');
-  await page.getByRole('button', { name: 'Quit lesson' }).click();
+  await openApp('/lesson/translate');
+  await page.getByRole('button', { name: 'Quit' }).click();
   const dialog = page.getByRole('alertdialog');
   await dialog.getByText('Leave the lesson?').waitFor();
   await dialog.getByRole('button', { name: 'Keep going' }).click();
   await dialog.waitFor({ state: 'hidden' });
-  assert.equal(pathname(), '/lesson/listen');
+  assert.equal(pathname(), '/lesson/translate');
 
-  await page.getByRole('button', { name: 'Quit lesson' }).click();
+  await page.getByRole('button', { name: 'Quit' }).click();
   await dialog.getByRole('button', { name: 'Leave' }).click();
   await page.waitForURL((url) => url.pathname === '/');
 
   await openApp('/');
   await page.evaluate(() => {
-    window.history.pushState({}, '', '/lesson/listen');
+    window.history.pushState({}, '', '/lesson/translate');
     window.dispatchEvent(new PopStateEvent('popstate'));
   });
-  await page.getByRole('button', { name: 'Quit lesson' }).waitFor();
+  await page.getByRole('button', { name: 'Quit' }).waitFor();
   await page.goBack();
   await dialog.getByText('Leave the lesson?').waitFor();
   await dialog.getByRole('button', { name: 'Keep going' }).click();
-  assert.equal(pathname(), '/lesson/listen');
+  assert.equal(pathname(), '/lesson/translate');
 
   await openApp('/lesson/done');
-  await page.getByRole('button', { name: 'Quit lesson' }).click();
+  await page.getByRole('button', { name: 'Quit' }).click();
   await page.waitForURL((url) => url.pathname === '/');
   assert.equal(await page.getByRole('alertdialog').count(), 0);
 

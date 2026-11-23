@@ -8,6 +8,8 @@ import { View } from 'react-native';
 
 import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
 import { Icon } from '../../components/Icon/Icon';
+import { CardNavigator } from '../../components/CardNavigator/CardNavigator';
+import { ItemDots } from '../../components/ItemDots/ItemDots';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
 import { Screen } from '../../components/Screen/Screen';
@@ -22,12 +24,19 @@ type FlashcardsScreenProps = {
   word: Word;
   cardNumber: number;
   cardTotal: number;
+  isFirstCard: boolean;
+  isLastCard: boolean;
   isFlipped: boolean;
   nativeLanguage: NativeLanguage;
   onFlip: () => void;
   onListen: () => void;
-  onAgain: () => void;
+  onCardSelect: (card: number) => void;
+  onPrevious: () => void;
   onNext: () => void;
+  onNextSection: () => void;
+  taskNames: string[];
+  onTaskSelect: (step: number) => void;
+  onBack: () => void;
   onClose: () => void;
 };
 
@@ -99,12 +108,19 @@ function FlashcardsScreen({
   word,
   cardNumber,
   cardTotal,
+  isFirstCard,
+  isLastCard,
   isFlipped,
   nativeLanguage,
   onFlip,
   onListen,
-  onAgain,
+  onCardSelect,
+  onPrevious,
   onNext,
+  onNextSection,
+  taskNames,
+  onTaskSelect,
+  onBack,
   onClose,
 }: FlashcardsScreenProps) {
   const { t } = useTranslation();
@@ -114,7 +130,17 @@ function FlashcardsScreen({
       <LessonHeader
         left={
           <TopBar.Action
+            icon="back"
+            label={t('common.back')}
+            onPress={onBack}
+          />
+        }
+        stepNames={taskNames}
+        onStepSelect={onTaskSelect}
+        right={
+          <TopBar.Action
             icon="cross"
+            iconPosition="end"
             label={t('lesson.quit')}
             onPress={onClose}
           />
@@ -128,35 +154,48 @@ function FlashcardsScreen({
         stepCount={6}
         currentStep={1}
       />
-      <Text variant="caption" className="uppercase">
-        {t('flashcards.cardCount', {
-          current: cardNumber,
-          total: cardTotal,
-        })}
-      </Text>
-      <WordCard
-        isFlipped={isFlipped}
-        onFlip={onFlip}
-        front={<CardFront word={word} nativeLanguage={nativeLanguage} />}
-        back={<CardBack word={word} nativeLanguage={nativeLanguage} />}
-      />
+      <View>
+        <Text variant="caption" className="uppercase">
+          {t('flashcards.cardCount', {
+            current: cardNumber,
+            total: cardTotal,
+          })}
+        </Text>
+        <ItemDots
+          labels={Array.from({ length: cardTotal }, (_, index) =>
+            t('flashcards.goToCard', { number: index + 1 }),
+          )}
+          current={cardNumber}
+          groupLabel={t('flashcards.cards')}
+          onSelect={onCardSelect}
+        />
+      </View>
+      <CardNavigator
+        isFirst={isFirstCard}
+        isLast={isLastCard}
+        previousLabel={t('flashcards.previousCard')}
+        nextLabel={t('flashcards.nextCard')}
+        swipeHint={t('flashcards.swipeHint')}
+        onPrevious={onPrevious}
+        onNext={onNext}
+      >
+        <WordCard
+          isFlipped={isFlipped}
+          onFlip={onFlip}
+          front={<CardFront word={word} nativeLanguage={nativeLanguage} />}
+          back={<CardBack word={word} nativeLanguage={nativeLanguage} />}
+        />
+      </CardNavigator>
       <View className="items-center">
         <Button variant="secondary" onPress={onListen}>
           <Icon name="speaker" decorative />
           <Text>{t('common.listen')}</Text>
         </Button>
       </View>
-      <View className="mt-auto flex-row gap-3">
-        <View className="flex-1">
-          <Button variant="again" onPress={onAgain}>
-            <Text>{t('flashcards.again')}</Text>
-          </Button>
-        </View>
-        <View className="flex-1">
-          <Button onPress={onNext}>
-            <Text>{t('flashcards.next')}</Text>
-          </Button>
-        </View>
+      <View className="mt-auto">
+        <Button onPress={onNextSection}>
+          <Text>{t('lesson.nextSection')}</Text>
+        </Button>
       </View>
     </Screen>
   );

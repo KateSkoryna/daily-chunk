@@ -11,7 +11,7 @@ vi.mock('expo-speech', () => ({
   },
 }));
 
-const { speakWord } = await import('../src/lib/speak-word');
+const { speakWord, stopSpeaking } = await import('../src/lib/speak-word');
 
 describe('speakWord', () => {
   beforeEach(() => {
@@ -24,5 +24,17 @@ describe('speakWord', () => {
 
     expect(calls).toEqual(['stop', 'speak der Bahnhof']);
     expect(speakOptions).toEqual([{ language: 'de-DE' }]);
+  });
+
+  it('passes the speed to the voice', () => {
+    speakWord('Gleis', 'de', { rate: 0.75 });
+
+    expect(speakOptions).toEqual([{ language: 'de-DE', rate: 0.75 }]);
+  });
+
+  it('can stop without speaking', () => {
+    stopSpeaking();
+
+    expect(calls).toEqual(['stop']);
   });
 });

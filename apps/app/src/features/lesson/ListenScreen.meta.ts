@@ -16,15 +16,30 @@ export const listenScreenMeta = {
     playback:
       'The bars, the seconds played, the length, the speed and whether it is playing',
     recordState: 'What the record button shows',
+    notice:
+      'Optional message in a Notice under the controls, for example that the microphone is not allowed',
     phrase: 'The number of this phrase and how many there are',
     repeat: 'The number of this repeat and how many there are',
-    onBack: 'Called by the back button',
+    taskNames:
+      'The names of the six tasks, already translated, for the stepper buttons',
+    onTaskSelect:
+      'Called with the task (from 1) whose stepper segment was tapped',
+    onBack: 'Called by the back button: the previous part of the lesson',
+    onClose: 'Called by the quit button',
     onTogglePlay: 'Called by the play or pause button',
     onSpeedPress: 'Called by the speed button',
     onRecord: 'Called by the record button',
-    onNextPhrase: 'Called by the primary button',
+    onStepSelect: 'Called with 1 or 2 when a tab is tapped',
+    onPlayRecording: 'Called by the green play button after a recording',
+    isFirstPhrase: 'True on the first phrase; the previous button is disabled',
+    onPhraseSelect: 'Called with the phrase (from 1) whose dot was tapped',
+    onPrevious: 'Called by the previous phrase button',
+    isLastPhrase: 'True on the last phrase; the next phrase button is disabled',
+    onNext: 'Called by the next phrase button',
+    onNextSection:
+      'Called by the primary button: finish the phrases and go to the next section',
   },
-  states: ['listen', 'repeat'],
+  states: ['listen', 'repeat', 'notice'],
   relationships: {
     composedOf: [
       'Screen',
@@ -34,6 +49,7 @@ export const listenScreenMeta = {
       'PlaybackControls',
       'ArticleChip',
       'PartOfSpeechChip',
+      'Notice',
       'Icon',
       'Button',
     ],

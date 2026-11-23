@@ -4,7 +4,7 @@ export const confirmScreenMeta = {
   name: 'ConfirmScreen',
   category: 'organism',
   description:
-    'Shows the words the app understood from what was typed: the article (or the part of speech), the dictionary form, the plural and the translation in the native language. The rows are read only: the words are not edited here. A dashed notice says when a plural was saved as its singular.',
+    'Shows the words the app understood from what was typed: the article (or the part of speech), the dictionary form, the plural and the translation in the native language. The word count sits on the right of the intro line, above the list. The rows are read only: the words are not edited here. A dashed notice says when a plural was saved as its singular.',
   spec: 'design/screens/Confirm.dc.html (S2), plan.md §4',
   props: {
     words: 'The normalised words',

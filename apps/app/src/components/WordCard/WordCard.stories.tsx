@@ -14,10 +14,6 @@ import { flipDurationInMs } from './flip-duration';
 import { WordCard, type WordCardProps } from './WordCard';
 import { wordCardMeta } from './WordCard.meta';
 
-const desktopMinWidthInRem = 64;
-const mobileHeightInRem = 22.5;
-const desktopHeightInRem = 26.25;
-
 function BahnhofFront() {
   const { appLanguage } = useAppLanguage();
   const { pluralCaption } = getTargetLanguagePack('de');
@@ -145,10 +141,10 @@ export const Default: Story = {
     const visibleFace = args.isFlipped ? back : front;
     const hiddenFace = args.isFlipped ? front : back;
     const faceStyle = getComputedStyle(visibleFace.firstElementChild!);
-    const isDesktop = toRem(window.innerWidth) >= desktopMinWidthInRem;
 
-    expect(toRem(card.getBoundingClientRect().height)).toBe(
-      isDesktop ? desktopHeightInRem : mobileHeightInRem,
+    expect(card.getBoundingClientRect().height).toBeCloseTo(
+      card.getBoundingClientRect().width,
+      0,
     );
     expect(toRem(faceStyle.borderTopWidth)).toBe(0.125);
     expect(toRem(faceStyle.paddingLeft)).toBe(1.5);

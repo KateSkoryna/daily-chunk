@@ -4,18 +4,22 @@ export const lessonHeaderMeta = {
   name: 'LessonHeader',
   category: 'molecule',
   description:
-    'The top of every lesson task screen: a back or close control on the left, the lesson name on the right, and under them the stepper with the task name and the XP so far.',
+    'The top of every lesson task screen: a control on the left (back to the previous part of the lesson), the lesson name in the middle, a control on the right (quit the lesson), and under them the stepper with the task name and the XP so far.',
   spec: 'DESIGN.md §9.3, design/screens/Flashcards.dc.html, Listen.dc.html',
   props: {
-    left: 'The control on the left: a ghost Button with a back or cross icon',
+    left: 'Optional. The control on the left: a ghost Button with a back icon that goes to the previous part of the lesson. Leave it out on the first task',
     right:
-      'What sits on the right instead of the lesson name, for example the translation toggle of the Read screen',
+      'Optional. The control on the right: the quit button (a ghost Button with a cross), or another control such as the translation toggle of the Read screen',
     lessonLabel:
-      'The lesson name on the right, already translated, for example Lesson 13; used when right is not given',
+      'The lesson name in the middle, already translated, for example Lesson 13',
     stepLabel: 'The task name above the stepper, already translated',
     xpLabel: 'The XP earned so far, already translated',
     stepCount: 'How many tasks the lesson has',
     currentStep: 'The current task, counting from 1',
+    stepNames:
+      'The names of the six tasks, already translated; they name the stepper segments when onStepSelect is given',
+    onStepSelect:
+      'Optional. Called with the tapped task (from 1); makes the stepper segments buttons that jump to that task',
   },
   states: ['default'],
   relationships: {
@@ -31,11 +35,11 @@ export const lessonHeaderMeta = {
   },
   tokens: {
     color: ['muted-foreground'],
-    typography: ['ui'],
+    typography: ['label'],
     spacing: ['4'],
   },
   accessibility: [
-    'The left control has an accessible name from i18n',
+    'The left and right controls have accessible names from i18n',
     'The stepper is a progressbar named by the task name',
   ],
   aiHints: {

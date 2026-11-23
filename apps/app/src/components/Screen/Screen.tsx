@@ -25,7 +25,7 @@ function Screen({ children, className, ...props }: ScreenProps) {
       >
         <View
           className={cn(
-            'flex-1 px-gutter pb-screen-bottom pt-screen-top tablet:px-gutter-tablet desktop:px-gutter-desktop desktop:pt-16',
+            'flex-1 px-gutter pb-screen-bottom pt-screen-top tablet:px-gutter-tablet desktop:px-gutter-desktop desktop:pb-10 desktop:pt-6',
             className,
           )}
         >

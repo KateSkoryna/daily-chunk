@@ -2,10 +2,6 @@ import { View } from 'react-native';
 
 import { Icon } from '../Icon/Icon';
 import { PressableFocus } from '../PressableFocus/PressableFocus';
-import {
-  RecordButton,
-  type RecordButtonState,
-} from '../RecordButton/RecordButton';
 import { Text, TextClassContext } from '../ui/text';
 
 type PlaybackControlsProps = {
@@ -13,11 +9,8 @@ type PlaybackControlsProps = {
   isPlaying: boolean;
   playLabel: string;
   pauseLabel: string;
-  recordState: RecordButtonState;
-  recordLabel: string;
   onSpeedPress: () => void;
   onTogglePlay: () => void;
-  onRecord: () => void;
 };
 
 function PlaybackControls({
@@ -25,14 +18,11 @@ function PlaybackControls({
   isPlaying,
   playLabel,
   pauseLabel,
-  recordState,
-  recordLabel,
   onSpeedPress,
   onTogglePlay,
-  onRecord,
 }: PlaybackControlsProps) {
   return (
-    <View className="flex-row items-center justify-between">
+    <View className="flex-row items-center justify-center gap-6">
       <PressableFocus
         accessibilityRole="button"
         onPress={onSpeedPress}
@@ -50,12 +40,6 @@ function PlaybackControls({
           <Icon name={isPlaying ? 'pause' : 'play'} decorative />
         </PressableFocus>
       </TextClassContext.Provider>
-      <RecordButton
-        size="small"
-        state={recordState}
-        accessibilityLabel={recordLabel}
-        onPress={onRecord}
-      />
     </View>
   );
 }
