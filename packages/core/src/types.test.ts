@@ -160,6 +160,9 @@ describe('Storage', () => {
     expectTypeOf<Storage['lessons']['save']>().parameters.toEqualTypeOf<
       [Lesson]
     >();
+    expectTypeOf<Storage['lessons']['remove']>().parameters.toEqualTypeOf<
+      [string]
+    >();
   });
 
   it('lists words and saves many at once with promises', () => {
@@ -168,6 +171,9 @@ describe('Storage', () => {
     >();
     expectTypeOf<Storage['words']['saveMany']>().parameters.toEqualTypeOf<
       [Word[]]
+    >();
+    expectTypeOf<Storage['words']['remove']>().parameters.toEqualTypeOf<
+      [string]
     >();
   });
 });

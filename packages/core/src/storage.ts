@@ -10,11 +10,13 @@ export type ProfileStorage = {
 export type WordStorage = {
   list: () => Promise<Word[]>;
   saveMany: (words: Word[]) => Promise<void>;
+  remove: (wordId: string) => Promise<void>;
 };
 
 export type LessonStorage = {
   list: () => Promise<Lesson[]>;
   save: (lesson: Lesson) => Promise<void>;
+  remove: (lessonId: string) => Promise<void>;
 };
 
 export type Storage = {

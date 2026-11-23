@@ -47,10 +47,24 @@ export {
 } from './create-records';
 export { currentLessonNumber, startLesson } from './start-lesson';
 export {
-  answerFlashcard,
   createFlashcardSession,
   flashcardResult,
-  flashcardsDone,
-  isFlashcardSessionDone,
+  goToFlashcard,
+  isFirstFlashcard,
+  isLastFlashcard,
+  nextFlashcard,
+  previousFlashcard,
 } from './flashcards';
 export type { FlashcardSession } from './flashcards';
+export {
+  createListenSession,
+  goToListenPhrase,
+  isFirstListenPhrase,
+  isLastListenPhrase,
+  listenResult,
+  maxListenRepeats,
+  nextListenPhrase,
+  previousListenPhrase,
+  recordListenRepeat,
+} from './listen';
+export type { ListenSession } from './listen';
