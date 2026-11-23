@@ -15,8 +15,11 @@ export const flashcardsScreenMeta = {
     isFirstCard:
       'Whether this is the first card; the previous button is disabled then',
     isFlipped: 'Whether the back (the example sentence) is shown',
+    isTipOpen:
+      'Whether the tip card of the word is open; the lamp shows only when the word has a tip',
     nativeLanguage: 'Which translation to show',
     onFlip: 'Called when the card is pressed',
+    onTipToggle: 'Called by the lamp button: open or close the tip card',
     onListen: 'Called by the listen button',
     onCardSelect: 'Called with the card (from 1) whose dot was tapped',
     onPrevious: 'Called by the previous button',
@@ -31,12 +34,20 @@ export const flashcardsScreenMeta = {
     onBack: 'Called by the back button: the list of lesson tasks',
     onClose: 'Called by the quit button',
   },
-  states: ['word side', 'sentence side', 'word without an article'],
+  states: [
+    'word side',
+    'sentence side',
+    'word without an article',
+    'word with a tip',
+    'tip open',
+  ],
   relationships: {
     composedOf: [
       'Screen',
       'LessonHeader',
       'WordCard',
+      'TipButton',
+      'TipCard',
       'Icon',
       'ArticleChip',
       'PartOfSpeechChip',

@@ -41,6 +41,7 @@ function toNormalisedWord(
     forms: word.forms,
     sentence: word.sentence,
     sentenceTranslations: word.sentenceTranslations,
+    tip: word.tip,
     translations: word.translations,
   };
 }

@@ -18,6 +18,7 @@ export type Word = {
   sentence: string;
   sentenceTranslations: Translations;
   sourceUrl?: string;
+  tip?: Translations;
   translations: Translations;
   reviewStage: ReviewStage;
   nextReviewAt: string | null;

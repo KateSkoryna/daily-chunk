@@ -36,6 +36,7 @@ function FlashcardsTask({
     createFlashcardSession(lesson.wordIds),
   );
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isTipOpen, setIsTipOpen] = useState(false);
   const navigation = useLessonNavigation({
     currentStep: 1,
     nativeLanguage,
@@ -50,6 +51,7 @@ function FlashcardsTask({
       hasFinished.current = false;
       setSession(createFlashcardSession(lesson.wordIds));
       setIsFlipped(false);
+      setIsTipOpen(false);
     }, [lesson.wordIds]),
   );
 
@@ -62,6 +64,7 @@ function FlashcardsTask({
   function showCard(nextSession: typeof session) {
     setSession(nextSession);
     setIsFlipped(false);
+    setIsTipOpen(false);
   }
 
   async function goNextSection() {
@@ -87,8 +90,13 @@ function FlashcardsTask({
       cardTotal={session.wordIds.length}
       isFirstCard={isFirstFlashcard(session)}
       isFlipped={isFlipped}
+      isTipOpen={isTipOpen}
       nativeLanguage={nativeLanguage}
-      onFlip={() => setIsFlipped(!isFlipped)}
+      onFlip={() => {
+        setIsFlipped(!isFlipped);
+        setIsTipOpen(false);
+      }}
+      onTipToggle={() => setIsTipOpen(!isTipOpen)}
       onListen={() =>
         speakWord(
           isFlipped ? word.sentence : displayedWord(word),

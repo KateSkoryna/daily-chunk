@@ -27,6 +27,7 @@ export function createWordFromNormalised(
     ...(normalisedWord.forms && { forms: normalisedWord.forms }),
     sentence: normalisedWord.sentence,
     sentenceTranslations: normalisedWord.sentenceTranslations,
+    ...(normalisedWord.tip && { tip: normalisedWord.tip }),
     translations: normalisedWord.translations,
     reviewStage: 0,
     nextReviewAt: null,

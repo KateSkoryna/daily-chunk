@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
+import { isDesktopViewport } from '../../lib/browser-rem';
 import { displayedWord } from '../../lib/displayed-word';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { lessonStepNames } from '../../lib/lesson-step-names';
 import { appLanguageOf, textFor, WithText } from '../../lib/story-text';
 import { lessonThirteen, stepXpDemo } from '../../mocks/lesson';
-import { demoWords, verspaetet } from '../../mocks/words';
+import { demoWords, gleis, verspaetet } from '../../mocks/words';
 import {
   FlashcardsScreen,
   type FlashcardsScreenProps,
@@ -17,10 +18,13 @@ import { flashcardsScreenMeta } from './FlashcardsScreen.meta';
 
 function FlashcardsDemo({
   isFlipped,
+  isTipOpen,
   onFlip,
+  onTipToggle,
   ...props
 }: FlashcardsScreenProps) {
   const [flipped, setFlipped] = useState(isFlipped);
+  const [tipOpen, setTipOpen] = useState(isTipOpen);
 
   return (
     <View className="min-h-screen">
@@ -31,6 +35,11 @@ function FlashcardsDemo({
             taskNames={lessonStepNames(t, appLanguage, 'de')}
             nativeLanguage={appLanguage}
             isFlipped={flipped}
+            isTipOpen={tipOpen}
+            onTipToggle={() => {
+              setTipOpen(!tipOpen);
+              onTipToggle();
+            }}
             onFlip={() => {
               setFlipped(!flipped);
               onFlip();
@@ -59,8 +68,10 @@ const meta = {
     cardTotal: demoWords.length,
     isFirstCard: false,
     isFlipped: false,
+    isTipOpen: false,
     nativeLanguage: 'en',
     onFlip: fn(),
+    onTipToggle: fn(),
     onListen: fn(),
     onCardSelect: fn(),
     onPrevious: fn(),
@@ -214,5 +225,54 @@ export const LastCard: Story = {
       canvas.getByRole('button', { name: t('lesson.nextSection') }),
     );
     expect(args.onNextSection).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const WordWithTip: Story = {
+  args: { word: gleis, cardNumber: 4 },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const nativeLanguage = appLanguageOf(globals);
+    const canvas = within(canvasElement);
+    const lamp = await canvas.findByRole('button', {
+      name: t('tip.button', { word: displayedWord(gleis) }),
+    });
+    const card = canvas.getByTestId('word-card-front').closest('button')!;
+
+    const listenButton = canvas.getByRole('button', {
+      name: t('common.listen'),
+    });
+    const listenTop = listenButton.getBoundingClientRect().top;
+
+    expect(canvas.queryByRole('group', { name: t('tip.card') })).toBeNull();
+    expect(lamp.getBoundingClientRect().right).toBeLessThanOrEqual(
+      card.getBoundingClientRect().right,
+    );
+    expect(lamp.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+      card.getBoundingClientRect().top,
+    );
+
+    await userEvent.click(lamp);
+    expect(args.onTipToggle).toHaveBeenCalledTimes(1);
+    expect(args.onFlip).not.toHaveBeenCalled();
+    const tipCard = await canvas.findByRole('group', { name: t('tip.card') });
+    expect(within(tipCard).getByText(gleis.tip![nativeLanguage])).toBeTruthy();
+    expect(lamp).toHaveAttribute('aria-expanded', 'true');
+    if (isDesktopViewport()) {
+      expect(tipCard.getBoundingClientRect().left).toBeGreaterThanOrEqual(
+        card.getBoundingClientRect().right,
+      );
+    } else {
+      expect(tipCard.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+        lamp.getBoundingClientRect().bottom,
+      );
+      expect(tipCard.getBoundingClientRect().bottom).toBeLessThanOrEqual(
+        card.getBoundingClientRect().bottom,
+      );
+    }
+    expect(listenButton.getBoundingClientRect().top).toBe(listenTop);
+
+    await userEvent.click(lamp);
+    expect(canvas.queryByRole('group', { name: t('tip.card') })).toBeNull();
   },
 };

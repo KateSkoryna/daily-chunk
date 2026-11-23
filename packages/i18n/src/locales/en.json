@@ -226,5 +226,9 @@
   },
   "placeholder": {
     "comingSoon": "This screen is built in a later step."
+  },
+  "tip": {
+    "button": "Good to know about {{word}}",
+    "card": "Good to know"
   }
 }
