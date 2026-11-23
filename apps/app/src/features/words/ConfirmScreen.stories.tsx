@@ -61,9 +61,27 @@ export const Default: Story = {
       canvas.getByRole('heading', { name: t('confirm.title') }),
     ).toBeTruthy();
     expect(canvas.getByText(t('confirm.intro'))).toBeTruthy();
+    const backIcon = canvas
+      .getByRole('button', { name: t('common.back') })
+      .querySelector('svg')!;
+
     expect(
-      canvas.getByText(t('confirm.wordCount', { count: demoWords.length })),
-    ).toBeTruthy();
+      list.getBoundingClientRect().left - backIcon.getBoundingClientRect().left,
+    ).toBeCloseTo(6, 0);
+    const intro = canvas.getByText(t('confirm.intro'));
+    const count = canvas.getByText(
+      t('confirm.wordCount', { count: demoWords.length }),
+    );
+
+    expect(count.getBoundingClientRect().left).toBeGreaterThan(
+      intro.getBoundingClientRect().right - 1,
+    );
+    expect(count.getBoundingClientRect().top).toBeLessThan(
+      intro.getBoundingClientRect().bottom,
+    );
+    expect(count.getBoundingClientRect().bottom).toBeLessThan(
+      list.getBoundingClientRect().top,
+    );
     expect(
       within(list).getByText(
         t('confirm.pluralForms', { forms: 'die Bahnhöfe' }),

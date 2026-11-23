@@ -14,13 +14,18 @@ export default function ConfirmRoute() {
   const pluralInput = useAppStore((state) => state.pluralInput);
   const startLesson = useAppStore((state) => state.startLesson);
   const isStarting = useRef(false);
+  const typedWordIds = useAppStore((state) => state.typedWordIds);
   const newWords = words.filter(isNewWord);
+  const todayWords =
+    typedWordIds.length === 0
+      ? newWords
+      : newWords.filter((word) => typedWordIds.includes(word.id));
 
   useEffect(() => {
-    if (status === 'ready' && newWords.length === 0) router.replace('/');
-  }, [status, newWords.length, router]);
+    if (status === 'ready' && todayWords.length === 0) router.replace('/');
+  }, [status, todayWords.length, router]);
 
-  if (!profile || newWords.length === 0) return null;
+  if (!profile || todayWords.length === 0) return null;
 
   function goHome() {
     if (router.canGoBack()) router.back();
@@ -32,7 +37,7 @@ export default function ConfirmRoute() {
     isStarting.current = true;
     try {
       await startLesson();
-      router.push('/lesson/flashcards');
+      router.push('/lesson/overview');
     } finally {
       isStarting.current = false;
     }
@@ -40,7 +45,7 @@ export default function ConfirmRoute() {
 
   return (
     <ConfirmScreen
-      words={newWords}
+      words={todayWords}
       nativeLanguage={profile.languages.nativeLanguage}
       pluralInput={pluralInput}
       onBack={goHome}

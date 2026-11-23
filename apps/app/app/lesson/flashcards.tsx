@@ -1,18 +1,21 @@
 import {
-  answerFlashcard,
   createFlashcardSession,
+  goToFlashcard,
   flashcardResult,
-  flashcardsDone,
-  isFlashcardSessionDone,
+  isFirstFlashcard,
+  isLastFlashcard,
+  nextFlashcard,
+  previousFlashcard,
   type Lesson,
   type Word,
 } from '@daily-chunk/core';
-import { useRouter } from 'expo-router';
 import type { NativeLanguage } from '@daily-chunk/languages';
-import { useEffect, useRef, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FlashcardsScreen } from '../../src/features/lesson/FlashcardsScreen';
 import { displayedWord } from '../../src/lib/displayed-word';
+import { useLessonNavigation } from '../../src/lib/use-lesson-navigation';
 import { speakWord } from '../../src/lib/speak-word';
 import { useAppStore, useStartAppStore } from '../../src/state/use-app-store';
 
@@ -33,27 +36,45 @@ function FlashcardsTask({
     createFlashcardSession(lesson.wordIds),
   );
   const [isFlipped, setIsFlipped] = useState(false);
-  const isAnswering = useRef(false);
-  const word = words.find((candidate) => candidate.id === session.queue[0]);
+  const navigation = useLessonNavigation({
+    currentStep: 1,
+    nativeLanguage,
+    targetLanguage: words[0]?.targetLanguage ?? 'de',
+  });
+  const isMoving = useRef(false);
+  const hasFinished = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!hasFinished.current) return;
+      hasFinished.current = false;
+      setSession(createFlashcardSession(lesson.wordIds));
+      setIsFlipped(false);
+    }, [lesson.wordIds]),
+  );
+
+  const word = words.find(
+    (candidate) => candidate.id === session.wordIds[session.index],
+  );
 
   if (!word) return null;
 
-  async function answer(isKnown: boolean) {
-    if (isAnswering.current) return;
-    isAnswering.current = true;
-    const nextSession = answerFlashcard(session, isKnown);
+  function showCard(nextSession: typeof session) {
+    setSession(nextSession);
+    setIsFlipped(false);
+  }
+
+  async function goNextSection() {
+    if (isMoving.current) return;
+    isMoving.current = true;
     try {
-      if (isFlashcardSessionDone(nextSession)) {
-        await saveTaskResult('flashcards', flashcardResult(nextSession));
-        router.push('/lesson/listen');
-      } else {
-        setSession(nextSession);
-        setIsFlipped(false);
-      }
+      await saveTaskResult('flashcards', flashcardResult(session));
+      hasFinished.current = true;
+      router.push('/lesson/listen');
     } catch {
       return;
     } finally {
-      isAnswering.current = false;
+      isMoving.current = false;
     }
   }
 
@@ -62,8 +83,9 @@ function FlashcardsTask({
       lessonNumber={lesson.number}
       xp={lesson.xpEarned}
       word={word}
-      cardNumber={flashcardsDone(session) + 1}
-      cardTotal={session.total}
+      cardNumber={session.index + 1}
+      cardTotal={session.wordIds.length}
+      isFirstCard={isFirstFlashcard(session)}
       isFlipped={isFlipped}
       nativeLanguage={nativeLanguage}
       onFlip={() => setIsFlipped(!isFlipped)}
@@ -73,9 +95,15 @@ function FlashcardsTask({
           word.targetLanguage,
         )
       }
-      onAgain={() => answer(false)}
-      onNext={() => answer(true)}
-      onClose={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+      onCardSelect={(card) => showCard(goToFlashcard(session, card - 1))}
+      onPrevious={() => showCard(previousFlashcard(session))}
+      isLastCard={isLastFlashcard(session)}
+      onNext={() => showCard(nextFlashcard(session))}
+      onNextSection={goNextSection}
+      taskNames={navigation.stepNames}
+      onTaskSelect={navigation.goToStep}
+      onBack={navigation.goBack}
+      onClose={() => router.replace('/')}
     />
   );
 }

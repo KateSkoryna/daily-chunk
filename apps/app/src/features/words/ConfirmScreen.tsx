@@ -4,7 +4,6 @@ import type { NativeLanguage } from '@daily-chunk/languages';
 import { View } from 'react-native';
 
 import { GlitchTitle } from '../../components/GlitchTitle/GlitchTitle';
-import { Icon } from '../../components/Icon/Icon';
 import { ListGroup } from '../../components/ListGroup/ListGroup';
 import { Notice } from '../../components/Notice/Notice';
 import { Screen } from '../../components/Screen/Screen';
@@ -38,19 +37,22 @@ function ConfirmScreen({
     <Screen className="gap-4">
       <TopBar
         left={
-          <Button variant="ghost" onPress={onBack}>
-            <Icon name="back" decorative />
-            <Text>{t('common.back')}</Text>
-          </Button>
-        }
-        right={
-          <Text variant="caption" className="uppercase">
-            {t('confirm.wordCount', { count: words.length })}
-          </Text>
+          <TopBar.Action
+            icon="back"
+            label={t('common.back')}
+            onPress={onBack}
+          />
         }
       />
       <GlitchTitle variant="display-l">{t('confirm.title')}</GlitchTitle>
-      <Text variant="body-sm">{t('confirm.intro')}</Text>
+      <View className="flex-row items-start gap-3">
+        <Text variant="body-sm" className="flex-1">
+          {t('confirm.intro')}
+        </Text>
+        <Text variant="caption" className="uppercase">
+          {t('confirm.wordCount', { count: words.length })}
+        </Text>
+      </View>
       <ListGroup>
         {words.map((word) => (
           <ListGroup.Row

@@ -71,7 +71,21 @@
     },
     "xpEarned": "+{{count}} XP",
     "title": "Урок {{number}}",
-    "quit": "Выйти из урока"
+    "somethingFailed": "Чанк споткнулся. Попробуй ещё раз.",
+    "quit": "Выйти",
+    "taskDescriptions": {
+      "flashcards": "Переверни слова и послушай их",
+      "listen": "Послушай фразу и повтори",
+      "read": "Прочитай короткий рассказ со своими словами",
+      "record": "Прочитай рассказ вслух",
+      "gap-fill": "Вставь пропущенный артикль и слово",
+      "translate": "Переведи предложение"
+    },
+    "goToTask": "Перейти: {{task}}",
+    "overviewIntro": "Шесть заданий. Начинай с любого.",
+    "overviewStart": "Начать",
+    "taskDone": "Готово",
+    "nextSection": "Следующий раздел →"
   },
   "tutor": {
     "says": "Чанк говорит",
@@ -159,20 +173,31 @@
   },
   "flashcards": {
     "cardCount": "Карточка {{current}} из {{total}}",
-    "again": "← Ещё раз",
-    "next": "Дальше →"
+    "goToCard": "Карточка {{number}}",
+    "cards": "Карточки",
+    "previousCard": "Предыдущая карточка",
+    "nextCard": "Следующая карточка",
+    "swipeHint": "Листай карточки свайпом влево и вправо"
   },
   "listen": {
     "stepListen": "Слушай",
     "stepRepeat": "Повторяй",
     "steps": "Шаги прослушивания",
     "phraseCount": "Фраза {{current}} из {{total}} · Повтор {{repeat}} из {{repeatTotal}}",
-    "nextPhrase": "Следующая фраза",
     "play": "Воспроизвести",
     "pause": "Пауза",
+    "microphoneDenied": "Чанк тебя не слышит. Разреши микрофон в настройках.",
     "recordRepeat": "Записать повтор",
+    "playRecording": "Послушать мою запись",
+    "recordAgain": "Записать заново",
+    "stopRecording": "Остановить запись",
     "waveform": "Аудио, воспроизведено {{played, number(minimumFractionDigits: 1)}} из {{total, number(minimumFractionDigits: 1)}} с",
-    "speed": "{{speed, number}}×"
+    "speed": "{{speed, number(minimumFractionDigits: 2)}}×",
+    "goToPhrase": "Фраза {{number}}",
+    "phrases": "Фразы",
+    "previousPhrase": "Предыдущая фраза",
+    "nextPhrase": "Следующая фраза",
+    "swipeHint": "Листай фразы свайпом влево и вправо"
   },
   "wordPopover": {
     "label": "Слово: {{word}}",
