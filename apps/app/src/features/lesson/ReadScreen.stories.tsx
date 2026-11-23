@@ -4,37 +4,32 @@ import { View } from 'react-native';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { displayedWord } from '../../lib/displayed-word';
+import { lessonStepNames } from '../../lib/lesson-step-names';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { appLanguageOf, textFor, WithText } from '../../lib/story-text';
-import { stepXpDemo } from '../../mocks/lesson';
+import { lessonThirteen, stepXpDemo } from '../../mocks/lesson';
 import { derLetzteZug } from '../../mocks/lesson-tasks';
 import { demoWords, fahrkarte } from '../../mocks/words';
 import { ReadScreen, type ReadScreenProps } from './ReadScreen';
 import { readScreenMeta } from './ReadScreen.meta';
 
-function ReadDemo({
-  showTranslation,
-  activeWord,
-  onToggleTranslation,
-  onWordPress,
-  ...props
-}: ReadScreenProps) {
-  const [translationShown, setTranslationShown] = useState(showTranslation);
+function ReadDemo({ activeWord, onWordPress, ...props }: ReadScreenProps) {
   const [openWord, setOpenWord] = useState(activeWord);
 
   return (
     <View className="min-h-screen">
       <WithText>
-        {(_t, appLanguage) => (
+        {(t, appLanguage) => (
           <ReadScreen
             {...props}
+            taskNames={lessonStepNames(t, appLanguage, 'de')}
+            paragraphs={derLetzteZug.paragraphs.map((paragraph) => ({
+              text: paragraph.text,
+              highlightedWords: paragraph.highlightedWords,
+              translation: paragraph.translations[appLanguage],
+            }))}
             nativeLanguage={appLanguage}
-            showTranslation={translationShown}
             activeWord={openWord}
-            onToggleTranslation={() => {
-              setTranslationShown(!translationShown);
-              onToggleTranslation();
-            }}
             onWordPress={(word) => {
               const isOpen =
                 word.word === openWord?.word &&
@@ -59,17 +54,19 @@ const meta = {
     controls: { disable: true },
   },
   args: {
+    lessonNumber: lessonThirteen.number,
     xp: stepXpDemo.read,
     title: derLetzteZug.title,
-    paragraphs: derLetzteZug.paragraphs,
+    paragraphs: [],
     words: demoWords,
     nativeLanguage: 'en',
-    showTranslation: false,
     activeWord: { word: fahrkarte.lemma, paragraphIndex: 1 },
-    onToggleTranslation: fn(),
+    taskNames: [],
+    onTaskSelect: fn(),
     onWordPress: fn(),
     onPlayWord: fn(),
     onBack: fn(),
+    onClose: fn(),
     onContinue: fn(),
   },
   render: (args) => <ReadDemo {...args} />,
@@ -87,41 +84,31 @@ export const Default: Story = {
     const card = await canvas.findByRole('group', {
       name: t('wordPopover.label', { word: displayedWord(fahrkarte) }),
     });
-    const firstTranslation = args.paragraphs[0]!.translations[nativeLanguage];
-    const toggleOff = canvas.getByRole('switch', {
-      name: t('read.translationOff', {
-        language: nativeLanguage.toUpperCase(),
+    const firstTranslation =
+      derLetzteZug.paragraphs[0]!.translations[nativeLanguage];
+
+    const stepper = canvas.getByRole('toolbar', {
+      name: t('lesson.stepLabel', {
+        step: '03',
+        task: t('lesson.tasks.read'),
       }),
     });
+    const segments = within(stepper).getAllByRole('button');
 
-    expect(
-      canvas
-        .getByRole('progressbar', {
-          name: t('lesson.stepLabel', {
-            step: '03',
-            task: t('lesson.tasks.read'),
-          }),
-        })
-        .getAttribute('aria-valuenow'),
-    ).toBe('3');
+    expect(segments).toHaveLength(6);
+    expect(segments[2]).toHaveAttribute('aria-current', 'step');
     expect(canvas.getByText(t('read.hint'))).toBeTruthy();
-    expect(canvas.queryByText(firstTranslation)).toBeNull();
+    expect(canvas.getByText(firstTranslation)).toBeTruthy();
     expect(card.parentElement!.previousElementSibling?.textContent).toContain(
       'Fahrkarte',
     );
+    expect(card.parentElement!.nextElementSibling?.textContent).toBe(
+      derLetzteZug.paragraphs[1]!.translations[nativeLanguage],
+    );
+    expect(canvas.queryByRole('switch')).toBeNull();
 
-    await userEvent.click(toggleOff);
-    expect(args.onToggleTranslation).toHaveBeenCalledTimes(1);
-    expect(await canvas.findByText(firstTranslation)).toBeTruthy();
-    expect(
-      canvas
-        .getByRole('switch', {
-          name: t('read.translationOn', {
-            language: nativeLanguage.toUpperCase(),
-          }),
-        })
-        .getAttribute('aria-checked'),
-    ).toBe('true');
+    await userEvent.click(segments[4]!);
+    expect(args.onTaskSelect).toHaveBeenCalledWith(5);
 
     await userEvent.click(canvas.getByRole('button', { name: 'Bahnhof' }));
     expect(args.onWordPress).toHaveBeenCalledWith({
@@ -146,10 +133,14 @@ export const Default: Story = {
     await userEvent.click(
       canvas.getByRole('button', { name: t('common.back') }),
     );
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('lesson.quit') }),
+    );
 
     expect(args.onPlayWord).toHaveBeenCalledTimes(1);
     expect(args.onContinue).toHaveBeenCalledTimes(1);
     expect(args.onBack).toHaveBeenCalledTimes(1);
+    expect(args.onClose).toHaveBeenCalledTimes(1);
   },
 };
 

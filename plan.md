@@ -208,7 +208,7 @@ Expo Router file routes. Tab screens live in `app/(tabs)/`; the lesson flow is a
 | `Confirm.dc.html`       | S2 Confirm words                         | `/confirm`           | editable rows (chip + word + forms + RU), plural-normalised notice (dashed orange)                           |
 | `Flashcards.dc.html`    | S3 Task 1 · Flashcards                   | `/lesson/flashcards` | tap to flip (front/back), LISTEN, AGAIN / KNEW IT                                                            |
 | `Listen.dc.html`        | S4 Task 2 · Listen & shadow              | `/lesson/listen`     | 2-step indicator, speed 0.75×, pause, record repeat                                                          |
-| `Read.dc.html`          | S5 Task 3 · Read the story               | `/lesson/read`       | RU ON/OFF toggle, tap an underlined word → popover card                                                      |
+| `Read.dc.html`          | S5 Task 3 · Read the story               | `/lesson/read`       | translation under each paragraph, tap an underlined word → popover card                                      |
 | `Record.dc.html`        | S6 Task 4 · Read aloud                   | `/lesson/record`     | play recording, score 86%, retry-word chips, tutor verdict                                                   |
 | `GapFill.dc.html`       | S7 Task 5 · Gap fill                     | `/lesson/gap-fill`   | part A article pick (3 options), part B word pick (2×2), ✓/✗ states                                          |
 | `Translate.dc.html`     | S8 Task 6 · native → target (RU/EN → DE) | `/lesson/translate`  | textarea, voice answer, "USE:" chips, correction with diff                                                   |

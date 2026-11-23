@@ -1,60 +1,56 @@
-import type { Word } from '@daily-chunk/core';
+import type { StoryParagraph, Word } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage } from '@daily-chunk/languages';
 import { Fragment } from 'react';
 import { View } from 'react-native';
 
-import { Icon } from '../../components/Icon/Icon';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { Screen } from '../../components/Screen/Screen';
 import {
   StoryText,
   type StoryTextMark,
 } from '../../components/StoryText/StoryText';
-import { Toggle } from '../../components/Toggle/Toggle';
+import { TopBar } from '../../components/TopBar/TopBar';
 import { WordPopover } from '../../components/WordPopover/WordPopover';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
-type StoryParagraph = {
-  text: string;
-  highlightedWords: string[];
-  translations: Record<NativeLanguage, string>;
-};
-
 type OpenWord = { word: string; paragraphIndex: number };
 
 type ReadScreenProps = {
+  lessonNumber: number;
   xp: number;
   title: string;
   paragraphs: StoryParagraph[];
   words: Word[];
   nativeLanguage: NativeLanguage;
-  showTranslation: boolean;
   activeWord: OpenWord | null;
-  onToggleTranslation: () => void;
+  taskNames: string[];
+  onTaskSelect: (step: number) => void;
   onWordPress: (word: OpenWord) => void;
   onPlayWord: (word: Word) => void;
   onBack: () => void;
+  onClose: () => void;
   onContinue: () => void;
 };
 
 function ReadScreen({
+  lessonNumber,
   xp,
   title,
   paragraphs,
   words,
   nativeLanguage,
-  showTranslation,
   activeWord,
-  onToggleTranslation,
+  taskNames,
+  onTaskSelect,
   onWordPress,
   onPlayWord,
   onBack,
+  onClose,
   onContinue,
 }: ReadScreenProps) {
   const { t } = useTranslation();
-  const language = nativeLanguage.toUpperCase();
   const activeLemma = words.find((word) => word.lemma === activeWord?.word);
 
   function marksOf(paragraph: StoryParagraph): StoryTextMark[] {
@@ -68,21 +64,21 @@ function ReadScreen({
     <Screen className="gap-4">
       <LessonHeader
         left={
-          <Button variant="ghost" onPress={onBack}>
-            <Icon name="back" decorative />
-            <Text>{t('common.back')}</Text>
-          </Button>
-        }
-        right={
-          <Toggle
-            label={t(
-              showTranslation ? 'read.translationOn' : 'read.translationOff',
-              { language },
-            )}
-            isOn={showTranslation}
-            onToggle={onToggleTranslation}
+          <TopBar.Action
+            icon="back"
+            label={t('common.back')}
+            onPress={onBack}
           />
         }
+        right={
+          <TopBar.Action
+            icon="cross"
+            iconPosition="end"
+            label={t('lesson.quit')}
+            onPress={onClose}
+          />
+        }
+        lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
           step: '03',
           task: t('lesson.tasks.read'),
@@ -90,6 +86,8 @@ function ReadScreen({
         xpLabel={t('lesson.xpEarned', { count: xp })}
         stepCount={6}
         currentStep={3}
+        stepNames={taskNames}
+        onStepSelect={onTaskSelect}
       />
       <Text variant="display-num" className="uppercase text-foreground">
         {title}
@@ -107,11 +105,6 @@ function ReadScreen({
               }
               onWordPress={(word) => onWordPress({ word, paragraphIndex })}
             />
-            {showTranslation && (
-              <Text variant="body-sm">
-                {paragraph.translations[nativeLanguage]}
-              </Text>
-            )}
             {activeWord?.paragraphIndex === paragraphIndex && activeLemma && (
               <WordPopover
                 word={activeLemma}
@@ -119,6 +112,7 @@ function ReadScreen({
                 onPlay={() => onPlayWord(activeLemma)}
               />
             )}
+            <Text variant="body-sm">{paragraph.translation}</Text>
           </Fragment>
         ))}
       </View>
@@ -135,4 +129,4 @@ function ReadScreen({
 }
 
 export { ReadScreen };
-export type { OpenWord, ReadScreenProps, StoryParagraph };
+export type { OpenWord, ReadScreenProps };
