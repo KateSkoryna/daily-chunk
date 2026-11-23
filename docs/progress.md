@@ -760,19 +760,21 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status | Branch                   |
-| --------- | ------ | ------------------------ |
-| 3.1       | DONE   | `feat/navigation-shell`  |
-| 3.2       | DONE   | `feat/storage`           |
-| 3.3       | DONE   | `feat/srs-scheduler`     |
-| 3.4       | DONE   | `feat/ai-mocks`          |
-| 3.5       | DONE   | `feat/home-screen`       |
-| 3.6       | DONE   | `feat/confirm-screen`    |
-| 3.7       | DONE   | `feat/flashcards-screen` |
-| 3.8       | DONE   | `feat/listen-screen`     |
-| 3.9       | DONE   | `feat/read-screen`       |
-| 3.10–3.13 | TODO   | `feat/<screen>-screen`   |
-| 3.14      | TODO   | `chore/phase-3-review`   |
+| Step      | Status         | Branch                   |
+| --------- | -------------- | ------------------------ |
+| 3.1       | DONE           | `feat/navigation-shell`  |
+| 3.2       | DONE           | `feat/storage`           |
+| 3.3       | DONE           | `feat/srs-scheduler`     |
+| 3.4       | DONE           | `feat/ai-mocks`          |
+| 3.5       | DONE           | `feat/home-screen`       |
+| 3.6       | DONE           | `feat/confirm-screen`    |
+| 3.7       | DONE           | `feat/flashcards-screen` |
+| 3.8       | DONE           | `feat/listen-screen`     |
+| 3.9       | DONE           | `feat/read-screen`       |
+| 3.9b      | WAITING-REVIEW | `feat/tips-lamp`         |
+| 3.9c      | TODO           | `feat/word-chips-input`  |
+| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
+| 3.14      | TODO           | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -881,6 +883,20 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Left, named: no loading state and no retry button while the story loads or after it failed (the mock answers at once; both need new strings and belong with the real AI in phase 5); a failed save of the result keeps the screen as it is, like the flashcards.
 - Review: 0 blocking, 3 medium, 3 low. Fixed: two calls for the same lesson share one request; a story that arrives after Quit is dropped; a late failure does not touch an unmounted route. Left, named: loading and retry (above).
 - Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 8 languages, 16 i18n, 78 core, 368 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → navigation, storage, home, flashcards, listen and read e2e passed; `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
+
+### 3.9b Tips lamp on the flashcards
+
+- Owner decisions: icon is a lamp (something interesting to know, not a hint); a square button in the top right corner of the flashcard; shown only when the word has a tip; tap opens a tip card under the flashcard; the card does not flip. Approved `DESIGN.md` changes: the `lamp` icon (the set is now 23), rows for `TipButton` and `TipCard`.
+- Result: `Word.tip` (`Translations`, optional) and the same on the normalised word in `core` (`createWordFromNormalised` keeps it, test added); storage column `tip` and migration `0003_add_word_tip.sql` (made by `npm run db:generate`); the mock gives `Gleis` the tip about "von Gleis drei" (EN and RU, **the Russian is mine, please read it**). New components with meta and stories: `TipButton` (`Default`, `Open`, `InTheCorner`) and `TipCard` (`Default`, `LongTip`); `WordCard` got a `corner` slot (story `WithCorner`: the lamp does not flip the card); `FlashcardsScreen` has `isTipOpen` and `onTipToggle` (story `WordWithTip`); the route closes the tip when the card changes. Strings `tip.button` and `tip.card`.
+- Named differences: the lamp uses `ring` (cyan, like the play button of the word card) and fills when open; the tip also shows on the sentence side; no hover effect (phones have no hover).
+- Review: 0 blocking, 5 low. Fixed: the `corner` slot is in the `WordCard` row of `DESIGN.md`. Left, named: on a long sentence on the back of a card at 360 px the text could run under the lamp (check on the A54; fix would be right padding on the face when a corner is given); the lamp comes after the card in keyboard order (it is a secondary control).
+- Added on the owner's request, placeholder: a bonus per finished section, `placeholderTaskBonusXp` in `core` (flashcards 20, listen 20, read 20, record 20, gap fill 30, translate 40: the header values of the design, 0, 20, 40, 60, 80, 110). `saveTaskResult` adds it to the lesson's `xpEarned` the first time a section is saved, so the header shows the running total (e2e checks `+20 XP` on Listen and `+40 XP` on Read). Not the real XP rules: step 3.3 has `lessonXp` and streak bonuses for the whole lesson; the Done screen (3.13) must decide how the two fit together and replace this table.
+- Discussion with the owner (written as `plan.md` D20): level and goal come from onboarding, one level per lesson, the system chooses and the user nudges one step; mixed word levels stay in one lesson. Next for Read (owner request, not built): a text of 6–8 sentences at the profile level, then a comprehension quiz instead of "Now read it aloud". Owner decisions: a text screen with a Start quiz button, then a quiz screen with multiple-choice questions of 3 options each; questions in German from B1 up, in the native language for A1 and A2 (the learner would not understand them); the quiz score is the saved Read result; 80% or more correct counts toward moving up a level; the profile gets `level` (default B2) until onboarding; the text uses all of the lesson's words, at the profile level, with constructions that move the learner toward the goal level (main grammar, idioms, natural spoken language); the quiz screen is built from existing components and gets a `DESIGN.md` row. Decided (plan.md D21): 5 questions (4 of 5 is 80%); a lesson has at most 6 words (`maxWordsPerLesson`, evenly split when there are more), so one text never has to carry more than 6 words. Planned as two steps: first the word cap in `startLesson`, then the Read text and quiz.
+- Next step added on the owner's request (plan.md 3.9c): the words field on Home becomes a chip input (type, Enter/space/comma makes a chip, paste or dictate splits a list, counter n / 6, tap a chip to edit), together with the 6-word cap and the even split of more words into several lessons.
+- Not in scope: the lamp on the Read screen (where it sits is still open), tips from the real AI (phase 5), tips in review.
+- E2E: `e2e/flashcards.mjs` now checks that only Gleis has a lamp, that opening it shows the tip and leaves the card on the word side, that the tip is still there after a page reload (it came back from SQLite), and that changing the card closes it.
+- Learning note: `docs/learn/tips-and-the-lamp.md`.
+- Evidence: `npx nx run-many -t lint typecheck check-meta` → exit 0; `npm test` → 8 languages, 16 i18n, 78 core, 382 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → all six e2e passed; `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
