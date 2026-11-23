@@ -9,6 +9,8 @@ export const lessonOverviewScreenMeta = {
   props: {
     lessonNumber: 'The number shown in the title, for example Lesson 13',
     completedTasks: 'The tasks that already have a result',
+    earnedXp:
+      'The XP earned per finished task, shown at the right end of the title line in the phone app and on the right of the row on web',
     nativeLanguage: 'Used in the name of the last task, for example RU → DE',
     targetLanguage: 'Used in the name of the last task, for example RU → DE',
     onOpenTask: 'Called with the task whose row was tapped',

@@ -1,4 +1,4 @@
-import { lessonTaskTypes } from '@daily-chunk/core';
+import { lessonTaskTypes, placeholderTaskBonusXp } from '@daily-chunk/core';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
@@ -34,6 +34,9 @@ export default function LessonOverviewRoute() {
     <LessonOverviewScreen
       lessonNumber={lesson.number}
       completedTasks={completedTasks}
+      earnedXp={Object.fromEntries(
+        completedTasks.map((task) => [task, placeholderTaskBonusXp[task]]),
+      )}
       nativeLanguage={profile.languages.nativeLanguage}
       targetLanguage={words[0]?.targetLanguage ?? 'de'}
       onOpenTask={(task) => router.replace(lessonTaskRoute(task))}

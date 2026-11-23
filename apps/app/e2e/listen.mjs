@@ -54,6 +54,13 @@ try {
     .first()
     .waitFor();
 
+  step('see the XP of the finished flashcards');
+  await page
+    .getByText('+20 XP', { exact: true })
+    .locator('visible=true')
+    .first()
+    .waitFor();
+
   step('ask to quit and keep going');
   const dialog = page.getByRole('alertdialog');
   await page.getByRole('button', { name: 'Quit' }).click();
@@ -73,6 +80,10 @@ try {
   await page.waitForURL('**/lesson/flashcards');
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.waitForURL('**/lesson/overview');
+  await page
+    .getByText('+20 XP', { exact: true })
+    .locator('visible=true')
+    .waitFor();
   await page.getByRole('button', { name: /^2.*Listen & shadow/ }).click();
   await page.waitForURL('**/lesson/listen');
 
