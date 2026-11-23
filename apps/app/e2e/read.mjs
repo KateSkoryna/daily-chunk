@@ -39,6 +39,13 @@ try {
   await page.waitForURL('**/lesson/read');
   await page.getByText('Der letzte Zug', { exact: true }).waitFor();
 
+  step('see the XP of the finished flashcards and listen');
+  await page
+    .getByText('+40 XP', { exact: true })
+    .locator('visible=true')
+    .first()
+    .waitFor();
+
   step('see the translation under every paragraph');
   await page.getByText('Anna is standing at the station.').waitFor();
   await page.getByText('She is looking for her ticket in the bag.').waitFor();

@@ -2,6 +2,7 @@ import {
   createInitialProfile,
   createWordFromNormalised,
   isNewWord,
+  placeholderTaskBonusXp,
   startLesson as buildLesson,
   wordIdFor,
   type AiService,
@@ -181,9 +182,13 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         (lesson) => lesson.completedAt === null,
       );
       if (!openLesson) throw new Error('There is no open lesson');
+      const bonusXp = openLesson.taskResults[task]
+        ? 0
+        : placeholderTaskBonusXp[task];
       const updatedLesson: Lesson = {
         ...openLesson,
         taskResults: { ...openLesson.taskResults, [task]: result },
+        xpEarned: openLesson.xpEarned + bonusXp,
       };
       const storage = await getStorage();
       await storage.lessons.save(updatedLesson);

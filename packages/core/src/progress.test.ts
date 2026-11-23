@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { lessonXp, progressAfterLesson, streakBonusXp } from './progress';
+import { lessonTaskTypes } from './lesson';
+import {
+  lessonXp,
+  placeholderTaskBonusXp,
+  progressAfterLesson,
+  streakBonusXp,
+} from './progress';
 import type { Profile } from './profile';
 
 const profile: Profile = {
@@ -102,4 +108,22 @@ describe('progressAfterLesson', () => {
       expect(result.xpEarned).toBe(lessonXp + bonus);
     },
   );
+});
+
+describe('placeholderTaskBonusXp', () => {
+  it('gives every task of a lesson a bonus', () => {
+    for (const task of lessonTaskTypes) {
+      expect(placeholderTaskBonusXp[task]).toBeGreaterThan(0);
+    }
+  });
+
+  it('adds up to the XP the design shows in the header before each task', () => {
+    const headerXpBeforeTask = lessonTaskTypes.map((_task, index) =>
+      lessonTaskTypes
+        .slice(0, index)
+        .reduce((sum, task) => sum + placeholderTaskBonusXp[task], 0),
+    );
+
+    expect(headerXpBeforeTask).toEqual([0, 20, 40, 60, 80, 110]);
+  });
 });

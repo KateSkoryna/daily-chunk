@@ -12,7 +12,12 @@ export type {
 export type { Translations } from './translations';
 export { partsOfSpeech } from './word';
 export type { PartOfSpeech, ReviewStage, Word } from './word';
-export { lessonXp, progressAfterLesson, streakBonusXp } from './progress';
+export {
+  lessonXp,
+  placeholderTaskBonusXp,
+  progressAfterLesson,
+  streakBonusXp,
+} from './progress';
 export type { ProgressAfterLesson } from './progress';
 export {
   isDueForReview,

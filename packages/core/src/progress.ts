@@ -1,6 +1,17 @@
+import type { LessonTaskType } from './lesson';
 import type { Profile } from './profile';
 
 export const lessonXp = 100;
+
+export const placeholderTaskBonusXp: Readonly<Record<LessonTaskType, number>> =
+  {
+    flashcards: 20,
+    listen: 20,
+    read: 20,
+    record: 20,
+    'gap-fill': 30,
+    translate: 40,
+  };
 
 export const streakBonusXp: Readonly<Record<number, number>> = {
   3: 30,
