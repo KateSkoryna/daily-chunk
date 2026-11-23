@@ -760,18 +760,19 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step     | Status | Branch                   |
-| -------- | ------ | ------------------------ |
-| 3.1      | DONE   | `feat/navigation-shell`  |
-| 3.2      | DONE   | `feat/storage`           |
-| 3.3      | DONE   | `feat/srs-scheduler`     |
-| 3.4      | DONE   | `feat/ai-mocks`          |
-| 3.5      | DONE   | `feat/home-screen`       |
-| 3.6      | DONE   | `feat/confirm-screen`    |
-| 3.7      | DONE   | `feat/flashcards-screen` |
-| 3.8      | DONE   | `feat/listen-screen`     |
-| 3.9–3.13 | TODO   | `feat/<screen>-screen`   |
-| 3.14     | TODO   | `chore/phase-3-review`   |
+| Step      | Status         | Branch                   |
+| --------- | -------------- | ------------------------ |
+| 3.1       | DONE           | `feat/navigation-shell`  |
+| 3.2       | DONE           | `feat/storage`           |
+| 3.3       | DONE           | `feat/srs-scheduler`     |
+| 3.4       | DONE           | `feat/ai-mocks`          |
+| 3.5       | DONE           | `feat/home-screen`       |
+| 3.6       | DONE           | `feat/confirm-screen`    |
+| 3.7       | DONE           | `feat/flashcards-screen` |
+| 3.8       | DONE           | `feat/listen-screen`     |
+| 3.9       | WAITING-REVIEW | `feat/read-screen`       |
+| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
+| 3.14      | TODO           | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -868,6 +869,18 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 8 languages, 16 i18n, 76 core, 322 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → navigation, storage, home, flashcards and listen e2e passed (listen alone 3 times in a row); `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
 - The leave prompt checks in `e2e/navigation.mjs` moved to `/lesson/translate`, a route that is still a placeholder (a lesson route that has its real screen needs a saved lesson); move them again if Translate (3.12) is built before the check is rewritten.
 - Review: 2 blocking, 7 medium, 5 low. Fixed: Next phrase (and the last phrase) now stops a running recording and puts the audio mode back, and leaving the screen stops it too (the recorder was left open before); a repeat is credited to the phrase it was recorded on (a late stop cannot credit the next phrase); Play does nothing while recording; speech callbacks of an older play are ignored; step 2 starts only when the phrase was heard to the end (not on the tap); a failed recording or save shows a Notice (`lesson.somethingFailed`, EN and RU, **the Russian is mine**); the e2e checks that the step indicator reaches step 2 after Play. Left, named: a recording has no text alternative beyond the counter ("Repeat 2 of 3"), because it is not played back in this step; the e2e waits 800 ms for the recording to start (with the fake microphone); the e2e does not test a refused microphone (the story does); Flashcards still shows nothing when its save fails.
+
+### 3.9 Read the story
+
+- Owner decision (asked about the header, answered with a design change): the RU ON/OFF switch is removed from the design for good. The native language is chosen before the lessons, so the translation of every paragraph is always shown. Removed: the `Toggle` component (meta, story), its `DESIGN.md` row and the mention in the `LessonHeader` row, `read.translationOn` and `read.translationOff` (EN and RU), the switch and its script in `design/screens/Read.dc.html`, the wording in `plan.md` §4.
+- Result: `ReadScreen` uses the `StoryParagraph` type from `core` (`translation` is the text in the native language); header like Flashcards and Listen (Back, Quit, lesson label, stepper that jumps between tasks). The word card opens right under its paragraph, the translation comes after it. New route `app/lesson/read.tsx`: loads the story with the new store action `loadStory(lessonId)` (calls `ai.generateStory` with the lesson words, keeps it in memory in `stories`, cleared when a lesson is abandoned), shows the card of a tapped lesson word (tap again to close; a word that is not in the lesson, like `verspätet`, has no card), Play speaks `der Bahnhof` in the target voice, "Now read it aloud" saves `taskResults.read` and opens `/lesson/record`. A failed story shows a Notice with Back.
+- Saved result: Read is finished by continuing, so the result is all words (`correct` = `total` = number of lesson words), like the flashcards. Ask if you want it to count opened cards instead.
+- E2E: `e2e/read.mjs` (in `npm run e2e`): flashcards, Listen (no recording), Read shows the title and the translations of paragraphs 1 and 2, no switch; the Fahrkarte card opens and Play speaks `die Fahrkarte` in `de-DE`; opening Gleis closes Fahrkarte; Quit asks and Keep going stays; Back goes to Listen and the stepper returns; "Now read it aloud" opens `/lesson/record`; `/dev/storage-check` shows `lesson-1 flashcards 3/3 listen 0/3 read 3/3`.
+- New idea from the owner, NOT built (needs a design decision): a small marker (lamp or question mark) on curious grammar points in the story, for example "von Gleis drei" (not "vom", because of the number). Questions: icon (lamp or question mark), where it sits (next to the underlined word or at the end of the paragraph), what opens (a card like `WordPopover` with a short tip in the native language), where the tips come from (the story response gets `notes` per paragraph: phrase plus tip; the target pack owns grammar tips). Needs `DESIGN.md` rows and a new icon; proposed as its own step after 3.13 or in phase 4.
+- Not in scope: Read aloud (3.10), the tips marker above.
+- Left, named: no loading state and no retry button while the story loads or after it failed (the mock answers at once; both need new strings and belong with the real AI in phase 5); a failed save of the result keeps the screen as it is, like the flashcards.
+- Review: 0 blocking, 3 medium, 3 low. Fixed: two calls for the same lesson share one request; a story that arrives after Quit is dropped; a late failure does not touch an unmounted route. Left, named: loading and retry (above).
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npm test` → 8 languages, 16 i18n, 78 core, 368 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → navigation, storage, home, flashcards, listen and read e2e passed; `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
