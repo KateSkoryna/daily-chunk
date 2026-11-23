@@ -70,19 +70,34 @@ function TopBarButton({
 type TopBarActionProps = {
   icon: IconName;
   label: string;
+  iconPosition?: 'start' | 'end';
   onPress: () => void;
 };
 
-function TopBarAction({ icon, label, onPress }: TopBarActionProps) {
+// the icons are drawn inside their box, so the margins pull the drawn edge onto the screen's text edge
+function TopBarAction({
+  icon,
+  label,
+  iconPosition = 'start',
+  onPress,
+}: TopBarActionProps) {
   return (
     <Button
       variant="ghost"
       accessibilityLabel={label}
       onPress={onPress}
-      className="px-0"
+      className={cn(
+        'px-0',
+        iconPosition === 'end'
+          ? '-mr-1'
+          : icon === 'back'
+            ? '-ml-1.5'
+            : '-ml-1',
+      )}
     >
-      <Icon name={icon} decorative />
+      {iconPosition === 'start' && <Icon name={icon} decorative />}
       <Text>{label}</Text>
+      {iconPosition === 'end' && <Icon name={icon} decorative />}
     </Button>
   );
 }

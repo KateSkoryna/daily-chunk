@@ -164,6 +164,7 @@ export const LabelledAction: Story = {
             left={
               <TopBar.Action
                 icon="cross"
+                iconPosition="end"
                 label={t('lesson.quit')}
                 onPress={fn()}
               />
@@ -189,6 +190,11 @@ export const LabelledAction: Story = {
     const box = action.getBoundingClientRect();
 
     expect(action.textContent).toBe(t('lesson.quit'));
+    expect(
+      action.querySelector('svg')!.getBoundingClientRect().left,
+    ).toBeGreaterThan(
+      action.querySelector('div')!.getBoundingClientRect().left,
+    );
     expect(action.querySelector('svg')?.getAttribute('aria-hidden')).toBe(
       'true',
     );

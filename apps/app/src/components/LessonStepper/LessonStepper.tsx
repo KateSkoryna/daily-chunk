@@ -1,6 +1,8 @@
+import { Fragment } from 'react';
 import { View } from 'react-native';
 
 import { cn } from '../../lib/utils';
+import { PressableFocus } from '../PressableFocus/PressableFocus';
 import { Text } from '../ui/text';
 
 type SegmentStatus = 'done' | 'current' | 'upcoming';
@@ -19,6 +21,8 @@ type LessonStepperProps = {
   current: number;
   label: string;
   xpLabel: string;
+  segmentLabels?: string[];
+  onSelect?: (position: number) => void;
   className?: string;
 };
 
@@ -39,6 +43,8 @@ function LessonStepper({
   current,
   label,
   xpLabel,
+  segmentLabels,
+  onSelect,
   className,
 }: LessonStepperProps) {
   const positions = Array.from({ length: total }, (_, index) => index + 1);
@@ -54,23 +60,40 @@ function LessonStepper({
         </Text>
       </View>
       <View
-        accessibilityRole="progressbar"
+        accessibilityRole={onSelect ? 'toolbar' : 'progressbar'}
         accessibilityLabel={label}
-        aria-valuemin={variant === 'progress' ? 0 : 1}
-        aria-valuemax={total}
-        aria-valuenow={current}
+        aria-valuemin={onSelect ? undefined : variant === 'progress' ? 0 : 1}
+        aria-valuemax={onSelect ? undefined : total}
+        aria-valuenow={onSelect ? undefined : current}
         className="flex-row gap-1"
       >
-        {positions.map((position) => (
-          <View
-            key={position}
-            testID={`segment-${statusOf(position, current, variant)}`}
-            className={cn(
-              'h-2 flex-1 rounded-segment',
-              segmentClasses[statusOf(position, current, variant)],
-            )}
-          />
-        ))}
+        {positions.map((position) => {
+          const segment = (
+            <View
+              testID={`segment-${statusOf(position, current, variant)}`}
+              className={cn(
+                'h-2 rounded-segment',
+                !onSelect && 'flex-1',
+                segmentClasses[statusOf(position, current, variant)],
+              )}
+            />
+          );
+
+          if (!onSelect) return <Fragment key={position}>{segment}</Fragment>;
+
+          return (
+            <PressableFocus
+              key={position}
+              accessibilityRole="button"
+              accessibilityLabel={segmentLabels?.[position - 1]}
+              aria-current={position === current ? 'step' : undefined}
+              onPress={() => onSelect(position)}
+              className="-my-5 flex-1 justify-center"
+            >
+              {segment}
+            </PressableFocus>
+          );
+        })}
       </View>
     </View>
   );

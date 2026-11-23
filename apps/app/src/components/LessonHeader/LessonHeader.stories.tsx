@@ -10,6 +10,7 @@ import { LessonHeader } from './LessonHeader';
 import { lessonHeaderMeta } from './LessonHeader.meta';
 
 const onClose = fn();
+const onBack = fn();
 
 const meta = {
   title: 'Components/LessonHeader',
@@ -34,6 +35,15 @@ const meta = {
           <LessonHeader
             {...args}
             left={
+              <Button
+                variant="ghost"
+                accessibilityLabel={t('common.back')}
+                onPress={onBack}
+              >
+                <Icon name="back" decorative />
+              </Button>
+            }
+            right={
               <Button
                 variant="ghost"
                 accessibilityLabel={t('lesson.quit')}
@@ -73,14 +83,21 @@ export const Default: Story = {
 
     expect(bar.getAttribute('aria-valuenow')).toBe('1');
     expect(canvas.getByText(t('lesson.xpEarned', { count: 0 }))).toBeTruthy();
-    expect(quit.getBoundingClientRect().right).toBeLessThan(
+    const back = canvas.getByRole('button', { name: t('common.back') });
+
+    expect(back.getBoundingClientRect().right).toBeLessThan(
       lesson.getBoundingClientRect().left,
+    );
+    expect(lesson.getBoundingClientRect().right).toBeLessThan(
+      quit.getBoundingClientRect().left,
     );
     expect(quit.getBoundingClientRect().bottom).toBeLessThan(
       bar.getBoundingClientRect().top,
     );
 
     await userEvent.click(quit);
+    await userEvent.click(back);
     expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onBack).toHaveBeenCalledTimes(1);
   },
 };

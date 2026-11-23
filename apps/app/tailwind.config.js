@@ -111,6 +111,7 @@ module.exports = {
         content: '45rem',
         page: '75rem',
         'button-max': '22.5rem',
+        'flashcard-desktop': '26.25rem',
         reading: '34em',
       },
       borderRadius: {

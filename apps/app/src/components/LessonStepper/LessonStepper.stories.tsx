@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { View } from 'react-native';
-import { expect, within } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
-import { textFor, WithText } from '../../lib/story-text';
+import { lessonStepNames } from '../../lib/lesson-step-names';
+import { appLanguageOf, textFor, WithText } from '../../lib/story-text';
 import { LessonStepper } from './LessonStepper';
 import { lessonStepperMeta } from './LessonStepper.meta';
 
@@ -123,5 +124,53 @@ export const BossProgress: Story = {
     expect(within(bar).getAllByTestId('segment-done')).toHaveLength(3);
     expect(within(bar).getAllByTestId('segment-upcoming')).toHaveLength(2);
     expect(within(bar).queryByTestId('segment-current')).toBeNull();
+  },
+};
+
+export const JumpToTask: Story = {
+  args: { current: 2, onSelect: fn() },
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <View className="p-gutter">
+      <WithText>
+        {(t, appLanguage) => (
+          <LessonStepper
+            {...args}
+            label={t('lesson.stepLabel', {
+              step: '02',
+              task: t('lesson.tasks.listen'),
+            })}
+            xpLabel={t('lesson.xpEarned', { count: 40 })}
+            segmentLabels={lessonStepNames(t, appLanguage, 'de')}
+          />
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const bar = await canvas.findByRole('toolbar', {
+      name: t('lesson.stepLabel', {
+        step: '02',
+        task: t('lesson.tasks.listen'),
+      }),
+    });
+    const segments = within(bar).getAllByRole('button');
+
+    expect(segments).toHaveLength(6);
+    expect(segments[1]).toHaveAttribute('aria-current', 'step');
+    expect(toRem(segments[0]!.getBoundingClientRect().height)).toBe(3);
+    expect(segments[5]).toHaveAccessibleName(
+      t('lesson.goToTask', {
+        task: t('lesson.tasks.translate', {
+          from: appLanguageOf(globals).toUpperCase(),
+          to: 'DE',
+        }),
+      }),
+    );
+    await userEvent.click(segments[5]!);
+
+    expect(args.onSelect).toHaveBeenCalledWith(6);
   },
 };

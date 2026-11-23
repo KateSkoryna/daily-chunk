@@ -87,6 +87,7 @@ export const otherTokens = [
   'content',
   'page',
   'button-max',
+  'flashcard-desktop',
   'reading-max',
   'segment',
   'border-3',

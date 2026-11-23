@@ -13,6 +13,8 @@ export const topBarMeta = {
     className: 'Extra classes; layout only',
     'Action icon and label':
       'The icon and the visible word of TopBar.Action; the word is also its accessible name',
+    'Action iconPosition':
+      'start (icon before the word, the default) or end (icon after the word, for Quit on the right)',
     'Button variant':
       'default (grey border) or record (pink border, for dictating or recording)',
   },

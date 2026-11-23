@@ -93,7 +93,7 @@ function WordCard({ isFlipped, onFlip, front, back }: WordCardProps) {
           accessibilityRole="button"
           accessibilityHint={t('flashcard.flipHint')}
           onPress={onFlip}
-          className="h-flashcard w-full desktop:h-[26.25rem]"
+          className="aspect-square w-full"
         >
           <CardFace
             testID="word-card-front"
@@ -105,7 +105,9 @@ function WordCard({ isFlipped, onFlip, front, back }: WordCardProps) {
             className="bg-card"
           >
             {front}
-            <Text variant="caption">{t('flashcard.tapToFlip')}</Text>
+            <Text variant="caption" className="self-end">
+              {t('flashcard.tapToFlip')}
+            </Text>
           </CardFace>
           <CardFace
             testID="word-card-back"
@@ -117,7 +119,9 @@ function WordCard({ isFlipped, onFlip, front, back }: WordCardProps) {
             className="bg-popover"
           >
             {back}
-            <Text variant="caption">{t('flashcard.tapToFlipBack')}</Text>
+            <Text variant="caption" className="self-end">
+              {t('flashcard.tapToFlipBack')}
+            </Text>
           </CardFace>
         </PressableFocus>
       </HardShadow>

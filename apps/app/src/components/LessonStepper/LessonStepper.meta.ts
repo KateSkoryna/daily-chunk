@@ -16,6 +16,10 @@ export const lessonStepperMeta = {
     label:
       'Text above the segments, already translated, for example the task number and name',
     xpLabel: 'The XP earned so far, already translated, shown on the right',
+    segmentLabels:
+      'Optional. The accessible name of each segment (the task name), already translated; used when onSelect is given',
+    onSelect:
+      'Optional. Called with the tapped segment (from 1); the segments become buttons with a 3rem touch area. Leave it out to only show progress',
     className: 'Extra classes; layout only',
   },
   variants: {
@@ -41,7 +45,8 @@ export const lessonStepperMeta = {
   accessibility: [
     'The segments are a progressbar with the label as its name and the current position as its value',
     'Progress is shown by position and by the label text, not by colour alone',
-    'Not interactive: no touch target',
+    'Without onSelect: not interactive, no touch target',
+    'With onSelect: a toolbar of buttons, one per task, each named by its task; the current one is marked as the current step',
   ],
   aiHints: {
     useWhen: [
