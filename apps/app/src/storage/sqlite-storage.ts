@@ -1,5 +1,5 @@
 import type { Storage } from '@daily-chunk/core';
-import { asc } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
 import { openDatabaseAsync } from 'expo-sqlite';
@@ -48,6 +48,9 @@ export async function createSqliteStorage(
             .onConflictDoUpdate({ target: wordTable.id, set: row });
         }
       },
+      remove: async (wordId) => {
+        await database.delete(wordTable).where(eq(wordTable.id, wordId));
+      },
     },
     lessons: {
       list: async () => {
@@ -63,6 +66,9 @@ export async function createSqliteStorage(
           .insert(lessonTable)
           .values(row)
           .onConflictDoUpdate({ target: lessonTable.id, set: row });
+      },
+      remove: async (lessonId) => {
+        await database.delete(lessonTable).where(eq(lessonTable.id, lessonId));
       },
     },
   };

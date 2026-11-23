@@ -23,8 +23,10 @@ export type AppState = {
   words: Word[];
   lessons: Lesson[];
   pluralInput: PluralInput | undefined;
+  typedWordIds: string[];
   load: (appLanguage: AppLanguage) => Promise<void>;
   addTypedWords: (typedText: string) => Promise<number>;
+  abandonLesson: () => Promise<void>;
   startLesson: () => Promise<Lesson>;
   saveTaskResult: (task: LessonTaskType, result: TaskResult) => Promise<void>;
 };
@@ -42,6 +44,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
     words: [],
     lessons: [],
     pluralInput: undefined,
+    typedWordIds: [],
 
     load: async (appLanguage) => {
       if (get().status !== 'idle') return;
@@ -95,7 +98,16 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
       const newWords = [...createdWords.values()].filter(
         (word) => !knownIds.has(word.id),
       );
+      const staleWords = get().words.filter(
+        (word) =>
+          isNewWord(word) &&
+          !typedWordIds.has(word.id) &&
+          !get().typedWordIds.includes(word.id),
+      );
       const storage = await getStorage();
+      for (const staleWord of staleWords) {
+        await storage.words.remove(staleWord.id);
+      }
       await storage.words.saveMany(newWords);
       const pluralWord = normalisedWords.find(
         (normalisedWord) => normalisedWord.wasPluralised,
@@ -104,9 +116,10 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         const savedIds = new Set(state.words.map((word) => word.id));
         return {
           words: [
-            ...state.words,
+            ...state.words.filter((word) => !staleWords.includes(word)),
             ...newWords.filter((word) => !savedIds.has(word.id)),
           ],
+          typedWordIds: [...new Set([...state.typedWordIds, ...typedWordIds])],
           pluralInput: pluralWord && {
             typed: pluralWord.typedText,
             savedWordId: wordIdFor(languages.targetLanguage, pluralWord.lemma),
@@ -118,9 +131,30 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
       ).length;
     },
 
+    abandonLesson: async () => {
+      const { lessons, words } = get();
+      const openLesson = lessons.find((lesson) => lesson.completedAt === null);
+      const newWords = words.filter(isNewWord);
+      const storage = await getStorage();
+      if (openLesson) await storage.lessons.remove(openLesson.id);
+      for (const word of newWords) await storage.words.remove(word.id);
+      set({
+        lessons: lessons.filter((lesson) => lesson.id !== openLesson?.id),
+        words: words.filter((word) => !isNewWord(word)),
+        typedWordIds: [],
+        pluralInput: undefined,
+      });
+    },
+
     startLesson: async () => {
       const { words, lessons } = get();
-      const lesson = buildLesson(lessons, words.filter(isNewWord), now());
+      const { typedWordIds } = get();
+      const lessonWords = words.filter(
+        (word) =>
+          isNewWord(word) &&
+          (typedWordIds.length === 0 || typedWordIds.includes(word.id)),
+      );
+      const lesson = buildLesson(lessons, lessonWords, now());
       if (lesson.wordIds.length === 0) {
         throw new Error('A lesson needs at least one word');
       }

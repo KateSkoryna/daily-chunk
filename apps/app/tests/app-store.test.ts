@@ -24,11 +24,17 @@ function createFakeStorage(
       saveMany: async (next) => {
         next.forEach((word) => words.set(word.id, word));
       },
+      remove: async (wordId) => {
+        words.delete(wordId);
+      },
     },
     lessons: {
       list: async () => [...lessons.values()],
       save: async (lesson) => {
         lessons.set(lesson.id, lesson);
+      },
+      remove: async (lessonId) => {
+        lessons.delete(lessonId);
       },
     },
   };
@@ -124,6 +130,64 @@ describe('app store', () => {
       reviewStage: 0,
       translations: { en: 'station' },
     });
+  });
+
+  it('drops new words from an earlier session when words are typed', async () => {
+    const { store, savedWords, storage } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis');
+
+    const nextSession = createAppStore({
+      getStorage: async () => storage,
+      ai: createMockAiService(),
+      now: () => new Date('2026-11-22T10:00:00.000Z'),
+    });
+    await nextSession.getState().load('en');
+    await nextSession.getState().addTypedWords('Fahrkarte');
+
+    expect(nextSession.getState().words.map((word) => word.lemma)).toEqual([
+      'Fahrkarte',
+    ]);
+    expect([...savedWords.keys()]).toEqual(['word-de-fahrkarte']);
+  });
+
+  it('keeps the words typed in several rounds of this session', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis');
+    await store.getState().addTypedWords('Fahrkarte');
+
+    expect(store.getState().words).toHaveLength(2);
+    expect(store.getState().typedWordIds).toEqual([
+      'word-de-gleis',
+      'word-de-fahrkarte',
+    ]);
+  });
+
+  it('starts a lesson with the typed words only', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis\nFahrkarte\nbahnhof');
+    const lesson = await store.getState().startLesson();
+
+    expect(lesson.wordIds).toEqual([
+      'word-de-gleis',
+      'word-de-fahrkarte',
+      'word-de-bahnhof',
+    ]);
+  });
+
+  it('clears the open lesson and the new words when the lesson is abandoned', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis\nFahrkarte');
+    await store.getState().startLesson();
+
+    await store.getState().abandonLesson();
+
+    expect(store.getState().lessons).toEqual([]);
+    expect(store.getState().words).toEqual([]);
+    expect(store.getState().typedWordIds).toEqual([]);
   });
 
   it('remembers a typed plural for the Confirm notice', async () => {
