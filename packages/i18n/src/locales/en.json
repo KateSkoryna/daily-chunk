@@ -193,9 +193,7 @@
   },
   "read": {
     "hint": "Tap an underlined word for its card",
-    "readAloud": "Now read it aloud",
-    "translationOn": "{{language}} on",
-    "translationOff": "{{language}} off"
+    "readAloud": "Now read it aloud"
   },
   "translate": {
     "use": "Use:",

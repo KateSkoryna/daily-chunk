@@ -10,6 +10,7 @@ import {
   type TaskResult,
   type Profile,
   type Storage,
+  type StoryResponse,
   type Word,
 } from '@daily-chunk/core';
 import type { AppLanguage } from '@daily-chunk/i18n';
@@ -22,6 +23,7 @@ export type AppState = {
   profile: Profile | undefined;
   words: Word[];
   lessons: Lesson[];
+  stories: Record<string, StoryResponse>;
   pluralInput: PluralInput | undefined;
   typedWordIds: string[];
   load: (appLanguage: AppLanguage) => Promise<void>;
@@ -29,6 +31,7 @@ export type AppState = {
   abandonLesson: () => Promise<void>;
   startLesson: () => Promise<Lesson>;
   saveTaskResult: (task: LessonTaskType, result: TaskResult) => Promise<void>;
+  loadStory: (lessonId: string) => Promise<void>;
 };
 
 type AppStoreDependencies = {
@@ -38,11 +41,14 @@ type AppStoreDependencies = {
 };
 
 export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
+  const pendingStories = new Map<string, Promise<void>>();
+
   return createStore<AppState>((set, get) => ({
     status: 'idle',
     profile: undefined,
     words: [],
     lessons: [],
+    stories: {},
     pluralInput: undefined,
     typedWordIds: [],
 
@@ -141,6 +147,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
       set({
         lessons: lessons.filter((lesson) => lesson.id !== openLesson?.id),
         words: words.filter((word) => !isNewWord(word)),
+        stories: {},
         typedWordIds: [],
         pluralInput: undefined,
       });
@@ -185,6 +192,32 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
           lesson.id === updatedLesson.id ? updatedLesson : lesson,
         ),
       }));
+    },
+
+    loadStory: (lessonId) => {
+      const { profile, lessons, words, stories } = get();
+      const lesson = lessons.find((candidate) => candidate.id === lessonId);
+      if (!profile || !lesson || stories[lessonId]) return Promise.resolve();
+      const pendingStory = pendingStories.get(lessonId);
+      if (pendingStory) return pendingStory;
+      const lessonWords = lesson.wordIds.flatMap((wordId) =>
+        words.filter((word) => word.id === wordId),
+      );
+      const request = ai
+        .generateStory({ languages: profile.languages, words: lessonWords })
+        .then((story) => {
+          const isLessonOpen = get().lessons.some(
+            (candidate) => candidate.id === lessonId,
+          );
+          if (isLessonOpen) {
+            set((state) => ({
+              stories: { ...state.stories, [lessonId]: story },
+            }));
+          }
+        })
+        .finally(() => pendingStories.delete(lessonId));
+      pendingStories.set(lessonId, request);
+      return request;
     },
   }));
 }
