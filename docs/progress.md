@@ -760,21 +760,21 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status         | Branch                   |
-| --------- | -------------- | ------------------------ |
-| 3.1       | DONE           | `feat/navigation-shell`  |
-| 3.2       | DONE           | `feat/storage`           |
-| 3.3       | DONE           | `feat/srs-scheduler`     |
-| 3.4       | DONE           | `feat/ai-mocks`          |
-| 3.5       | DONE           | `feat/home-screen`       |
-| 3.6       | DONE           | `feat/confirm-screen`    |
-| 3.7       | DONE           | `feat/flashcards-screen` |
-| 3.8       | DONE           | `feat/listen-screen`     |
-| 3.9       | DONE           | `feat/read-screen`       |
-| 3.9b      | WAITING-REVIEW | `feat/tips-lamp`         |
-| 3.9c      | TODO           | `feat/word-chips-input`  |
-| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
-| 3.14      | TODO           | `chore/phase-3-review`   |
+| Step      | Status        | Branch                   |
+| --------- | ------------- | ------------------------ |
+| 3.1       | DONE          | `feat/navigation-shell`  |
+| 3.2       | DONE          | `feat/storage`           |
+| 3.3       | DONE          | `feat/srs-scheduler`     |
+| 3.4       | DONE          | `feat/ai-mocks`          |
+| 3.5       | DONE          | `feat/home-screen`       |
+| 3.6       | DONE          | `feat/confirm-screen`    |
+| 3.7       | DONE          | `feat/flashcards-screen` |
+| 3.8       | DONE          | `feat/listen-screen`     |
+| 3.9       | DONE          | `feat/read-screen`       |
+| 3.9b      | DONE          | `feat/tips-lamp`         |
+| 3.9c      | WAITING-OWNER | `feat/word-chips-input`  |
+| 3.10–3.13 | TODO          | `feat/<screen>-screen`   |
+| 3.14      | TODO          | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -897,6 +897,14 @@ Branches are one per step (phase 3 is back to the normal rule).
 - E2E: `e2e/flashcards.mjs` now checks that only Gleis has a lamp, that opening it shows the tip and leaves the card on the word side, that the tip is still there after a page reload (it came back from SQLite), and that changing the card closes it.
 - Learning note: `docs/learn/tips-and-the-lamp.md`.
 - Evidence: `npx nx run-many -t lint typecheck check-meta` → exit 0; `npm test` → 8 languages, 16 i18n, 78 core, 382 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → all six e2e passed; `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
+
+### 3.9c Chip input for words
+
+- Owner decisions: the layout proposed (chips inside a field with the look of the text area, text input after the last chip, counter under the field) and touch option A (2rem chips with 3rem touch areas that reach into the gaps).
+- Result: `core`: `maxWordsPerLesson` (6) and `lessonSizes` (7 → 4 + 3, 10 → 5 + 5, 13 → 5 + 4 + 4); `startLesson` takes only the first even part of the waiting words and only the room left in an open lesson, and never repeats a word (7 new tests). `app`: `lib/word-chips.ts` (the rules, 12 unit tests), `WordChipsInput` (meta, stories `Default`, `WithChips`, `EditAChip`, `PastedList`, `Full`, `LongWordsOnANarrowScreen`), the Home screen and route use it (words and draft live in the route; Check my words turns a pending draft into a chip first), strings `wordChips.*`, `home.wordsLeftOut_*` and `home.wordCount` now `n / max words · min m` (one form in both languages: it is a fraction of the limit; the Russian is mine, please read it). `DESIGN.md` has a `WordChipsInput` row. Learning note: `docs/learn/word-chips-input.md`.
+- Named: the field stops at 6, so on Home more than 6 words never reach `startLesson`; the split only matters for words that are already waiting (for example added while a lesson is open). Those leftovers are not kept after an app restart (the existing rule that unfinished new words are dropped when you add new ones). The Confirm screen does not say "2 lessons" yet. Dictation still shows its "coming later" notice. Duplicates are skipped silently; a word the AI cannot find is still reported by Check my words as before.
+- Review: 0 blocking, 3 medium, 6 low. Fixed: Backspace on empty text no longer eats a letter and the input is focused after tapping a chip or Backspace (so the word is not put back at the end by a blur); the counter and the button count a draft that is a duplicate once; a duplicate draft at the limit is skipped silently; the left-out notice goes away when the words change; the TextInput styling setup is shared (`lib/text-input-interop.ts`); stories for Backspace and a duplicate; the DESIGN.md wording. Named: a space always splits, so a phrase like `sich freuen` becomes two chips (single words only, as decided); soft keyboards on Android often do not send Backspace on an empty field, so "Backspace takes the last chip back" must be checked on the A54 (the cross and the edit tap always work).
+- E2E: `e2e/home.mjs` types a word and Enter, a word and space, sees `2 / 6 words · min 3`, removes a chip, edits a chip, pastes a list over the limit (6 / 6, the text input is gone, `3 words left out: a lesson takes 6.`), removes all chips and sees the button disabled again; the other e2e files fill the field with a pasted list as before.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
