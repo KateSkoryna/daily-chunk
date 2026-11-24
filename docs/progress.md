@@ -760,21 +760,21 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status        | Branch                   |
-| --------- | ------------- | ------------------------ |
-| 3.1       | DONE          | `feat/navigation-shell`  |
-| 3.2       | DONE          | `feat/storage`           |
-| 3.3       | DONE          | `feat/srs-scheduler`     |
-| 3.4       | DONE          | `feat/ai-mocks`          |
-| 3.5       | DONE          | `feat/home-screen`       |
-| 3.6       | DONE          | `feat/confirm-screen`    |
-| 3.7       | DONE          | `feat/flashcards-screen` |
-| 3.8       | DONE          | `feat/listen-screen`     |
-| 3.9       | DONE          | `feat/read-screen`       |
-| 3.9b      | DONE          | `feat/tips-lamp`         |
-| 3.9c      | WAITING-OWNER | `feat/word-chips-input`  |
-| 3.10–3.13 | TODO          | `feat/<screen>-screen`   |
-| 3.14      | TODO          | `chore/phase-3-review`   |
+| Step      | Status | Branch                   |
+| --------- | ------ | ------------------------ |
+| 3.1       | DONE   | `feat/navigation-shell`  |
+| 3.2       | DONE   | `feat/storage`           |
+| 3.3       | DONE   | `feat/srs-scheduler`     |
+| 3.4       | DONE   | `feat/ai-mocks`          |
+| 3.5       | DONE   | `feat/home-screen`       |
+| 3.6       | DONE   | `feat/confirm-screen`    |
+| 3.7       | DONE   | `feat/flashcards-screen` |
+| 3.8       | DONE   | `feat/listen-screen`     |
+| 3.9       | DONE   | `feat/read-screen`       |
+| 3.9b      | DONE   | `feat/tips-lamp`         |
+| 3.9c      | DONE   | `feat/word-chips-input`  |
+| 3.10–3.13 | TODO   | `feat/<screen>-screen`   |
+| 3.14      | TODO   | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
