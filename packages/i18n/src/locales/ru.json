@@ -16,12 +16,13 @@
     "bossRound_few": "Босс-раунд через {{count}} урока",
     "bossRound_many": "Босс-раунд через {{count}} уроков",
     "bossRound_other": "Босс-раунд через {{count}} урока",
-    "wordCount_one": "{{count}} слово · минимум {{min}}",
-    "wordCount_few": "{{count}} слова · минимум {{min}}",
-    "wordCount_many": "{{count}} слов · минимум {{min}}",
-    "wordCount_other": "{{count}} слова · минимум {{min}}",
     "dueForReview": "{{count}} на повторение ›",
-    "checkWords": "Проверить слова"
+    "checkWords": "Проверить слова",
+    "wordsLeftOut_one": "{{count}} слово не поместилось: в уроке не больше {{max}}.",
+    "wordsLeftOut_few": "{{count}} слова не поместились: в уроке не больше {{max}}.",
+    "wordsLeftOut_many": "{{count}} слов не поместилось: в уроке не больше {{max}}.",
+    "wordsLeftOut_other": "{{count}} слова не поместились: в уроке не больше {{max}}.",
+    "wordCount": "{{count}} / {{max}} слов · минимум {{min}}"
   },
   "settings": {
     "appLanguage": "Язык приложения"
@@ -242,5 +243,9 @@
   "tip": {
     "button": "Интересно знать про {{word}}",
     "card": "Интересно знать"
+  },
+  "wordChips": {
+    "remove": "Удалить {{word}}",
+    "edit": "Изменить {{word}}"
   }
 }

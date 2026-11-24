@@ -1,9 +1,10 @@
-import { isDueForReview } from '@daily-chunk/core';
+import { isDueForReview, maxWordsPerLesson } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { useMenu } from '../../src/features/navigation/menu-context';
+import { commitDraft } from '../../src/lib/word-chips';
 import { HomeScreen } from '../../src/features/words/HomeScreen';
 import { useAppStore, useStartAppStore } from '../../src/state/use-app-store';
 
@@ -18,7 +19,8 @@ export default function HomeTab() {
   const profile = useAppStore((state) => state.profile);
   const words = useAppStore((state) => state.words);
   const addTypedWords = useAppStore((state) => state.addTypedWords);
-  const [typedWords, setTypedWords] = useState('');
+  const [typedWords, setTypedWords] = useState<string[]>([]);
+  const [draft, setDraft] = useState('');
   const [notice, setNotice] = useState<string>();
   const [isChecking, setIsChecking] = useState(false);
 
@@ -31,12 +33,14 @@ export default function HomeTab() {
     setIsChecking(true);
     setNotice(undefined);
     try {
-      const newWordCount = await addTypedWords(typedWords);
+      const allWords = commitDraft(typedWords, draft, maxWordsPerLesson).words;
+      const newWordCount = await addTypedWords(allWords.join('\n'));
       if (newWordCount === 0) {
         setNotice(t('home.noWordsRecognised'));
         return;
       }
-      setTypedWords('');
+      setTypedWords([]);
+      setDraft('');
       router.push('/confirm');
     } catch {
       setNotice(t('home.checkFailed'));
@@ -54,9 +58,18 @@ export default function HomeTab() {
       }
       bossRound={bossRound}
       words={typedWords}
+      draft={draft}
       minimumWords={minimumWords}
+      maxWords={maxWordsPerLesson}
       notice={notice}
-      onWordsChange={setTypedWords}
+      onWordsChange={(change) => {
+        setNotice(undefined);
+        setTypedWords(change.words);
+        setDraft(change.draft);
+      }}
+      onWordsLeftOut={(count) =>
+        setNotice(t('home.wordsLeftOut', { count, max: maxWordsPerLesson }))
+      }
       onDictate={() => setNotice(t('home.dictationComingSoon'))}
       onOpenMenu={openMenu}
       onOpenReview={() => router.push('/review')}

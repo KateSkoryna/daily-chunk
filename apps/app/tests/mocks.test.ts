@@ -105,11 +105,12 @@ describe('lesson task content', () => {
 });
 
 describe('home', () => {
-  it('types the demo words one per line', () => {
-    expect(homeDemo.typedWords.split('\n')).toHaveLength(demoWords.length);
-    expect(homeDemo.typedWords.split('\n').length).toBeGreaterThanOrEqual(
+  it('types one chip for each demo word, within the lesson limit', () => {
+    expect(homeDemo.typedWords).toHaveLength(demoWords.length);
+    expect(homeDemo.typedWords.length).toBeGreaterThanOrEqual(
       homeDemo.minimumWords,
     );
+    expect(homeDemo.typedWords.length).toBeLessThanOrEqual(homeDemo.maxWords);
   });
 
   it('saves the typed plural as a demo word', () => {

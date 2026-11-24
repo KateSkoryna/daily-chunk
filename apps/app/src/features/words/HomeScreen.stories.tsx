@@ -13,17 +13,20 @@ import { mainTabs } from '../navigation/main-tabs';
 import { HomeScreen, type HomeScreenProps } from './HomeScreen';
 import { homeScreenMeta } from './HomeScreen.meta';
 
-function HomeDemo({ words, onWordsChange, ...props }: HomeScreenProps) {
+function HomeDemo({ words, draft, onWordsChange, ...props }: HomeScreenProps) {
   const [typedWords, setTypedWords] = useState(words);
+  const [typedDraft, setTypedDraft] = useState(draft);
 
   return (
     <View className="min-h-screen">
       <HomeScreen
         {...props}
         words={typedWords}
-        onWordsChange={(next) => {
-          setTypedWords(next);
-          onWordsChange(next);
+        draft={typedDraft}
+        onWordsChange={(change) => {
+          setTypedWords(change.words);
+          setTypedDraft(change.draft);
+          onWordsChange(change);
         }}
       />
       <WithText>
@@ -55,8 +58,11 @@ const meta = {
     dueForReviewCount: homeDemo.dueForReviewCount,
     bossRound: homeDemo.bossRound,
     words: homeDemo.typedWords,
+    draft: '',
     minimumWords: homeDemo.minimumWords,
+    maxWords: homeDemo.maxWords,
     onWordsChange: fn(),
+    onWordsLeftOut: fn(),
     onDictate: fn(),
     onOpenMenu: fn(),
     onOpenReview: fn(),
@@ -94,10 +100,19 @@ export const Default: Story = {
     });
     const tabBar = canvas.getByRole('tablist', { name: t('nav.main') });
 
-    expect((words as HTMLTextAreaElement).value).toBe(homeDemo.typedWords);
+    expect((words as HTMLTextAreaElement).value).toBe('');
+    for (const word of homeDemo.typedWords) {
+      expect(
+        canvas.getByRole('button', { name: t('wordChips.edit', { word }) }),
+      ).toBeTruthy();
+    }
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 4, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 4,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();
@@ -143,7 +158,7 @@ export const Default: Story = {
 };
 
 export const TooFewWords: Story = {
-  args: { words: 'Bahnhöfe' },
+  args: { words: ['Bahnhöfe'] },
   parameters: { controls: { disable: true } },
   play: async ({ canvasElement, args, globals }) => {
     const t = textFor(globals);
@@ -156,7 +171,11 @@ export const TooFewWords: Story = {
     expect(check.getAttribute('aria-disabled')).toBe('true');
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 1, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 1,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();
@@ -166,7 +185,11 @@ export const TooFewWords: Story = {
     expect(check.getAttribute('aria-disabled')).not.toBe('true');
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 3, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 3,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();

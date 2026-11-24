@@ -12,10 +12,11 @@
     "chunkLine": "Chunk doesn't look up articles. Articles look up to Chunk. Bring me today's words.",
     "bossRound_one": "Boss round in {{count}} lesson",
     "bossRound_other": "Boss round in {{count}} lessons",
-    "wordCount_one": "{{count}} word · min {{min}}",
-    "wordCount_other": "{{count}} words · min {{min}}",
     "dueForReview": "{{count}} due for review ›",
-    "checkWords": "Check my words"
+    "checkWords": "Check my words",
+    "wordsLeftOut_one": "{{count}} word left out: a lesson takes {{max}}.",
+    "wordsLeftOut_other": "{{count}} words left out: a lesson takes {{max}}.",
+    "wordCount": "{{count}} / {{max}} words · min {{min}}"
   },
   "settings": {
     "appLanguage": "App language"
@@ -230,5 +231,9 @@
   "tip": {
     "button": "Good to know about {{word}}",
     "card": "Good to know"
+  },
+  "wordChips": {
+    "remove": "Remove {{word}}",
+    "edit": "Edit {{word}}"
   }
 }

@@ -5,12 +5,16 @@ import { GlitchTitle } from '../../components/GlitchTitle/GlitchTitle';
 import { HeaderStats } from '../../components/HeaderStats/HeaderStats';
 import { LessonStepper } from '../../components/LessonStepper/LessonStepper';
 import { LogoBadge } from '../../components/LogoBadge/LogoBadge';
+import { commitDraft } from '../../lib/word-chips';
 import { Notice } from '../../components/Notice/Notice';
 import { PressableFocus } from '../../components/PressableFocus/PressableFocus';
 import { Screen } from '../../components/Screen/Screen';
 import { SectionLabel } from '../../components/SectionLabel/SectionLabel';
-import { Textarea } from '../../components/Textarea/Textarea';
 import { TopBar } from '../../components/TopBar/TopBar';
+import {
+  WordChipsInput,
+  type WordChipsChange,
+} from '../../components/WordChipsInput/WordChipsInput';
 import { TutorQuote } from '../../components/TutorQuote/TutorQuote';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
@@ -20,10 +24,13 @@ type HomeScreenProps = {
   streak: number;
   dueForReviewCount: number;
   bossRound: { lessonsDone: number; lessonsTotal: number };
-  words: string;
+  words: string[];
+  draft: string;
   minimumWords: number;
+  maxWords: number;
   notice?: string;
-  onWordsChange: (words: string) => void;
+  onWordsChange: (change: WordChipsChange) => void;
+  onWordsLeftOut: (count: number) => void;
   onDictate: () => void;
   onOpenMenu: () => void;
   onOpenReview: () => void;
@@ -31,19 +38,18 @@ type HomeScreenProps = {
   onCheckWords: () => void;
 };
 
-function countWords(words: string) {
-  return words.split('\n').filter((line) => line.trim() !== '').length;
-}
-
 function HomeScreen({
   xp,
   streak,
   dueForReviewCount,
   bossRound,
   words,
+  draft,
   minimumWords,
+  maxWords,
   notice,
   onWordsChange,
+  onWordsLeftOut,
   onDictate,
   onOpenMenu,
   onOpenReview,
@@ -51,7 +57,7 @@ function HomeScreen({
   onCheckWords,
 }: HomeScreenProps) {
   const { t } = useTranslation();
-  const wordCount = countWords(words);
+  const wordCount = commitDraft(words, draft, maxWords).words.length;
   const { lessonsDone, lessonsTotal } = bossRound;
   const lessonsLeft = lessonsTotal - lessonsDone;
 
@@ -87,9 +93,12 @@ function HomeScreen({
       </PressableFocus>
       <View className="gap-2.5">
         <SectionLabel>{t('home.addWords')}</SectionLabel>
-        <Textarea
-          value={words}
-          onChangeText={onWordsChange}
+        <WordChipsInput
+          words={words}
+          draft={draft}
+          maxWords={maxWords}
+          onChange={onWordsChange}
+          onWordsLeftOut={onWordsLeftOut}
           placeholder={t('home.wordsPlaceholder')}
           accessibilityLabel={t('home.wordsLabel')}
           trailing={
@@ -104,7 +113,11 @@ function HomeScreen({
         {notice && <Notice>{notice}</Notice>}
         <View className="flex-row items-center justify-between">
           <Text variant="caption" className="uppercase">
-            {t('home.wordCount', { count: wordCount, min: minimumWords })}
+            {t('home.wordCount', {
+              count: wordCount,
+              max: maxWords,
+              min: minimumWords,
+            })}
           </Text>
           <PressableFocus
             accessibilityRole="link"

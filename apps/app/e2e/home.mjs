@@ -28,6 +28,41 @@ try {
     .getByText('Dictation is coming later. For now, type the words.')
     .waitFor();
 
+  await wordsField.pressSequentially('Bahnhof');
+  await wordsField.press('Enter');
+  await wordsField.pressSequentially('Fahrkarte ');
+  await page.getByRole('button', { name: 'Edit Bahnhof' }).waitFor();
+  await page.getByRole('button', { name: 'Edit Fahrkarte' }).waitFor();
+  await page.getByText('2 / 6 words · min 3').waitFor();
+  assert.equal(await wordsField.inputValue(), '');
+
+  await page.getByRole('button', { name: 'Remove Bahnhof' }).click();
+  await page.getByText('1 / 6 words · min 3').waitFor();
+  assert.equal(
+    await page.getByRole('button', { name: 'Edit Bahnhof' }).count(),
+    0,
+  );
+
+  await page.getByRole('button', { name: 'Edit Fahrkarte' }).click();
+  assert.equal(await wordsField.inputValue(), 'Fahrkarte');
+  assert.equal(await page.getByRole('button', { name: /^Edit/ }).count(), 0);
+  await wordsField.press('Enter');
+  await page.getByRole('button', { name: 'Edit Fahrkarte' }).waitFor();
+
+  await wordsField.fill('a b c d e f g h');
+  await page.getByText('6 / 6 words · min 3').waitFor();
+  await page.getByText('3 words left out: a lesson takes 6.').waitFor();
+  assert.equal(await wordsField.count(), 0);
+
+  while (await page.getByRole('button', { name: /^Remove/ }).count()) {
+    await page
+      .getByRole('button', { name: /^Remove/ })
+      .first()
+      .click();
+  }
+  await wordsField.waitFor();
+  assert.equal(await checkButton.getAttribute('aria-disabled'), 'true');
+
   await wordsField.fill('Haus\nBaum\nTisch');
   await checkButton.click();
   await page.getByText(/No words recognised/).waitFor();
