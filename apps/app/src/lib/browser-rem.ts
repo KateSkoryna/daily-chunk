@@ -5,3 +5,7 @@ export function rootFontSizeInPixels() {
 export function toRem(length: string | number) {
   return parseFloat(String(length)) / rootFontSizeInPixels();
 }
+
+export function isDesktopViewport() {
+  return window.innerWidth / rootFontSizeInPixels() >= 64;
+}

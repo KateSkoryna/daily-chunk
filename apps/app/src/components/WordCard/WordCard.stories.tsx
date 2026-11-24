@@ -5,10 +5,13 @@ import { useState } from 'react';
 import { AccessibilityInfo, View } from 'react-native';
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
-import { toRem } from '../../lib/browser-rem';
+import { isDesktopViewport, toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
+import { textFor } from '../../lib/story-text';
 import { bahnhofCard } from '../../mocks/word-cards';
 import { Noun } from '../Noun/Noun';
+import { TipButton } from '../TipButton/TipButton';
+import { TipCard } from '../TipCard/TipCard';
 import { Text } from '../ui/text';
 import { flipDurationInMs } from './flip-duration';
 import { WordCard, type WordCardProps } from './WordCard';
@@ -49,7 +52,7 @@ function BahnhofBack() {
   );
 }
 
-function WordCardDemo({ isFlipped, onFlip }: WordCardProps) {
+function WordCardDemo({ isFlipped, onFlip, corner, overlay }: WordCardProps) {
   const [isCardFlipped, setIsCardFlipped] = useState(isFlipped);
 
   return (
@@ -62,6 +65,8 @@ function WordCardDemo({ isFlipped, onFlip }: WordCardProps) {
         }}
         front={<BahnhofFront />}
         back={<BahnhofBack />}
+        corner={corner}
+        overlay={overlay}
       />
     </View>
   );
@@ -183,5 +188,99 @@ export const ReducedMotion: Story = {
     expect(widths.size).toBe(1);
     expect(opacityOf(back)).toBe(1);
     expect(opacityOf(front)).toBe(0);
+  },
+};
+
+export const WithCorner: Story = {
+  args: {
+    corner: <TipButton word="Bahnhof" isOpen={false} onToggle={fn()} />,
+  },
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement, args, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const card = await canvas.findByTestId('word-card-front');
+    const surface = card.closest('button')!;
+    const lamp = await canvas.findByRole('button', {
+      name: t('tip.button', { word: 'Bahnhof' }),
+    });
+    const corner = lamp.getBoundingClientRect();
+    const bounds = surface.getBoundingClientRect();
+
+    expect(corner.right).toBeLessThanOrEqual(bounds.right);
+    expect(corner.top).toBeGreaterThanOrEqual(bounds.top);
+    expect(surface.contains(lamp)).toBe(false);
+
+    await userEvent.click(lamp);
+    expect(args.onFlip).not.toHaveBeenCalled();
+    expect(card.getAttribute('aria-hidden')).not.toBe('true');
+  },
+};
+
+async function expectPopoverPlacement(
+  canvasElement: HTMLElement,
+  globals: Parameters<typeof textFor>[0],
+) {
+  const t = textFor(globals);
+  const canvas = within(canvasElement);
+  const surface = (await canvas.findByTestId('word-card-front')).closest(
+    'button',
+  )!;
+  const lamp = await canvas.findByRole('button', {
+    name: t('tip.button', { word: 'Bahnhof' }),
+  });
+  const popover = await canvas.findByRole('group', { name: t('tip.card') });
+  const card = surface.getBoundingClientRect();
+  const popoverBox = popover.getBoundingClientRect();
+
+  if (isDesktopViewport()) {
+    expect(popoverBox.left).toBeGreaterThanOrEqual(card.right);
+    expect(popoverBox.top).toBeGreaterThanOrEqual(card.top);
+    expect(popoverBox.right).toBeLessThanOrEqual(window.innerWidth);
+  } else {
+    expect(popoverBox.top).toBeGreaterThanOrEqual(
+      lamp.getBoundingClientRect().bottom,
+    );
+    expect(popoverBox.left).toBeGreaterThanOrEqual(card.left);
+    expect(popoverBox.right).toBeLessThanOrEqual(card.right);
+    expect(popoverBox.bottom).toBeLessThanOrEqual(card.bottom);
+  }
+  expect(
+    canvas.getByTestId('word-card-front').getBoundingClientRect().height,
+  ).toBe(card.height);
+}
+
+function InFlashcardColumn(props: WordCardProps) {
+  return (
+    <View className="items-center">
+      <View className="w-full max-w-flashcard-desktop">
+        <WordCardDemo {...props} />
+      </View>
+    </View>
+  );
+}
+
+const overlayArgs = {
+  corner: <TipButton word="Bahnhof" isOpen onToggle={fn()} />,
+  overlay: <TipCard tip="No article before a number." />,
+};
+
+export const WithOverlay: Story = {
+  args: overlayArgs,
+  render: (args) => <InFlashcardColumn {...args} />,
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement, globals }) => {
+    await expectPopoverPlacement(canvasElement, globals);
+  },
+};
+
+export const WithOverlayOnPhone: Story = {
+  args: overlayArgs,
+  render: (args) => <InFlashcardColumn {...args} />,
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement, globals }) => {
+    expect(isDesktopViewport()).toBe(false);
+    await expectPopoverPlacement(canvasElement, globals);
   },
 };

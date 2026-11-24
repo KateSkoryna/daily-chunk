@@ -62,8 +62,8 @@ export const Default: Story = {
       name: args.isPlaying ? t('listen.pause') : t('listen.play'),
     });
 
-    expect(toRem(toggle.getBoundingClientRect().width)).toBe(5);
-    expect(toRem(toggle.getBoundingClientRect().height)).toBe(5);
+    expect(toRem(toggle.getBoundingClientRect().width)).toBe(3.5);
+    expect(toRem(toggle.getBoundingClientRect().height)).toBe(3.5);
     expect(toRem(speed.getBoundingClientRect().height)).toBe(3.5);
     expect(speed.getBoundingClientRect().right).toBeLessThan(
       toggle.getBoundingClientRect().left,

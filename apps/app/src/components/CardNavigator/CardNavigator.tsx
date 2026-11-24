@@ -65,7 +65,7 @@ function CardNavigator({
   return (
     <View className="gap-2">
       <View {...panResponder.panHandlers}>{children}</View>
-      <Text variant="caption" className="text-center">
+      <Text variant="body-sm" className="text-center">
         {swipeHint}
       </Text>
     </View>

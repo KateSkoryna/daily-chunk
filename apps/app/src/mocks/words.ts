@@ -66,6 +66,10 @@ export const gleis = {
     ru: 'Поезд сегодня отправляется с третьего пути.',
     en: 'The train leaves from platform three today.',
   },
+  tip: {
+    ru: 'Перед числом артикль не нужен: «von Gleis drei», а не «vom Gleis drei».',
+    en: 'No article before a number: "von Gleis drei", not "vom Gleis drei".',
+  },
   translations: { ru: 'путь, платформа', en: 'platform' },
 } satisfies Word;
 

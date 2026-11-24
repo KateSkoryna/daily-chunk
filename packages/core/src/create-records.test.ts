@@ -42,6 +42,17 @@ describe('createWordFromNormalised', () => {
     });
   });
 
+  it('keeps the tip of a word that has one and leaves it out otherwise', () => {
+    const tip = { en: 'No article before a number.' };
+
+    expect(
+      createWordFromNormalised({ ...normalisedNoun, tip }, 'de', now).tip,
+    ).toEqual(tip);
+    expect(
+      createWordFromNormalised(normalisedNoun, 'de', now),
+    ).not.toHaveProperty('tip');
+  });
+
   it('leaves out the gender and forms of a word that has none', () => {
     const { gender, forms, ...adjective } = normalisedNoun;
     const word = createWordFromNormalised(

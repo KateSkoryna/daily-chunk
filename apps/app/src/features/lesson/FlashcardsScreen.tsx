@@ -12,8 +12,11 @@ import { CardNavigator } from '../../components/CardNavigator/CardNavigator';
 import { ItemDots } from '../../components/ItemDots/ItemDots';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
+import { displayedWord } from '../../lib/displayed-word';
 import { Screen } from '../../components/Screen/Screen';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { TipButton } from '../../components/TipButton/TipButton';
+import { TipCard } from '../../components/TipCard/TipCard';
 import { WordCard } from '../../components/WordCard/WordCard';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
@@ -27,8 +30,10 @@ type FlashcardsScreenProps = {
   isFirstCard: boolean;
   isLastCard: boolean;
   isFlipped: boolean;
+  isTipOpen: boolean;
   nativeLanguage: NativeLanguage;
   onFlip: () => void;
+  onTipToggle: () => void;
   onListen: () => void;
   onCardSelect: (card: number) => void;
   onPrevious: () => void;
@@ -111,8 +116,10 @@ function FlashcardsScreen({
   isFirstCard,
   isLastCard,
   isFlipped,
+  isTipOpen,
   nativeLanguage,
   onFlip,
+  onTipToggle,
   onListen,
   onCardSelect,
   onPrevious,
@@ -124,6 +131,7 @@ function FlashcardsScreen({
   onClose,
 }: FlashcardsScreenProps) {
   const { t } = useTranslation();
+  const tip = word.tip?.[nativeLanguage];
 
   return (
     <Screen className="gap-4">
@@ -184,6 +192,16 @@ function FlashcardsScreen({
           onFlip={onFlip}
           front={<CardFront word={word} nativeLanguage={nativeLanguage} />}
           back={<CardBack word={word} nativeLanguage={nativeLanguage} />}
+          overlay={tip && isTipOpen && <TipCard tip={tip} />}
+          corner={
+            tip && (
+              <TipButton
+                word={displayedWord(word)}
+                isOpen={isTipOpen}
+                onToggle={onTipToggle}
+              />
+            )
+          }
         />
       </CardNavigator>
       <View className="items-center">

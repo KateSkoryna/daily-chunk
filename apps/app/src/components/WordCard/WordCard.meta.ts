@@ -11,11 +11,15 @@ export const wordCardMeta = {
     onFlip: 'Called when the card is pressed; the screen changes isFlipped',
     front: 'The content of the front face, above the hint line',
     back: 'The content of the back face, above the hint line',
+    overlay:
+      'An optional popover that does not move the content around the card. On a phone it opens over the card, under the corner control, as wide as the card minus a small margin. On a desktop-wide screen there is room, so it opens to the right of the card, level with the top',
+    corner:
+      'An optional control in the top right corner, for example the TipButton. It sits beside the pressable card, so pressing it does not flip the card, and it does not turn with the card',
   },
   states: ['front', 'back'],
   relationships: {
     composedOf: ['HardShadow', 'PressableFocus', 'Text'],
-    pairsWith: ['Noun', 'Button'],
+    pairsWith: ['Noun', 'Button', 'TipButton'],
     usedIn: ['Flashcards screen', 'Review'],
   },
   tokens: {

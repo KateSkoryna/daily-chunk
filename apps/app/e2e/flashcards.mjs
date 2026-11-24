@@ -85,6 +85,57 @@ try {
   await page.getByRole('button', { name: 'Card 3', exact: true }).click();
   await showsCard(3, 'Gleis');
 
+  step('see the lamp only on a word with a tip');
+  const lampName = 'Good to know about das Gleis';
+  assert.equal(
+    await page.getByRole('button', { name: /^Good to know about/ }).count(),
+    1,
+  );
+  await page.getByRole('button', { name: 'Card 1', exact: true }).click();
+  await showsCard(1, 'Bahnhof');
+  assert.equal(
+    await page.getByRole('button', { name: /^Good to know about/ }).count(),
+    0,
+  );
+  await page.getByRole('button', { name: 'Card 3', exact: true }).click();
+  await showsCard(3, 'Gleis');
+
+  step('open the tip without flipping the card');
+  const lamp = page.getByRole('button', { name: lampName });
+  await lamp.click();
+  assert.equal(await lamp.getAttribute('aria-expanded'), 'true');
+  await page
+    .getByRole('group', { name: 'Good to know' })
+    .getByText('No article before a number', { exact: false })
+    .waitFor();
+  assert.equal(
+    await page.getByTestId('word-card-back').getAttribute('aria-hidden'),
+    'true',
+  );
+  await lamp.click();
+  assert.equal(
+    await page.getByRole('group', { name: 'Good to know' }).count(),
+    0,
+  );
+
+  step('keep the tip after a reload');
+  await page.reload();
+  await showsCard(1, 'Bahnhof');
+  await page.getByRole('button', { name: 'Card 3', exact: true }).click();
+  await showsCard(3, 'Gleis');
+  await page.getByRole('button', { name: lampName }).click();
+  await page.getByRole('group', { name: 'Good to know' }).waitFor();
+
+  step('close the tip when the card changes');
+  await page.getByRole('button', { name: 'Previous card' }).click();
+  await showsCard(2, 'Fahrkarte');
+  assert.equal(
+    await page.getByRole('group', { name: 'Good to know' }).count(),
+    0,
+  );
+  await page.getByRole('button', { name: 'Card 3', exact: true }).click();
+  await showsCard(3, 'Gleis');
+
   step('finish on the last card');
   await page.getByRole('button', { name: 'Next section →' }).click();
   await page.waitForURL('**/lesson/listen');

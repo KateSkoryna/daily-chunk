@@ -14,6 +14,7 @@ export type NormalisedWord = Pick<
   | 'sentence'
   | 'sentenceTranslations'
   | 'translations'
+  | 'tip'
 > & {
   typedText: string;
   /** true only when the typed text was a plural form turned into the singular */

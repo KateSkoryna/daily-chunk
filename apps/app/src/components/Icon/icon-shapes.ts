@@ -48,6 +48,9 @@ export const iconShapes = {
   settings: {
     paths: ['M4 6 H20 M4 12 H20 M4 18 H20 M8 4 V8 M15 10 V14 M10 16 V20'],
   },
+  lamp: {
+    paths: ['M9 16 V14 a6 6 0 1 1 6 0 V16 Z', 'M9 19 H15 M10 22 H14'],
+  },
   help: {
     paths: [
       'M12 21 a9 9 0 1 0 0 -18 a9 9 0 0 0 0 18',

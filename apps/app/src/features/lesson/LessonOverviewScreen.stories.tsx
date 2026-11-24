@@ -24,6 +24,7 @@ const meta = {
   args: {
     lessonNumber: 13,
     completedTasks: [],
+    earnedXp: {},
     nativeLanguage: 'en',
     targetLanguage: 'de',
     onOpenTask: fn(),
@@ -73,12 +74,26 @@ export const Default: Story = {
 };
 
 export const SomeDone: Story = {
-  args: { completedTasks: ['flashcards', 'listen'] },
+  args: {
+    completedTasks: ['flashcards', 'listen'],
+    earnedXp: { flashcards: 20, listen: 20 },
+  },
   play: async ({ canvasElement, globals }) => {
     const t = textFor(globals);
     const canvas = within(canvasElement);
 
     expect(await canvas.findAllByText(t('lesson.taskDone'))).toHaveLength(2);
+    expect(
+      canvas.getAllByText(t('lesson.xpEarned', { count: 20 })),
+    ).toHaveLength(2);
     expect(canvas.getByText(t('lesson.taskDescriptions.read'))).toBeTruthy();
+
+    const doneRow = (
+      await canvas.findAllByText(t('lesson.taskDone'))
+    )[0]!.closest('[role="button"]')!;
+    const check = doneRow.querySelector('svg')!;
+    expect(getComputedStyle(check).color).toBe(
+      getComputedStyle(check.parentElement!).borderTopColor,
+    );
   },
 };

@@ -41,6 +41,7 @@ export const wordTable = sqliteTable('word', {
     .$type<Translations>()
     .notNull(),
   sourceUrl: text('source_url'),
+  tip: text('tip', { mode: 'json' }).$type<Translations>(),
   translations: text('translations', { mode: 'json' })
     .$type<Translations>()
     .notNull(),

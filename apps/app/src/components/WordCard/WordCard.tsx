@@ -53,9 +53,18 @@ type WordCardProps = {
   onFlip: () => void;
   front: ReactNode;
   back: ReactNode;
+  corner?: ReactNode;
+  overlay?: ReactNode;
 };
 
-function WordCard({ isFlipped, onFlip, front, back }: WordCardProps) {
+function WordCard({
+  isFlipped,
+  onFlip,
+  front,
+  back,
+  corner,
+  overlay,
+}: WordCardProps) {
   const { t } = useTranslation();
   const isMotionReduced = useReducedMotion();
   const [flip] = useState(() => new Animated.Value(isFlipped ? 1 : 0));
@@ -75,57 +84,65 @@ function WordCard({ isFlipped, onFlip, front, back }: WordCardProps) {
   }, [flip, isMotionReduced, target]);
 
   return (
-    <Animated.View
-      style={{
-        transform: [
-          { perspective: turnPerspective },
-          {
-            rotateY: flip.interpolate({
-              inputRange: turnInput,
-              outputRange: ['0deg', '90deg', '-90deg', '0deg'],
-            }),
-          },
-        ],
-      }}
-    >
-      <HardShadow className="w-full">
-        <PressableFocus
-          accessibilityRole="button"
-          accessibilityHint={t('flashcard.flipHint')}
-          onPress={onFlip}
-          className="aspect-square w-full"
-        >
-          <CardFace
-            testID="word-card-front"
-            opacity={flip.interpolate({
-              inputRange: fadeInput,
-              outputRange: [1, 1, 0, 0],
-            })}
-            isHidden={isFlipped}
-            className="bg-card"
+    <View className="relative">
+      <Animated.View
+        style={{
+          transform: [
+            { perspective: turnPerspective },
+            {
+              rotateY: flip.interpolate({
+                inputRange: turnInput,
+                outputRange: ['0deg', '90deg', '-90deg', '0deg'],
+              }),
+            },
+          ],
+        }}
+      >
+        <HardShadow className="w-full">
+          <PressableFocus
+            accessibilityRole="button"
+            accessibilityHint={t('flashcard.flipHint')}
+            onPress={onFlip}
+            className="aspect-square w-full"
           >
-            {front}
-            <Text variant="caption" className="self-end">
-              {t('flashcard.tapToFlip')}
-            </Text>
-          </CardFace>
-          <CardFace
-            testID="word-card-back"
-            opacity={flip.interpolate({
-              inputRange: fadeInput,
-              outputRange: [0, 0, 1, 1],
-            })}
-            isHidden={!isFlipped}
-            className="bg-popover"
-          >
-            {back}
-            <Text variant="caption" className="self-end">
-              {t('flashcard.tapToFlipBack')}
-            </Text>
-          </CardFace>
-        </PressableFocus>
-      </HardShadow>
-    </Animated.View>
+            <CardFace
+              testID="word-card-front"
+              opacity={flip.interpolate({
+                inputRange: fadeInput,
+                outputRange: [1, 1, 0, 0],
+              })}
+              isHidden={isFlipped}
+              className="bg-card"
+            >
+              {front}
+              <Text variant="caption" className="self-end">
+                {t('flashcard.tapToFlip')}
+              </Text>
+            </CardFace>
+            <CardFace
+              testID="word-card-back"
+              opacity={flip.interpolate({
+                inputRange: fadeInput,
+                outputRange: [0, 0, 1, 1],
+              })}
+              isHidden={!isFlipped}
+              className="bg-popover"
+            >
+              {back}
+              <Text variant="caption" className="self-end">
+                {t('flashcard.tapToFlipBack')}
+              </Text>
+            </CardFace>
+          </PressableFocus>
+        </HardShadow>
+      </Animated.View>
+      {corner && <View className="absolute right-2 top-2">{corner}</View>}
+      {overlay && (
+        <View className="absolute inset-x-2 top-16 desktop:inset-x-auto desktop:left-full desktop:top-2 desktop:ml-4 desktop:w-rail">
+          {overlay}
+        </View>
+      )}
+    </View>
   );
 }
 

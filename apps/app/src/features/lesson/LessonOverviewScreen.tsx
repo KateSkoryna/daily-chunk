@@ -1,7 +1,7 @@
 import { lessonTaskTypes, type LessonTaskType } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage, TargetLanguage } from '@daily-chunk/languages';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { GlitchTitle } from '../../components/GlitchTitle/GlitchTitle';
 import { Icon } from '../../components/Icon/Icon';
@@ -9,11 +9,14 @@ import { ListGroup } from '../../components/ListGroup/ListGroup';
 import { Screen } from '../../components/Screen/Screen';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { Button } from '../../components/ui/button';
-import { Text } from '../../components/ui/text';
+import { Text, TextClassContext } from '../../components/ui/text';
+
+const isWeb = Platform.OS === 'web';
 
 type LessonOverviewScreenProps = {
   lessonNumber: number;
   completedTasks: LessonTaskType[];
+  earnedXp: Partial<Record<LessonTaskType, number>>;
   nativeLanguage: NativeLanguage;
   targetLanguage: TargetLanguage;
   onOpenTask: (task: LessonTaskType) => void;
@@ -24,6 +27,7 @@ type LessonOverviewScreenProps = {
 function LessonOverviewScreen({
   lessonNumber,
   completedTasks,
+  earnedXp,
   nativeLanguage,
   targetLanguage,
   onOpenTask,
@@ -56,9 +60,17 @@ function LessonOverviewScreen({
             to: targetLanguage.toUpperCase(),
           });
 
+          const xpLabel =
+            isDone && earnedXp[task] ? (
+              <Text variant="ui" className="text-success">
+                {t('lesson.xpEarned', { count: earnedXp[task] })}
+              </Text>
+            ) : null;
+
           return (
             <ListGroup.Row
               key={task}
+              right={isWeb ? xpLabel : undefined}
               onPress={() => onOpenTask(task)}
               left={
                 <View
@@ -69,14 +81,21 @@ function LessonOverviewScreen({
                   }
                 >
                   {isDone ? (
-                    <Icon name="check" decorative />
+                    <TextClassContext.Provider value="text-success">
+                      <Icon name="check" decorative />
+                    </TextClassContext.Provider>
                   ) : (
                     <Text variant="chip">{index + 1}</Text>
                   )}
                 </View>
               }
             >
-              <Text variant="option">{name}</Text>
+              <View className="flex-row items-baseline justify-between gap-2">
+                <Text variant="option" className="min-w-0 flex-1">
+                  {name}
+                </Text>
+                {!isWeb && xpLabel}
+              </View>
               <Text variant="body-sm">
                 {isDone
                   ? t('lesson.taskDone')
