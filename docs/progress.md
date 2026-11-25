@@ -773,8 +773,9 @@ Branches are one per step (phase 3 is back to the normal rule).
 | 3.9       | DONE           | `feat/read-screen`       |
 | 3.9b      | DONE           | `feat/tips-lamp`         |
 | 3.9c      | DONE           | `feat/word-chips-input`  |
-| 3.9d      | WAITING-REVIEW | `feat/read-quiz`         |
-| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
+| 3.9d      | DONE           | `feat/read-quiz`         |
+| 3.10      | WAITING-REVIEW | `feat/answer-screen`     |
+| 3.11–3.13 | TODO           | `feat/<screen>-screen`   |
 | 3.14      | TODO           | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
@@ -921,6 +922,18 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Evidence (final run): `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm run test:ci` → exit 0, navigation, storage, home, flashcards, listen and read e2e passed.
 - Fix found by the owner: after "Check my words" Home showed empty fields for a moment before Confirm appeared (not a race: the fields were cleared before the navigation finished). Home now opens Confirm with `router.replace` instead of `push`, so Home is thrown away with its form state and comes back empty on its own: no clearing code and no focus hook (owner's choice). `e2e/home.mjs` watches every frame for an empty Home on the home URL (it failed with the old order).
 - Please read: the Russian strings `common.stop`, `read.showTranslation`, `read.hideTranslation`, `quiz.title`, `quiz.question`, `quiz.answers`, `quiz.next`, `quiz.passed`, `quiz.failed`, `read.startQuiz`.
+
+### 3.10 Answer (replaces Record)
+
+- Owner decisions (chat, 2026-11-25): the Read aloud task is dropped because Listen & shadow already records the voice; the slot becomes a dialog task: a question in the target language, the learner builds the answer by placing word tiles in the right order. No audio. The answer must fit the profile level (not too short, not too long). **Changed the same day by the owner:** every tap is checked at once (no Check button, no Try again): a wrong word gets a pink border and cross and stays in the pool, three wrong taps in a row mark the right next tile (cyan border, lamp); a finished sentence shows with its translation. Name "Answer" is my pick (the owner did not choose one).
+- Result (`core`): task key `record` is now `answer` (`lessonTaskTypes`, `placeholderTaskBonusXp` stays 20); `answer-task.ts`: `answerWordRange` per level (A1 3-5 words, A2 4-7, B1 6-10, B2 8-13, C1 10-16, C2 12-20: **my proposal, please confirm**), `answerProblems` (missing lesson word, too short, too long), `answerTiles` (seeded shuffle that never starts in the right order), `expectedAnswerWord`, the session (`recordAnswerTap` counts the wrong taps of a question and the wrong taps in a row, `shouldHintAnswerWord` after `mistakesBeforeHint` = 3) and `answerResult` (questions without a wrong tap / total). `AiService.generateAnswerExercises` with request and response types (carries `languages` and `level`).
+- Result (app): `AnswerScreen` (meta, stories `Default`, `WrongWord`, `HintAfterThreeMistakes`, `HalfBuilt`, `LastQuestionDone`) built from `SentenceBuilder` (new optional tile `status` wrong or hint with a `label`, and `onRemove` is optional: without it the answer line is fixed; story `WrongAndHintTiles`), `Notice`, `AnswerFeedback`, `SectionLabel`, `LessonHeader` and `Button`; route `app/lesson/answer.tsx`; store action `loadAnswerExercises` (same shape as `loadStory`); the mock gives one exercise per demo word (matched by lemma, translation in the native language); Read now ends on `/lesson/answer`, and Answer ends on `/lesson/gap-fill` (still the placeholder until 3.11). Removed: `RecordScreen` with its meta and stories. Strings `answer.*` (EN and RU, **the Russian is mine, please read it**), `lesson.tasks.answer`, `lesson.taskDescriptions.answer`; the old check, retry and almost strings are gone.
+- Named: no screen design exists for this task, so the layout reuses existing components and no token is new; `DESIGN.md` still lists `RecordScreen` in the §9.3 screen row and its `SentenceBuilder` row does not know the wrong and hint tile states and the "6 tasks" wording is unchanged (still true), so those need your approval to edit: replace `RecordScreen` with `AnswerScreen` there. The `record.*` strings and `RecordControls` stay (Listen uses them); the unused `record.*` result strings of the old screen can be removed later. The pronunciation function of `AiService` stays for Listen scoring in phase 5.
+- E2E: `e2e/answer.mjs` (in `npm run e2e`): question 1 of 3 and no Check button; a wrong word shows the notice and its marked tile and is not placed; the third wrong tap shows the hint and marks the right tile; tapping it places it; the rest in order shows "Right order" and the translation; questions 2 and 3 without a mistake; the last button opens `/lesson/gap-fill`; saved `answer 2/3`.
+- Limits, named: the mock ignores `level` (its answers are 10 to 12 words, right for B2, too long for A1 and A2); `answerProblems` is tested but not yet called on an AI answer (phase 5, with the German level rules); a lesson whose words have no exercise shows the "Chunk tripped" notice with Back. Old saved lessons may still carry a `record` result key: it is never read and harmless.
+- Learning note: `docs/learn/answer-task.md`.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm run test:ci` (Ubuntu image) → exit 0: 8 languages, 16 i18n, 110 core (new module 100% lines), 442 app (140 files, EN and RU); navigation, storage, home, flashcards, listen, read and answer e2e passed.
+- Review: 0 blocking, 2 medium, 3 low. Fixed: an empty exercise list shows the failure notice with Back instead of a blank screen; evidence and limits written above. Left, named: the mock ignores the level; the Russian translation of the Fahrkarte answer drops "für den Zug" in a free wording.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
