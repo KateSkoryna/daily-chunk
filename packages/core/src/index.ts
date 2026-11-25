@@ -52,7 +52,6 @@ export {
 } from './create-records';
 export {
   currentLessonNumber,
-  lessonSizes,
   maxWordsPerLesson,
   startLesson,
 } from './start-lesson';

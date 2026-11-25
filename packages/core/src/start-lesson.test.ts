@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import type { Lesson } from './lesson';
 import {
   currentLessonNumber,
-  lessonSizes,
   maxWordsPerLesson,
   startLesson,
 } from './start-lesson';
@@ -98,36 +97,20 @@ describe('currentLessonNumber', () => {
   });
 });
 
-describe('lessonSizes', () => {
-  it('has no lessons for no words', () => {
-    expect(lessonSizes(0)).toEqual([]);
-  });
-
-  it('uses one lesson up to the limit', () => {
-    expect(maxWordsPerLesson).toBe(6);
-    expect(lessonSizes(1)).toEqual([1]);
-    expect(lessonSizes(3)).toEqual([3]);
-    expect(lessonSizes(6)).toEqual([6]);
-  });
-
-  it('splits more words into evenly sized lessons, the larger ones first', () => {
-    expect(lessonSizes(7)).toEqual([4, 3]);
-    expect(lessonSizes(10)).toEqual([5, 5]);
-    expect(lessonSizes(13)).toEqual([5, 4, 4]);
-  });
-});
-
 describe('startLesson with more words than a lesson takes', () => {
   const manyWords = Array.from({ length: 7 }, (_, index) => ({
     id: `word-${index}`,
   })) as Word[];
 
-  it('takes the first lesson of an even split and leaves the rest', () => {
+  it('takes the first 6 words and leaves the rest', () => {
+    expect(maxWordsPerLesson).toBe(6);
     expect(startLesson([], manyWords, now).wordIds).toEqual([
       'word-0',
       'word-1',
       'word-2',
       'word-3',
+      'word-4',
+      'word-5',
     ]);
   });
 

@@ -15,17 +15,6 @@ export function currentLessonNumber(lessons: Lesson[]): number {
   );
 }
 
-export function lessonSizes(wordCount: number): number[] {
-  if (wordCount <= 0) return [];
-  const lessonCount = Math.ceil(wordCount / maxWordsPerLesson);
-  const baseSize = Math.floor(wordCount / lessonCount);
-  const largerLessons = wordCount % lessonCount;
-  return Array.from(
-    { length: lessonCount },
-    (_, index) => baseSize + (index < largerLessons ? 1 : 0),
-  );
-}
-
 export function startLesson(
   lessons: Lesson[],
   words: Word[],
@@ -39,10 +28,7 @@ export function startLesson(
     ),
   ];
   const room = maxWordsPerLesson - (openLesson?.wordIds.length ?? 0);
-  const wordIds = waitingIds.slice(
-    0,
-    Math.max(0, Math.min(lessonSizes(waitingIds.length)[0] ?? 0, room)),
-  );
+  const wordIds = waitingIds.slice(0, Math.max(0, room));
   if (openLesson) {
     return { ...openLesson, wordIds: [...openLesson.wordIds, ...wordIds] };
   }
