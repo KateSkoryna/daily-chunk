@@ -1,6 +1,8 @@
 import type { Lesson } from './lesson';
 import type { Word } from './word';
 
+export const maxWordsPerLesson = 6;
+
 function isOpen(lesson: Lesson): boolean {
   return lesson.completedAt === null;
 }
@@ -19,12 +21,16 @@ export function startLesson(
   now: Date,
 ): Lesson {
   const openLesson = lessons.find(isOpen);
-  const wordIds = words.map((word) => word.id);
+  const takenIds = new Set(openLesson?.wordIds);
+  const waitingIds = [
+    ...new Set(
+      words.map((word) => word.id).filter((wordId) => !takenIds.has(wordId)),
+    ),
+  ];
+  const room = maxWordsPerLesson - (openLesson?.wordIds.length ?? 0);
+  const wordIds = waitingIds.slice(0, Math.max(0, room));
   if (openLesson) {
-    return {
-      ...openLesson,
-      wordIds: [...new Set([...openLesson.wordIds, ...wordIds])],
-    };
+    return { ...openLesson, wordIds: [...openLesson.wordIds, ...wordIds] };
   }
 
   const number = currentLessonNumber(lessons);

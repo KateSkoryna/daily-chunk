@@ -1,18 +1,8 @@
-import { cssInterop } from 'nativewind';
 import type { ReactNode } from 'react';
 import { TextInput, View } from 'react-native';
 
+import { placeholderProps } from '../../lib/text-input-interop';
 import { cn } from '../../lib/utils';
-
-cssInterop(TextInput, {
-  className: { target: 'style' },
-  placeholderClassName: {
-    target: false,
-    nativeStyleToProp: { color: 'placeholderTextColor' },
-  },
-});
-
-const placeholderProps = { placeholderClassName: 'text-muted-foreground' };
 
 type TextareaProps = {
   value: string;

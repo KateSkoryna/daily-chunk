@@ -50,7 +50,11 @@ export {
   isNewWord,
   wordIdFor,
 } from './create-records';
-export { currentLessonNumber, startLesson } from './start-lesson';
+export {
+  currentLessonNumber,
+  maxWordsPerLesson,
+  startLesson,
+} from './start-lesson';
 export {
   createFlashcardSession,
   flashcardResult,

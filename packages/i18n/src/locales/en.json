@@ -4,18 +4,21 @@
     "wordsDue_other": "{{count}} words are due today",
     "addWords": "01 / Add today's words",
     "wordsLabel": "Words you heard or saw today",
-    "wordsPlaceholder": "One per line, any form: Bahnhöfe, ging, schöner…",
+    "wordsPlaceholder": "Any form: Bahnhöfe, ging…",
     "noWordsRecognised": "No words recognised. Chunk only knows a few for now: Bahnhof, Fahrkarte, verspätet, Gleis.",
     "checkFailed": "Chunk tripped over something. Try again.",
-    "dictationComingSoon": "Dictation is coming later. For now, type the words.",
-    "dictate": "Dictate words",
     "chunkLine": "Chunk doesn't look up articles. Articles look up to Chunk. Bring me today's words.",
     "bossRound_one": "Boss round in {{count}} lesson",
     "bossRound_other": "Boss round in {{count}} lessons",
-    "wordCount_one": "{{count}} word · min {{min}}",
-    "wordCount_other": "{{count}} words · min {{min}}",
     "dueForReview": "{{count}} due for review ›",
-    "checkWords": "Check my words"
+    "checkWords": "Check my words",
+    "wordsLeftOut_one": "{{count}} word left out: a lesson takes {{max}}.",
+    "wordsLeftOut_other": "{{count}} words left out: a lesson takes {{max}}.",
+    "wordCount": "{{count}} / {{max}} words · min {{min}}",
+    "wordField": "Word {{number}}",
+    "removeWord": "Remove word {{number}}",
+    "addWord": "+ Add a word",
+    "dictate": "Dictate words"
   },
   "settings": {
     "appLanguage": "App language"

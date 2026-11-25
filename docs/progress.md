@@ -760,21 +760,21 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status         | Branch                   |
-| --------- | -------------- | ------------------------ |
-| 3.1       | DONE           | `feat/navigation-shell`  |
-| 3.2       | DONE           | `feat/storage`           |
-| 3.3       | DONE           | `feat/srs-scheduler`     |
-| 3.4       | DONE           | `feat/ai-mocks`          |
-| 3.5       | DONE           | `feat/home-screen`       |
-| 3.6       | DONE           | `feat/confirm-screen`    |
-| 3.7       | DONE           | `feat/flashcards-screen` |
-| 3.8       | DONE           | `feat/listen-screen`     |
-| 3.9       | DONE           | `feat/read-screen`       |
-| 3.9b      | WAITING-REVIEW | `feat/tips-lamp`         |
-| 3.9c      | TODO           | `feat/word-chips-input`  |
-| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
-| 3.14      | TODO           | `chore/phase-3-review`   |
+| Step      | Status | Branch                   |
+| --------- | ------ | ------------------------ |
+| 3.1       | DONE   | `feat/navigation-shell`  |
+| 3.2       | DONE   | `feat/storage`           |
+| 3.3       | DONE   | `feat/srs-scheduler`     |
+| 3.4       | DONE   | `feat/ai-mocks`          |
+| 3.5       | DONE   | `feat/home-screen`       |
+| 3.6       | DONE   | `feat/confirm-screen`    |
+| 3.7       | DONE   | `feat/flashcards-screen` |
+| 3.8       | DONE   | `feat/listen-screen`     |
+| 3.9       | DONE   | `feat/read-screen`       |
+| 3.9b      | DONE   | `feat/tips-lamp`         |
+| 3.9c      | DONE   | `feat/word-chips-input`  |
+| 3.10–3.13 | TODO   | `feat/<screen>-screen`   |
+| 3.14      | TODO   | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -891,12 +891,19 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Named differences: the lamp uses `ring` (cyan, like the play button of the word card) and fills when open; the tip also shows on the sentence side; no hover effect (phones have no hover).
 - Review: 0 blocking, 5 low. Fixed: the `corner` slot is in the `WordCard` row of `DESIGN.md`. Left, named: on a long sentence on the back of a card at 360 px the text could run under the lamp (check on the A54; fix would be right padding on the face when a corner is given); the lamp comes after the card in keyboard order (it is a secondary control).
 - Added on the owner's request, placeholder: a bonus per finished section, `placeholderTaskBonusXp` in `core` (flashcards 20, listen 20, read 20, record 20, gap fill 30, translate 40: the header values of the design, 0, 20, 40, 60, 80, 110). `saveTaskResult` adds it to the lesson's `xpEarned` the first time a section is saved, so the header shows the running total (e2e checks `+20 XP` on Listen and `+40 XP` on Read). Not the real XP rules: step 3.3 has `lessonXp` and streak bonuses for the whole lesson; the Done screen (3.13) must decide how the two fit together and replace this table.
-- Discussion with the owner (written as `plan.md` D20): level and goal come from onboarding, one level per lesson, the system chooses and the user nudges one step; mixed word levels stay in one lesson. Next for Read (owner request, not built): a text of 6–8 sentences at the profile level, then a comprehension quiz instead of "Now read it aloud". Owner decisions: a text screen with a Start quiz button, then a quiz screen with multiple-choice questions of 3 options each; questions in German from B1 up, in the native language for A1 and A2 (the learner would not understand them); the quiz score is the saved Read result; 80% or more correct counts toward moving up a level; the profile gets `level` (default B2) until onboarding; the text uses all of the lesson's words, at the profile level, with constructions that move the learner toward the goal level (main grammar, idioms, natural spoken language); the quiz screen is built from existing components and gets a `DESIGN.md` row. Decided (plan.md D21): 5 questions (4 of 5 is 80%); a lesson has at most 6 words (`maxWordsPerLesson`, evenly split when there are more), so one text never has to carry more than 6 words. Planned as two steps: first the word cap in `startLesson`, then the Read text and quiz.
-- Next step added on the owner's request (plan.md 3.9c): the words field on Home becomes a chip input (type, Enter/space/comma makes a chip, paste or dictate splits a list, counter n / 6, tap a chip to edit), together with the 6-word cap and the even split of more words into several lessons.
+- Discussion with the owner (written as `plan.md` D20): level and goal come from onboarding, one level per lesson, the system chooses and the user nudges one step; mixed word levels stay in one lesson. Next for Read (owner request, not built): a text of 6–8 sentences at the profile level, then a comprehension quiz instead of "Now read it aloud". Owner decisions: a text screen with a Start quiz button, then a quiz screen with multiple-choice questions of 3 options each; questions in German from B1 up, in the native language for A1 and A2 (the learner would not understand them); the quiz score is the saved Read result; 80% or more correct counts toward moving up a level; the profile gets `level` (default B2) until onboarding; the text uses all of the lesson's words, at the profile level, with constructions that move the learner toward the goal level (main grammar, idioms, natural spoken language); the quiz screen is built from existing components and gets a `DESIGN.md` row. Decided (plan.md D21): 5 questions (4 of 5 is 80%); a lesson has at most 6 words (`maxWordsPerLesson`), so one text never has to carry more than 6 words. Planned as two steps: first the word cap in `startLesson` (done in 3.9c, without splitting), then the Read text and quiz.
+- Next step added on the owner's request (plan.md 3.9c): the words field on Home becomes a chip input (type, Enter/space/comma makes a chip, paste or dictate splits a list, counter n / 6, tap a chip to edit), together with the 6-word cap.
 - Not in scope: the lamp on the Read screen (where it sits is still open), tips from the real AI (phase 5), tips in review.
 - E2E: `e2e/flashcards.mjs` now checks that only Gleis has a lamp, that opening it shows the tip and leaves the card on the word side, that the tip is still there after a page reload (it came back from SQLite), and that changing the card closes it.
 - Learning note: `docs/learn/tips-and-the-lamp.md`.
 - Evidence: `npx nx run-many -t lint typecheck check-meta` → exit 0; `npm test` → 8 languages, 16 i18n, 78 core, 382 app; `npx nx run @daily-chunk/app:e2e --skip-nx-cache` → all six e2e passed; `npx expo export --platform android` → exit 0; `npx prettier --check .` → exit 0; `npm ci --dry-run` → exit 0.
+
+### 3.9c Word fields on Home (first a chip input, reworked)
+
+- History: built first as a chip input (owner approved the layout), then replaced on 2026-11-24 by separate word fields at the owner's request: three one-line fields at the start, "+ Add a word" up to 6, each field full width, a separate bordered × on its right for a field that has text or is an extra field (an empty required field has none), no dictation (the mic buttons were removed: the owner does not want dictation for the word fields). The chip component, its rules and tests were deleted.
+- Result: `core`: `maxWordsPerLesson` (6); `startLesson` takes at most 6 of the waiting words and only the room left in an open lesson, and never repeats a word (the even split into several lessons was dropped the same day). `app`: `lib/word-fields.ts` (spread a pasted list over the fields, skip duplicates, the limit; 12 unit tests), `WordFields` (meta; stories `Default`, `AddingFields`, `EnterMovesOn`, `PastedList`, `WithWords`, `NarrowScreen`), the Home screen and route use it (the fields' texts live in the route; Check my words uses the filled, de-duplicated words), shared TextInput styling in `lib/text-input-interop.ts`, strings `home.wordField`, `home.removeWord`, `home.addWord`, `home.wordsLeftOut_*`, `home.wordCount` (`n / max words · min m`) and a new `home.wordsPlaceholder` (the Russian is mine, please read it). `DESIGN.md` has a `WordFields` row. Learning note: `docs/learn/word-fields.md`.
+- Named: a paste into a one-line field loses its line breaks in the browser (they become spaces or nothing), so a pasted list is split on spaces too, but only when more than one character arrives at once; a typed phrase with a space stays in one field. The Home field stops at 6 words, so more than 6 never reach `startLesson`; leftovers only exist for words added while a lesson is open (not kept after an app restart, the existing rule). The Confirm screen does not say how many lessons. The dictation notice string was removed from Home; `home.dictate` stays for the text area and the top bar stories.
+- E2E: `e2e/home.mjs` types in three fields with Enter between them, sees `3 / 6 words · min 3`, adds fields to 6 (the add button goes away), removes extra fields, pastes `a b c d e f g h` after a reload (6 / 6 and `2 words left out: a lesson takes 6.`), checks the unknown words and then the demo words; the other e2e files fill the three fields one by one (`e2e/start-demo-lesson.mjs`).
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 

@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import type { Lesson } from './lesson';
-import { currentLessonNumber, startLesson } from './start-lesson';
+import {
+  currentLessonNumber,
+  maxWordsPerLesson,
+  startLesson,
+} from './start-lesson';
 import type { Word } from './word';
 
 const now = new Date('2026-11-20T10:00:00.000Z');
@@ -90,5 +94,70 @@ describe('currentLessonNumber', () => {
 
   it('is the next number when every lesson is finished', () => {
     expect(currentLessonNumber([finishedLesson])).toBe(5);
+  });
+});
+
+describe('startLesson with more words than a lesson takes', () => {
+  const manyWords = Array.from({ length: 7 }, (_, index) => ({
+    id: `word-${index}`,
+  })) as Word[];
+
+  it('takes the first 6 words and leaves the rest', () => {
+    expect(maxWordsPerLesson).toBe(6);
+    expect(startLesson([], manyWords, now).wordIds).toEqual([
+      'word-0',
+      'word-1',
+      'word-2',
+      'word-3',
+      'word-4',
+      'word-5',
+    ]);
+  });
+
+  it('only fills the room left in an open lesson', () => {
+    const openLesson: Lesson = {
+      ...finishedLesson,
+      id: 'lesson-5',
+      number: 5,
+      wordIds: ['open-1', 'open-2', 'open-3', 'open-4', 'open-5'],
+      completedAt: null,
+    };
+
+    expect(startLesson([openLesson], manyWords, now).wordIds).toEqual([
+      'open-1',
+      'open-2',
+      'open-3',
+      'open-4',
+      'open-5',
+      'word-0',
+    ]);
+  });
+
+  it('adds nothing to a full open lesson', () => {
+    const fullLesson: Lesson = {
+      ...finishedLesson,
+      id: 'lesson-5',
+      number: 5,
+      wordIds: ['a', 'b', 'c', 'd', 'e', 'f'],
+      completedAt: null,
+    };
+
+    expect(startLesson([fullLesson], manyWords, now).wordIds).toHaveLength(6);
+  });
+
+  it('does not repeat a word that is already in the open lesson', () => {
+    const openLesson: Lesson = {
+      ...finishedLesson,
+      id: 'lesson-5',
+      number: 5,
+      wordIds: ['word-a'],
+      completedAt: null,
+    };
+
+    expect(startLesson([openLesson], words, now).wordIds).toEqual([
+      'word-a',
+      'word-b',
+      'word-c',
+    ]);
   });
 });

@@ -16,24 +16,56 @@ const pathname = () => new URL(page.url()).pathname;
 
 try {
   await page.goto(server.url);
-  const wordsField = page.getByRole('textbox', {
-    name: 'Words you heard or saw today',
-  });
+  const field = (number) =>
+    page.getByRole('textbox', { name: `Word ${number}` });
   const checkButton = page.getByRole('button', { name: 'Check my words' });
-  await wordsField.waitFor();
+  const addButton = page.getByRole('button', { name: '+ Add a word' });
+  await field(1).waitFor();
+  assert.equal(await page.getByRole('textbox').count(), 3);
   assert.equal(await checkButton.getAttribute('aria-disabled'), 'true');
 
-  await page.getByRole('button', { name: 'Dictate words' }).click();
-  await page
-    .getByText('Dictation is coming later. For now, type the words.')
-    .waitFor();
+  await field(1).pressSequentially('Bahnhof');
+  await field(1).press('Enter');
+  await field(2).pressSequentially('Fahrkarte');
+  await page.getByText('2 / 6 words · min 3').waitFor();
+  assert.equal(await checkButton.getAttribute('aria-disabled'), 'true');
 
-  await wordsField.fill('Haus\nBaum\nTisch');
+  await field(2).press('Enter');
+  await field(3).pressSequentially('Gleis');
+  await page.getByText('3 / 6 words · min 3').waitFor();
+  assert.notEqual(await checkButton.getAttribute('aria-disabled'), 'true');
+
+  await field(3).press('Enter');
+  await field(4).waitFor();
+  await addButton.click();
+  await addButton.click();
+  assert.equal(await page.getByRole('textbox').count(), 6);
+  assert.equal(await addButton.count(), 0);
+  await page.getByRole('button', { name: 'Remove word 6' }).click();
+  await page.getByRole('button', { name: 'Remove word 5' }).click();
+  await page.getByRole('button', { name: 'Remove word 4' }).click();
+  assert.equal(await page.getByRole('textbox').count(), 3);
+  await addButton.waitFor();
+
+  await page.reload();
+  await field(1).waitFor();
+  await field(1).fill('a b c d e f g h');
+  await page.getByText('6 / 6 words · min 3').waitFor();
+  await page.getByText('2 words left out: a lesson takes 6.').waitFor();
+  assert.equal(await page.getByRole('textbox').count(), 6);
+  assert.equal(await addButton.count(), 0);
+
+  await page.reload();
+  await field(1).fill('Haus');
+  await field(2).fill('Baum');
+  await field(3).fill('Tisch');
   await checkButton.click();
   await page.getByText(/No words recognised/).waitFor();
   assert.equal(pathname(), '/');
 
-  await wordsField.fill('Bahnhöfe\nFahrkarte\nGleis');
+  await field(1).fill('Bahnhöfe');
+  await field(2).fill('Fahrkarte');
+  await field(3).fill('Gleis');
   await checkButton.click();
   await page.waitForURL('**/confirm');
 
@@ -51,9 +83,9 @@ try {
   assert.equal(pathname(), '/confirm');
 
   await page.getByRole('button', { name: '+ Add more words' }).click();
-  await wordsField.waitFor();
+  await field(1).waitFor();
   assert.equal(pathname(), '/');
-  assert.equal(await wordsField.inputValue(), '');
+  assert.equal(await field(1).inputValue(), '');
 
   await page.goto(`${server.url}/confirm`);
   await page.getByText('der Bahnhof', { exact: true }).waitFor();

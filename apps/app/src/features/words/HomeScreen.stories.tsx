@@ -7,6 +7,7 @@ import { TabBar } from '../../components/TabBar/TabBar';
 import { toRem } from '../../lib/browser-rem';
 import { metaToMarkdown } from '../../lib/meta-to-markdown';
 import { textFor, WithText } from '../../lib/story-text';
+import { createWordFields } from '../../lib/word-fields';
 import { homeDemo } from '../../mocks/home';
 import { demoProfile } from '../../mocks/profile';
 import { mainTabs } from '../navigation/main-tabs';
@@ -54,10 +55,11 @@ const meta = {
     streak: demoProfile.currentStreak,
     dueForReviewCount: homeDemo.dueForReviewCount,
     bossRound: homeDemo.bossRound,
-    words: homeDemo.typedWords,
+    words: createWordFields(homeDemo.typedWords),
     minimumWords: homeDemo.minimumWords,
+    maxWords: homeDemo.maxWords,
     onWordsChange: fn(),
-    onDictate: fn(),
+    onWordsLeftOut: fn(),
     onOpenMenu: fn(),
     onOpenReview: fn(),
     onOpenBossRound: fn(),
@@ -83,8 +85,8 @@ export const Default: Story = {
     const t = textFor(globals);
     const canvas = within(canvasElement);
     const { lessonsDone, lessonsTotal } = args.bossRound;
-    const words = await canvas.findByRole('textbox', {
-      name: t('home.wordsLabel'),
+    await canvas.findByRole('textbox', {
+      name: t('home.wordField', { number: 1 }),
     });
     const check = canvas.getByRole('button', { name: t('home.checkWords') });
     const boss = canvas.getByRole('button', {
@@ -94,10 +96,22 @@ export const Default: Story = {
     });
     const tabBar = canvas.getByRole('tablist', { name: t('nav.main') });
 
-    expect((words as HTMLTextAreaElement).value).toBe(homeDemo.typedWords);
+    for (const [index, word] of homeDemo.typedWords.entries()) {
+      expect(
+        (
+          canvas.getByRole('textbox', {
+            name: t('home.wordField', { number: index + 1 }),
+          }) as HTMLInputElement
+        ).value,
+      ).toBe(word);
+    }
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 4, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 4,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();
@@ -129,44 +143,52 @@ export const Default: Story = {
         name: t('home.dueForReview', { count: args.dueForReviewCount }),
       }),
     );
-    await userEvent.click(
-      canvas.getByRole('button', { name: t('home.dictate') }),
-    );
     await userEvent.click(canvas.getByRole('button', { name: t('nav.menu') }));
 
     expect(args.onCheckWords).toHaveBeenCalledTimes(1);
     expect(args.onOpenBossRound).toHaveBeenCalledTimes(1);
     expect(args.onOpenReview).toHaveBeenCalledTimes(1);
-    expect(args.onDictate).toHaveBeenCalledTimes(1);
     expect(args.onOpenMenu).toHaveBeenCalledTimes(1);
   },
 };
 
 export const TooFewWords: Story = {
-  args: { words: 'Bahnhöfe' },
+  args: { words: createWordFields(['Bahnhöfe', '', '']) },
   parameters: { controls: { disable: true } },
   play: async ({ canvasElement, args, globals }) => {
     const t = textFor(globals);
     const canvas = within(canvasElement);
-    const words = await canvas.findByRole('textbox', {
-      name: t('home.wordsLabel'),
+    const secondField = await canvas.findByRole('textbox', {
+      name: t('home.wordField', { number: 2 }),
+    });
+    const thirdField = canvas.getByRole('textbox', {
+      name: t('home.wordField', { number: 3 }),
     });
     const check = canvas.getByRole('button', { name: t('home.checkWords') });
 
     expect(check.getAttribute('aria-disabled')).toBe('true');
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 1, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 1,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();
 
-    await userEvent.type(words, '{enter}Fahrkarte{enter}Gleis');
+    await userEvent.type(secondField, 'Fahrkarte');
+    await userEvent.type(thirdField, 'Gleis');
 
     expect(check.getAttribute('aria-disabled')).not.toBe('true');
     expect(
       canvas.getByText(
-        t('home.wordCount', { count: 3, min: homeDemo.minimumWords }),
+        t('home.wordCount', {
+          count: 3,
+          max: homeDemo.maxWords,
+          min: homeDemo.minimumWords,
+        }),
         { exact: false },
       ),
     ).toBeTruthy();
@@ -174,11 +196,11 @@ export const TooFewWords: Story = {
   },
 };
 
-export const DictationNotice: Story = {
+export const NoWordsRecognised: Story = {
   parameters: { controls: { disable: true } },
   render: (args) => (
     <WithText>
-      {(t) => <HomeDemo {...args} notice={t('home.dictationComingSoon')} />}
+      {(t) => <HomeDemo {...args} notice={t('home.noWordsRecognised')} />}
     </WithText>
   ),
   play: async ({ canvasElement, globals }) => {
@@ -186,7 +208,7 @@ export const DictationNotice: Story = {
     const canvas = within(canvasElement);
     const notice = await canvas.findByRole('status');
 
-    expect(notice.textContent).toBe(t('home.dictationComingSoon'));
+    expect(notice.textContent).toBe(t('home.noWordsRecognised'));
     expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
       canvasElement.clientWidth,
     );
