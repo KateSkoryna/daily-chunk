@@ -7,6 +7,7 @@ import type {
 
 import { articleGapFill, ticketGapFill } from '../mocks/gap-fill';
 import {
+  answerExercises,
   derLetzteZug,
   readAloudResult,
   translateTask,
@@ -76,6 +77,19 @@ export function createMockAiService(): AiService {
           }),
         ),
       };
+    },
+
+    async generateAnswerExercises({ languages, words }) {
+      const exercises = words.flatMap((word) =>
+        answerExercises
+          .filter((exercise) => exercise.lemma === word.lemma)
+          .map(({ lemma, translations, ...exercise }) => ({
+            ...exercise,
+            wordId: word.id,
+            translation: translations[languages.nativeLanguage],
+          })),
+      );
+      return { exercises };
     },
 
     async generateGapSentences({ languages }) {

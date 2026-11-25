@@ -79,3 +79,50 @@ export const translateTask = {
     } satisfies Localised,
   },
 };
+
+export type MockAnswerExercise = {
+  lemma: string;
+  question: string;
+  answer: string;
+  translations: Localised;
+};
+
+export const answerExercises = [
+  {
+    lemma: 'Bahnhof',
+    question: 'Wo wartest du auf deinen Zug?',
+    answer: 'Ich warte am Bahnhof auf meinen Zug, der leider Verspätung hat.',
+    translations: {
+      ru: 'Я жду на вокзале свой поезд, который, к сожалению, опаздывает.',
+      en: 'I am waiting for my train at the station, which is unfortunately late.',
+    },
+  },
+  {
+    lemma: 'Fahrkarte',
+    question: 'Hast du deine Fahrkarte schon gekauft?',
+    answer: 'Ja, ich habe meine Fahrkarte gestern online für den Zug gekauft.',
+    translations: {
+      ru: 'Да, я вчера купил билет на поезд онлайн.',
+      en: 'Yes, I bought my ticket for the train online yesterday.',
+    },
+  },
+  {
+    lemma: 'verspätet',
+    question: 'Warum kommst du so spät nach Hause?',
+    answer:
+      'Mein Zug war leider schon wieder verspätet, deshalb komme ich später.',
+    translations: {
+      ru: 'Мой поезд, к сожалению, снова опоздал, поэтому я приду позже.',
+      en: 'My train was late again, unfortunately, so I am coming later.',
+    },
+  },
+  {
+    lemma: 'Gleis',
+    question: 'Von welchem Gleis fährt dein Zug nach Berlin ab?',
+    answer: 'Mein Zug nach Berlin fährt heute von Gleis drei ab.',
+    translations: {
+      ru: 'Мой поезд на Берлин сегодня отправляется с третьего пути.',
+      en: 'My train to Berlin leaves from platform three today.',
+    },
+  },
+] satisfies MockAnswerExercise[];

@@ -29,7 +29,14 @@
   },
   "answer": {
     "correct": "Correct",
-    "wrong": "Wrong"
+    "wrong": "Wrong",
+    "question": "Question {{current}} of {{total}}",
+    "next": "Next question →",
+    "right": "Right order",
+    "notThis": "Not this word. Try another one.",
+    "hint": "Look at the marked word.",
+    "wrongTile": "{{word}}, not the next word",
+    "hintTile": "{{word}}, the next word"
   },
   "flashcard": {
     "flipHint": "Flips the card",
@@ -63,7 +70,7 @@
       "read": "Read the story",
       "flashcards": "Flashcards",
       "listen": "Listen & shadow",
-      "record": "Read aloud",
+      "answer": "Answer",
       "gap-fill": "Fill the gap",
       "translate": "{{from}} → {{to}}"
     },
@@ -79,7 +86,7 @@
       "flashcards": "Flip each word and hear it",
       "listen": "Hear a sentence, then say it back",
       "read": "Read a short story with your words",
-      "record": "Read the story aloud",
+      "answer": "Answer a question: put the words in order",
       "gap-fill": "Fill in the missing article and word",
       "translate": "Translate a sentence"
     },

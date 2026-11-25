@@ -2,7 +2,7 @@ export const lessonTaskTypes = [
   'flashcards',
   'listen',
   'read',
-  'record',
+  'answer',
   'gap-fill',
   'translate',
 ] as const;

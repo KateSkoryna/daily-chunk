@@ -1,4 +1,8 @@
-import { storyProblems, type LanguagePair } from '@daily-chunk/core';
+import {
+  answerProblems,
+  storyProblems,
+  type LanguagePair,
+} from '@daily-chunk/core';
 import { describe, expect, it } from 'vitest';
 
 import { createMockAiService } from '../src/ai/mock-ai-service';
@@ -161,5 +165,44 @@ describe('mock AI service', () => {
       retryWords: ['Fahrkarte', 'läuft'],
     });
     expect(result.tip).toContain('LOYFT');
+  });
+
+  it('writes one answer exercise per word in the native language of the learner', async () => {
+    const { exercises } = await ai.generateAnswerExercises({
+      languages: russian,
+      words: demoWords,
+      level: 'B2',
+    });
+
+    expect(exercises.map((exercise) => exercise.wordId)).toEqual(
+      demoWords.map((word) => word.id),
+    );
+    expect(exercises[0]?.translation).toMatch(/вокзале/);
+    const { exercises: english } = await ai.generateAnswerExercises({
+      languages: { targetLanguage: 'de', nativeLanguage: 'en' },
+      words: demoWords,
+      level: 'B2',
+    });
+    expect(english[0]?.translation).toMatch(/station/);
+  });
+
+  it('keeps every answer exercise inside the word range of the profile level', async () => {
+    const { exercises } = await ai.generateAnswerExercises({
+      languages: english,
+      words: demoWords,
+      level: 'B2',
+    });
+
+    expect(answerProblems(exercises, demoWords, 'B2')).toEqual([]);
+  });
+
+  it('gives no exercise for a word it does not know', async () => {
+    const { exercises } = await ai.generateAnswerExercises({
+      languages: english,
+      words: [{ ...demoWords[0]!, lemma: 'Unbekannt' }],
+      level: 'B2',
+    });
+
+    expect(exercises).toEqual([]);
   });
 });

@@ -8,7 +8,7 @@ export const placeholderTaskBonusXp: Readonly<Record<LessonTaskType, number>> =
     flashcards: 20,
     listen: 20,
     read: 20,
-    record: 20,
+    answer: 20,
     'gap-fill': 30,
     translate: 40,
   };

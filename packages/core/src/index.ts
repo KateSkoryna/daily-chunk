@@ -48,6 +48,9 @@ export {
 export type { ReviewSchedule } from './srs';
 export type {
   AiRequest,
+  AnswerExercise,
+  AnswerExercisesRequest,
+  AnswerExercisesResponse,
   AiService,
   GapSentence,
   GapSentencesRequest,
@@ -76,6 +79,21 @@ export {
   maxWordsPerLesson,
   startLesson,
 } from './start-lesson';
+export {
+  answerProblems,
+  answerResult,
+  answerTiles,
+  answerWordRange,
+  answerWords,
+  createAnswerSession,
+  expectedAnswerWord,
+  mistakesBeforeHint,
+  isLastAnswerExercise,
+  nextAnswerExercise,
+  recordAnswerTap,
+  shouldHintAnswerWord,
+} from './answer-task';
+export type { AnswerProblem, AnswerSession, AnswerTile } from './answer-task';
 export {
   createFlashcardSession,
   flashcardResult,

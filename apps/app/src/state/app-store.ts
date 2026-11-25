@@ -7,6 +7,7 @@ import {
   startLesson as buildLesson,
   wordIdFor,
   type AiService,
+  type AnswerExercise,
   type Lesson,
   type LessonTaskType,
   type TaskResult,
@@ -26,6 +27,7 @@ export type AppState = {
   words: Word[];
   lessons: Lesson[];
   stories: Record<string, StoryResponse>;
+  answerExercises: Record<string, AnswerExercise[]>;
   pluralInput: PluralInput | undefined;
   typedWordIds: string[];
   load: (appLanguage: AppLanguage) => Promise<void>;
@@ -34,6 +36,7 @@ export type AppState = {
   startLesson: () => Promise<Lesson>;
   saveTaskResult: (task: LessonTaskType, result: TaskResult) => Promise<void>;
   loadStory: (lessonId: string) => Promise<void>;
+  loadAnswerExercises: (lessonId: string) => Promise<void>;
 };
 
 type AppStoreDependencies = {
@@ -44,6 +47,7 @@ type AppStoreDependencies = {
 
 export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
   const pendingStories = new Map<string, Promise<void>>();
+  const pendingAnswerExercises = new Map<string, Promise<void>>();
 
   return createStore<AppState>((set, get) => ({
     status: 'idle',
@@ -51,6 +55,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
     words: [],
     lessons: [],
     stories: {},
+    answerExercises: {},
     pluralInput: undefined,
     typedWordIds: [],
 
@@ -150,6 +155,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         lessons: lessons.filter((lesson) => lesson.id !== openLesson?.id),
         words: words.filter((word) => !isNewWord(word)),
         stories: {},
+        answerExercises: {},
         typedWordIds: [],
         pluralInput: undefined,
       });
@@ -228,6 +234,41 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         })
         .finally(() => pendingStories.delete(lessonId));
       pendingStories.set(lessonId, request);
+      return request;
+    },
+
+    loadAnswerExercises: (lessonId) => {
+      const { profile, lessons, words, answerExercises } = get();
+      const lesson = lessons.find((candidate) => candidate.id === lessonId);
+      if (!profile || !lesson || answerExercises[lessonId]) {
+        return Promise.resolve();
+      }
+      const pendingExercises = pendingAnswerExercises.get(lessonId);
+      if (pendingExercises) return pendingExercises;
+      const lessonWords = lesson.wordIds.flatMap((wordId) =>
+        words.filter((word) => word.id === wordId),
+      );
+      const request = ai
+        .generateAnswerExercises({
+          languages: profile.languages,
+          words: lessonWords,
+          level: profile.level,
+        })
+        .then(({ exercises }) => {
+          const isLessonOpen = get().lessons.some(
+            (candidate) => candidate.id === lessonId,
+          );
+          if (isLessonOpen) {
+            set((state) => ({
+              answerExercises: {
+                ...state.answerExercises,
+                [lessonId]: exercises,
+              },
+            }));
+          }
+        })
+        .finally(() => pendingAnswerExercises.delete(lessonId));
+      pendingAnswerExercises.set(lessonId, request);
       return request;
     },
   }));

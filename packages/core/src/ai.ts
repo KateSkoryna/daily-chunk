@@ -45,6 +45,19 @@ export type StoryResponse = {
   questions: StoryQuestion[];
 };
 
+export type AnswerExercise = {
+  wordId: string;
+  question: string;
+  answer: string;
+  translation: string;
+};
+
+export type AnswerExercisesRequest = AiRequest & {
+  words: Word[];
+  level: Level;
+};
+export type AnswerExercisesResponse = { exercises: AnswerExercise[] };
+
 export type GapSentence = {
   wordId: string;
   before: string;
@@ -91,6 +104,9 @@ export type AiService = {
   generateGapSentences: (
     request: GapSentencesRequest,
   ) => Promise<GapSentencesResponse>;
+  generateAnswerExercises: (
+    request: AnswerExercisesRequest,
+  ) => Promise<AnswerExercisesResponse>;
   checkTranslation: (
     request: TranslationCheckRequest,
   ) => Promise<TranslationCheckResponse>;
