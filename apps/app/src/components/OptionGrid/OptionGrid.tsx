@@ -43,7 +43,7 @@ type OptionGridProps = {
   value: string | null;
   onSelect: (option: string) => void;
   correctAnswer?: string;
-  columns?: 2 | 3;
+  columns?: 1 | 2 | 3;
   accessibilityLabel: string;
 };
 

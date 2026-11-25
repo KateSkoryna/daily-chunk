@@ -13,6 +13,7 @@ const profile: Profile = {
   id: 'profile-test',
   languages: { targetLanguage: 'de', nativeLanguage: 'ru' },
   appLanguage: 'ru',
+  level: 'B2',
   xp: 1000,
   currentStreak: 5,
   longestStreak: 9,

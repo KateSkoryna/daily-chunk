@@ -1,0 +1,1 @@
+ALTER TABLE `profile` ADD `level` text DEFAULT 'B2' NOT NULL;

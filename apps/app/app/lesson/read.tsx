@@ -1,37 +1,65 @@
-import type { Lesson, Word } from '@daily-chunk/core';
+import {
+  answerQuizQuestion,
+  createQuizSession,
+  quizScore,
+  shuffleOptions,
+  type Lesson,
+  type StoryResponse,
+  type Word,
+} from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage } from '@daily-chunk/languages';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Notice } from '../../src/components/Notice/Notice';
 import { Screen } from '../../src/components/Screen/Screen';
 import { TopBar } from '../../src/components/TopBar/TopBar';
-import {
-  ReadScreen,
-  type OpenWord,
-} from '../../src/features/lesson/ReadScreen';
+import { ReadQuizScreen } from '../../src/features/lesson/ReadQuizScreen';
+import { ReadScreen } from '../../src/features/lesson/ReadScreen';
 import { speakWord } from '../../src/lib/speak-word';
+import { useListening } from '../../src/lib/use-listening';
 import { displayedWord } from '../../src/lib/displayed-word';
 import { useLessonNavigation } from '../../src/lib/use-lesson-navigation';
 import { useAppStore, useStartAppStore } from '../../src/state/use-app-store';
 
 type ReadTaskProps = {
   lesson: Lesson;
+  story: StoryResponse;
   words: Word[];
   nativeLanguage: NativeLanguage;
 };
 
-function ReadTask({ lesson, words, nativeLanguage }: ReadTaskProps) {
+function LoadedReadTask({
+  lesson,
+  story,
+  words,
+  nativeLanguage,
+}: ReadTaskProps) {
   const router = useRouter();
   const saveTaskResult = useAppStore((state) => state.saveTaskResult);
-  const story = useAppStore((state) => state.stories[lesson.id]);
-  const [activeWord, setActiveWord] = useState<OpenWord | null>(null);
+  const [activeWord, setActiveWord] = useState<string | null>(null);
+  const [isTranslationShown, setIsTranslationShown] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [session, setSession] = useState(() =>
+    createQuizSession(story.questions.length),
+  );
+  const questions = useMemo(
+    () =>
+      story.questions.map((question, index) => ({
+        ...question,
+        options: shuffleOptions(question.options, `${lesson.id}:${index}`),
+      })),
+    [story, lesson.id],
+  );
+  const targetLanguage = words[0]?.targetLanguage ?? 'de';
   const navigation = useLessonNavigation({
     currentStep: 3,
     nativeLanguage,
-    targetLanguage: words[0]?.targetLanguage ?? 'de',
+    targetLanguage,
   });
+  const listening = useListening(targetLanguage);
   const isMoving = useRef(false);
   const hasFinished = useRef(false);
   const lessonWords = lesson.wordIds.flatMap((wordId) =>
@@ -43,19 +71,24 @@ function ReadTask({ lesson, words, nativeLanguage }: ReadTaskProps) {
       if (!hasFinished.current) return;
       hasFinished.current = false;
       setActiveWord(null);
-    }, []),
+      setIsTranslationShown(false);
+      setIsQuizOpen(false);
+      setQuestionIndex(0);
+      setSession(createQuizSession(questions.length));
+    }, [questions.length]),
   );
-
-  if (!story) return null;
 
   async function goNextSection() {
     if (isMoving.current) return;
     isMoving.current = true;
     try {
-      await saveTaskResult('read', {
-        correct: lesson.wordIds.length,
-        total: lesson.wordIds.length,
-      });
+      await saveTaskResult(
+        'read',
+        quizScore(
+          session,
+          questions.map((question) => question.answer),
+        ),
+      );
       hasFinished.current = true;
       router.push('/lesson/record');
     } catch {
@@ -65,29 +98,61 @@ function ReadTask({ lesson, words, nativeLanguage }: ReadTaskProps) {
     }
   }
 
+  if (isQuizOpen) {
+    return (
+      <ReadQuizScreen
+        lessonNumber={lesson.number}
+        xp={lesson.xpEarned}
+        questions={questions}
+        answers={session.answers}
+        questionIndex={questionIndex}
+        taskNames={navigation.stepNames}
+        onTaskSelect={navigation.goToStep}
+        onAnswer={(option) =>
+          setSession((current) =>
+            answerQuizQuestion(current, questionIndex, option),
+          )
+        }
+        onNextQuestion={() => setQuestionIndex((current) => current + 1)}
+        onBack={() => setIsQuizOpen(false)}
+        onClose={() => router.replace('/')}
+        onContinue={goNextSection}
+      />
+    );
+  }
+
   return (
     <ReadScreen
       lessonNumber={lesson.number}
       xp={lesson.xpEarned}
-      title={story.title}
-      paragraphs={story.paragraphs}
+      text={story.text}
+      highlightedWords={story.highlightedWords}
+      translation={story.translation}
+      isTranslationShown={isTranslationShown}
       words={lessonWords}
       nativeLanguage={nativeLanguage}
       activeWord={activeWord}
-      onWordPress={(word) => {
-        const isOpen =
-          word.word === activeWord?.word &&
-          word.paragraphIndex === activeWord.paragraphIndex;
-        setActiveWord(isOpen ? null : word);
+      onWordPress={(word) => setActiveWord(word === activeWord ? null : word)}
+      onTranslationToggle={() => setIsTranslationShown((isShown) => !isShown)}
+      isListening={listening.isListening}
+      onPlayText={() => listening.toggle(story.text)}
+      onPlayWord={(word) => {
+        listening.stop();
+        speakWord(displayedWord(word), word.targetLanguage);
       }}
-      onPlayWord={(word) => speakWord(displayedWord(word), word.targetLanguage)}
       taskNames={navigation.stepNames}
       onTaskSelect={navigation.goToStep}
       onBack={navigation.goBack}
       onClose={() => router.replace('/')}
-      onContinue={goNextSection}
+      onStartQuiz={() => setIsQuizOpen(true)}
     />
   );
+}
+
+function ReadTask(props: Omit<ReadTaskProps, 'story'>) {
+  const story = useAppStore((state) => state.stories[props.lesson.id]);
+  if (!story) return null;
+  return <LoadedReadTask {...props} story={story} />;
 }
 
 function StoryFailed({ onBack }: { onBack: () => void }) {

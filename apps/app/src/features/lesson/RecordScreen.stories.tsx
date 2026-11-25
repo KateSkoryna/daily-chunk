@@ -9,9 +9,7 @@ import { derLetzteZug, readAloudResult } from '../../mocks/lesson-tasks';
 import { RecordScreen, type RecordScreenProps } from './RecordScreen';
 import { recordScreenMeta } from './RecordScreen.meta';
 
-const storyText = derLetzteZug.paragraphs
-  .map((paragraph) => paragraph.text)
-  .join(' ');
+const storyText = derLetzteZug.text;
 
 const meta = {
   title: 'Screens/Record',

@@ -2,43 +2,51 @@ import type { NativeLanguage } from '@daily-chunk/languages';
 
 type Localised = Record<NativeLanguage, string>;
 
-export type MockStoryParagraph = {
-  text: string;
-  highlightedWords: string[];
-  translations: Localised;
+export type MockStoryQuestion = {
+  question: string;
+  answer: string;
+  wrongAnswers: [string, string];
 };
 
 export type MockStory = {
-  title: string;
-  paragraphs: MockStoryParagraph[];
+  text: string;
+  highlightedWords: string[];
+  translations: Localised;
+  questions: MockStoryQuestion[];
 };
 
 export const derLetzteZug = {
-  title: 'Der letzte Zug',
-  paragraphs: [
+  text: 'Anna wartet seit einer halben Stunde am Bahnhof, weil ihr Zug verspätet ist. Auf der Anzeigetafel steht, dass er erst um 18:40 Uhr ankommen soll. Während sie wartet, sucht sie in ihrer Tasche nach der Fahrkarte, die sie im Internet gekauft hat. Sie hat 29 Euro dafür bezahlt, obwohl sie gehofft hatte, dass sie weniger kosten würde. Endlich wird durchgesagt, dass der Zug nach Berlin von Gleis drei abfahren wird. Anna läuft so schnell sie kann die Treppe hinunter, denn sie möchte ihn auf keinen Fall verpassen. Als sie einsteigt, lacht sie erleichtert.',
+  highlightedWords: ['Bahnhof', 'verspätet', 'Fahrkarte', 'Gleis'],
+  translations: {
+    ru: 'Анна ждёт на вокзале уже полчаса, потому что её поезд опаздывает. На табло написано, что он прибудет только в 18:40. Пока она ждёт, она ищет в сумке билет, который купила в интернете. Она заплатила за него 29 евро, хотя надеялась, что он будет стоить дешевле. Наконец объявляют, что поезд на Берлин отправится с пути три. Анна бежит вниз по лестнице так быстро, как может, ведь она ни в коем случае не хочет его пропустить. Когда она садится, она облегчённо смеётся.',
+    en: 'Anna has been waiting at the station for half an hour because her train is late. The board says it is only due at 18:40. While she waits, she looks in her bag for the ticket she bought on the internet. She paid 29 euros for it, although she had hoped it would cost less. Finally it is announced that the train to Berlin will leave from platform three. Anna runs down the stairs as fast as she can, because she does not want to miss it at any cost. When she gets on, she laughs with relief.',
+  },
+  questions: [
     {
-      text: 'Anna steht am Bahnhof. Ihr Zug ist wieder verspätet.',
-      highlightedWords: ['Bahnhof', 'verspätet'],
-      translations: {
-        ru: 'Анна стоит на вокзале. Её поезд снова опаздывает.',
-        en: 'Anna is standing at the station. Her train is late again.',
-      },
+      question: 'Wie lange wartet Anna schon?',
+      answer: 'eine halbe Stunde',
+      wrongAnswers: ['eine Stunde', 'zehn Minuten'],
     },
     {
-      text: 'Sie sucht ihre Fahrkarte in der Tasche.',
-      highlightedWords: ['Fahrkarte'],
-      translations: {
-        ru: 'Она ищет свой билет в сумке.',
-        en: 'She is looking for her ticket in the bag.',
-      },
+      question: 'Wann soll der Zug ankommen?',
+      answer: '18:40 Uhr',
+      wrongAnswers: ['18:04 Uhr', '16:40 Uhr'],
     },
     {
-      text: 'Endlich hört sie: „Der Zug nach Berlin fährt von Gleis drei.“ Anna lacht und läuft los.',
-      highlightedWords: ['Gleis'],
-      translations: {
-        ru: 'Наконец она слышит: «Поезд на Берлин отправляется с пути три». Анна смеётся и бежит.',
-        en: 'Finally she hears: "The train to Berlin leaves from platform three." Anna laughs and runs off.',
-      },
+      question: 'Wo hat Anna die Fahrkarte gekauft?',
+      answer: 'im Internet',
+      wrongAnswers: ['am Schalter', 'im Zug'],
+    },
+    {
+      question: 'Wie viel hat die Fahrkarte gekostet?',
+      answer: '29 Euro',
+      wrongAnswers: ['19 Euro', '39 Euro'],
+    },
+    {
+      question: 'Von welchem Gleis fährt der Zug nach Berlin ab?',
+      answer: 'Gleis drei',
+      wrongAnswers: ['Gleis acht', 'Gleis zwei'],
     },
   ],
 } satisfies MockStory;

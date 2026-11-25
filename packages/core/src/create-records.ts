@@ -2,6 +2,7 @@ import type { AppLanguage } from '@daily-chunk/i18n';
 
 import type { NormalisedWord } from './ai';
 import type { LanguagePair } from './language-pair';
+import { defaultLevel } from './level';
 import type { Profile } from './profile';
 import type { Word } from './word';
 
@@ -51,6 +52,7 @@ export function createInitialProfile(
     id: 'profile-local',
     languages,
     appLanguage,
+    level: defaultLevel,
     xp: 0,
     currentStreak: 0,
     longestStreak: 0,

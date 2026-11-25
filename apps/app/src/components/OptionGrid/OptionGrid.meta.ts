@@ -12,7 +12,8 @@ export const optionGridMeta = {
     onSelect: 'Called with the answer the person pressed',
     correctAnswer:
       'The right answer. While it is missing the grid is open; once it is set the grid shows the result and is locked',
-    columns: '2 or 3 options per row; 2 by default',
+    columns:
+      '1 (one full-width option per row, for short phrases), 2 or 3 options per row; 2 by default',
     accessibilityLabel: 'Names the group for a screen reader, from i18n',
   },
   states: ['idle', 'selected', 'correct', 'wrong', 'revealed'],

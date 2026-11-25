@@ -47,6 +47,7 @@
   "common": {
     "next": "Next",
     "listen": "Listen",
+    "stop": "Stop",
     "back": "Back",
     "continue": "Continue"
   },
@@ -196,7 +197,8 @@
   },
   "read": {
     "hint": "Tap an underlined word for its card",
-    "readAloud": "Now read it aloud"
+    "startQuiz": "Start the quiz",
+    "translation": "Translation"
   },
   "translate": {
     "use": "Use:",
@@ -233,5 +235,13 @@
   "tip": {
     "button": "Good to know about {{word}}",
     "card": "Good to know"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Question {{current}} of {{total}}",
+    "answers": "Answers",
+    "next": "Next question →",
+    "passed": "{{correct}} of {{total}} right. This counts toward your next level.",
+    "failed": "{{correct}} of {{total}} right. {{needed}} are needed to count toward your next level."
   }
 }

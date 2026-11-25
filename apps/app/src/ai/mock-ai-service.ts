@@ -64,12 +64,17 @@ export function createMockAiService(): AiService {
 
     async generateStory({ languages }) {
       return {
-        title: derLetzteZug.title,
-        paragraphs: derLetzteZug.paragraphs.map((paragraph) => ({
-          text: paragraph.text,
-          highlightedWords: paragraph.highlightedWords,
-          translation: paragraph.translations[languages.nativeLanguage],
-        })),
+        level: 'B2',
+        text: derLetzteZug.text,
+        highlightedWords: derLetzteZug.highlightedWords,
+        translation: derLetzteZug.translations[languages.nativeLanguage],
+        questions: derLetzteZug.questions.map(
+          ({ question, answer, wrongAnswers }) => ({
+            question,
+            answer,
+            options: [answer, ...wrongAnswers],
+          }),
+        ),
       };
     },
 

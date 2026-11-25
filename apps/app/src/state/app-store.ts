@@ -3,6 +3,7 @@ import {
   createWordFromNormalised,
   isNewWord,
   placeholderTaskBonusXp,
+  quizLanguage,
   startLesson as buildLesson,
   wordIdFor,
   type AiService,
@@ -209,7 +210,12 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         words.filter((word) => word.id === wordId),
       );
       const request = ai
-        .generateStory({ languages: profile.languages, words: lessonWords })
+        .generateStory({
+          languages: profile.languages,
+          words: lessonWords,
+          level: profile.level,
+          quizLanguage: quizLanguage(profile.level),
+        })
         .then((story) => {
           const isLessonOpen = get().lessons.some(
             (candidate) => candidate.id === lessonId,

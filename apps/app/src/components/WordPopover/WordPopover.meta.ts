@@ -4,7 +4,7 @@ export const wordPopoverMeta = {
   name: 'WordPopover',
   category: 'molecule',
   description:
-    'The small card that opens under a paragraph when a word is tapped: the article tag, the word with its article, the translation and the plural, and a button that plays the word. The border has the colour of the word’s gender role and the card has a hard shadow.',
+    'The small card that floats right under a tapped word, as wide as its content: the article tag, the word with its article, the translation and the plural, and a button that plays the word. The border has the colour of the word’s gender role and the card has a hard shadow.',
   spec: 'DESIGN.md §9.3, design/screens/Read.dc.html',
   props: {
     word: 'The word to show',

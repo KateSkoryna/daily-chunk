@@ -72,6 +72,7 @@ const meta = {
     nativeLanguage: 'en',
     onFlip: fn(),
     onTipToggle: fn(),
+    isListening: false,
     onListen: fn(),
     onCardSelect: fn(),
     onPrevious: fn(),

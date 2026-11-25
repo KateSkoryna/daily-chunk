@@ -11,7 +11,6 @@ import type {
   NormaliseRequest,
   NormaliseResponse,
   PronunciationRequest,
-  StoryParagraph,
   StoryRequest,
   StoryResponse,
   TranslationCheckRequest,
@@ -130,6 +129,7 @@ describe('Profile', () => {
       id: 'p1',
       languages: { targetLanguage: 'de', nativeLanguage: 'ru' },
       appLanguage: 'en',
+      level: 'B2',
       xp: 1240,
       currentStreak: 12,
       longestStreak: 12,
@@ -208,6 +208,6 @@ describe('AI requests', () => {
   });
 
   it('returns one native translation, not one per language', () => {
-    expectTypeOf<StoryParagraph['translation']>().toEqualTypeOf<string>();
+    expectTypeOf<StoryResponse['translation']>().toEqualTypeOf<string>();
   });
 });

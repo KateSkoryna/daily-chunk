@@ -13,8 +13,15 @@ import { demoWords, fahrkarte } from '../../mocks/words';
 import { ReadScreen, type ReadScreenProps } from './ReadScreen';
 import { readScreenMeta } from './ReadScreen.meta';
 
-function ReadDemo({ activeWord, onWordPress, ...props }: ReadScreenProps) {
+function ReadDemo({
+  activeWord,
+  isTranslationShown,
+  onWordPress,
+  onTranslationToggle,
+  ...props
+}: ReadScreenProps) {
   const [openWord, setOpenWord] = useState(activeWord);
+  const [isShown, setIsShown] = useState(isTranslationShown);
 
   return (
     <View className="min-h-screen">
@@ -23,19 +30,19 @@ function ReadDemo({ activeWord, onWordPress, ...props }: ReadScreenProps) {
           <ReadScreen
             {...props}
             taskNames={lessonStepNames(t, appLanguage, 'de')}
-            paragraphs={derLetzteZug.paragraphs.map((paragraph) => ({
-              text: paragraph.text,
-              highlightedWords: paragraph.highlightedWords,
-              translation: paragraph.translations[appLanguage],
-            }))}
+            text={derLetzteZug.text}
+            highlightedWords={derLetzteZug.highlightedWords}
+            translation={derLetzteZug.translations[appLanguage]}
+            isTranslationShown={isShown}
             nativeLanguage={appLanguage}
             activeWord={openWord}
             onWordPress={(word) => {
-              const isOpen =
-                word.word === openWord?.word &&
-                word.paragraphIndex === openWord.paragraphIndex;
-              setOpenWord(isOpen ? null : word);
+              setOpenWord(word === openWord ? null : word);
               onWordPress(word);
+            }}
+            onTranslationToggle={() => {
+              setIsShown((isOn) => !isOn);
+              onTranslationToggle();
             }}
           />
         )}
@@ -56,18 +63,23 @@ const meta = {
   args: {
     lessonNumber: lessonThirteen.number,
     xp: stepXpDemo.read,
-    title: derLetzteZug.title,
-    paragraphs: [],
+    text: derLetzteZug.text,
+    highlightedWords: derLetzteZug.highlightedWords,
+    translation: derLetzteZug.translations.en,
+    isTranslationShown: false,
     words: demoWords,
     nativeLanguage: 'en',
-    activeWord: { word: fahrkarte.lemma, paragraphIndex: 1 },
+    activeWord: fahrkarte.lemma,
     taskNames: [],
     onTaskSelect: fn(),
     onWordPress: fn(),
+    onTranslationToggle: fn(),
+    isListening: false,
+    onPlayText: fn(),
     onPlayWord: fn(),
     onBack: fn(),
     onClose: fn(),
-    onContinue: fn(),
+    onStartQuiz: fn(),
   },
   render: (args) => <ReadDemo {...args} />,
 } satisfies Meta<typeof ReadScreen>;
@@ -84,8 +96,7 @@ export const Default: Story = {
     const card = await canvas.findByRole('group', {
       name: t('wordPopover.label', { word: displayedWord(fahrkarte) }),
     });
-    const firstTranslation =
-      derLetzteZug.paragraphs[0]!.translations[nativeLanguage];
+    const translation = derLetzteZug.translations[nativeLanguage];
 
     const stepper = canvas.getByRole('toolbar', {
       name: t('lesson.stepLabel', {
@@ -98,28 +109,62 @@ export const Default: Story = {
     expect(segments).toHaveLength(6);
     expect(segments[2]).toHaveAttribute('aria-current', 'step');
     expect(canvas.getByText(t('read.hint'))).toBeTruthy();
-    expect(canvas.getByText(firstTranslation)).toBeTruthy();
-    expect(card.parentElement!.previousElementSibling?.textContent).toContain(
-      'Fahrkarte',
-    );
-    expect(card.parentElement!.nextElementSibling?.textContent).toBe(
-      derLetzteZug.paragraphs[1]!.translations[nativeLanguage],
-    );
+    expect(canvas.queryByText(translation)).toBeNull();
+    expect(
+      canvas
+        .getByRole('button', { name: 'Fahrkarte' })
+        .compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     expect(canvas.queryByRole('switch')).toBeNull();
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('read.translation') }),
+    );
+    expect(args.onTranslationToggle).toHaveBeenCalledTimes(1);
+    const shownTranslation = await canvas.findByText(translation);
+    expect(getComputedStyle(shownTranslation).fontSize).toBe(
+      getComputedStyle(
+        canvas.getByRole('button', { name: 'Bahnhof' }).parentElement!,
+      ).fontSize,
+    );
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('read.translation') }),
+    );
+    expect(canvas.queryByText(translation)).toBeNull();
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: t('common.listen') }),
+    );
+    expect(args.onPlayText).toHaveBeenCalledTimes(1);
 
     await userEvent.click(segments[4]!);
     expect(args.onTaskSelect).toHaveBeenCalledWith(5);
 
     await userEvent.click(canvas.getByRole('button', { name: 'Bahnhof' }));
-    expect(args.onWordPress).toHaveBeenCalledWith({
-      word: 'Bahnhof',
-      paragraphIndex: 0,
-    });
+    expect(args.onWordPress).toHaveBeenCalledWith('Bahnhof');
     expect(
       await canvas.findByRole('group', {
         name: t('wordPopover.label', { word: 'der Bahnhof' }),
       }),
     ).toBeTruthy();
+    const stationCard = await canvas.findByRole('group', {
+      name: t('wordPopover.label', { word: 'der Bahnhof' }),
+    });
+    const stationBox = canvas
+      .getByRole('button', { name: 'Bahnhof' })
+      .getBoundingClientRect();
+    const stationCardBox = stationCard.getBoundingClientRect();
+
+    const cardCenter = document.elementFromPoint(
+      stationCardBox.left + stationCardBox.width / 2,
+      stationCardBox.top + stationCardBox.height / 2,
+    );
+
+    expect(stationCard.contains(cardCenter)).toBe(true);
+    expect(stationCardBox.top - stationBox.bottom).toBeGreaterThanOrEqual(0);
+    expect(stationCardBox.top - stationBox.bottom).toBeLessThan(
+      stationBox.height,
+    );
     expect(canvas.queryByRole('group', { name: /Fahrkarte/ })).toBeNull();
 
     await userEvent.click(
@@ -128,7 +173,7 @@ export const Default: Story = {
       }),
     );
     await userEvent.click(
-      canvas.getByRole('button', { name: t('read.readAloud') }),
+      canvas.getByRole('button', { name: t('read.startQuiz') }),
     );
     await userEvent.click(
       canvas.getByRole('button', { name: t('common.back') }),
@@ -138,9 +183,27 @@ export const Default: Story = {
     );
 
     expect(args.onPlayWord).toHaveBeenCalledTimes(1);
-    expect(args.onContinue).toHaveBeenCalledTimes(1);
+    expect(args.onStartQuiz).toHaveBeenCalledTimes(1);
     expect(args.onBack).toHaveBeenCalledTimes(1);
     expect(args.onClose).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const TranslationShown: Story = {
+  args: { activeWord: null, isTranslationShown: true },
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const nativeLanguage = appLanguageOf(globals);
+    const canvas = within(canvasElement);
+
+    expect(
+      await canvas.findByText(derLetzteZug.translations[nativeLanguage]),
+    ).toBeTruthy();
+    expect(
+      canvas
+        .getByRole('button', { name: t('read.translation') })
+        .getAttribute('aria-expanded'),
+    ).toBe('true');
   },
 };
 
@@ -154,5 +217,27 @@ export const NoWordOpen: Story = {
 
     expect(words).toHaveLength(4);
     expect(canvas.queryByRole('group')).toBeNull();
+  },
+};
+
+export const NarrowScreen: Story = {
+  args: { activeWord: null },
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const listen = await canvas.findByRole('button', {
+      name: t('common.listen'),
+    });
+    const translation = canvas.getByRole('button', {
+      name: t('read.translation'),
+    });
+
+    expect(translation.getBoundingClientRect().top).toBe(
+      listen.getBoundingClientRect().top,
+    );
+    expect(canvasElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.clientWidth,
+    );
   },
 };
