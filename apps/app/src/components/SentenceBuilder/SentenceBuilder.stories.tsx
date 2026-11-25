@@ -47,7 +47,7 @@ function BuilderDemo({
         }}
         onRemove={(id) => {
           setAnswerIds(answerIds.filter((answerId) => answerId !== id));
-          onRemove(id);
+          onRemove?.(id);
         }}
       />
     </View>
@@ -126,5 +126,55 @@ export const Default: Story = {
         .getAllByRole('button')
         .map((tile) => tile.textContent),
     ).toEqual(['warte']);
+  },
+};
+
+export const WrongAndHintTiles: Story = {
+  args: {
+    answer: [{ id: 'ich', text: 'Ich' }],
+    pool: [
+      { id: 'bin', text: 'bin', status: 'wrong', label: 'bin, not this one' },
+      {
+        id: 'warte',
+        text: 'warte',
+        status: 'hint',
+        label: 'warte, the next word',
+      },
+      { id: 'am', text: 'am' },
+    ],
+    onRemove: undefined,
+  },
+  render: (args) => (
+    <WithText>
+      {(t) => (
+        <View className="p-gutter">
+          <SentenceBuilder
+            {...args}
+            answerLabel={t('sentenceBuilder.answer')}
+          />
+        </View>
+      )}
+    </WithText>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const wrong = await canvas.findByRole('button', {
+      name: 'bin, not this one',
+    });
+    const hint = canvas.getByRole('button', { name: 'warte, the next word' });
+
+    expect(getComputedStyle(wrong).borderTopColor).not.toBe(
+      getComputedStyle(canvas.getByRole('button', { name: 'am' }))
+        .borderTopColor,
+    );
+    expect(getComputedStyle(hint).borderTopColor).not.toBe(
+      getComputedStyle(wrong).borderTopColor,
+    );
+    expect(wrong.querySelector('svg')).not.toBeNull();
+    expect(hint.querySelector('svg')).not.toBeNull();
+    expect(canvas.queryAllByRole('button', { name: 'Ich' })).toHaveLength(0);
+
+    await userEvent.click(hint);
+    expect(args.onAdd).toHaveBeenCalledWith('warte');
   },
 };
