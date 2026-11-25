@@ -91,7 +91,7 @@ function WordFields({
             accessibilityLabel={t('home.wordField', { number: index + 1 })}
             autoCorrect={false}
             spellCheck={false}
-            className="h-touch flex-1 border-2 border-field bg-card px-3 font-content text-body text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-touch min-w-0 flex-1 border-2 border-field bg-card px-3 font-content text-body text-foreground outline-none placeholder:text-muted-foreground"
           />
           {index >= minFields || field.text.trim() !== '' ? (
             <TopBar.Button
