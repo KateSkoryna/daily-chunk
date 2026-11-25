@@ -42,8 +42,7 @@ export default function HomeTab() {
         setNotice(t('home.noWordsRecognised'));
         return;
       }
-      setTypedWords(createWordFields(emptyTexts));
-      router.push('/confirm');
+      router.replace('/confirm');
     } catch {
       setNotice(t('home.checkFailed'));
     } finally {
