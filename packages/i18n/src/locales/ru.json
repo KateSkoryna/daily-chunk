@@ -6,11 +6,9 @@
     "wordsDue_other": "На сегодня {{count}} слова",
     "addWords": "01 / Добавь новые слова",
     "wordsLabel": "Слова, которые встретились тебе сегодня",
-    "wordsPlaceholder": "По одному в строке, в любой форме: Bahnhöfe, ging, schöner…",
+    "wordsPlaceholder": "В любой форме: Bahnhöfe, ging…",
     "noWordsRecognised": "Слова не распознаны. Пока Чанк знает только несколько: Bahnhof, Fahrkarte, verspätet, Gleis.",
     "checkFailed": "Чанк споткнулся. Попробуй ещё раз.",
-    "dictationComingSoon": "Диктовка появится позже. Пока набери слова текстом.",
-    "dictate": "Надиктовать слова",
     "chunkLine": "Чанк не ищет артикли. Артикли равняются на Чанка. Принеси мне слова на сегодня.",
     "bossRound_one": "Босс-раунд через {{count}} урок",
     "bossRound_few": "Босс-раунд через {{count}} урока",
@@ -22,7 +20,11 @@
     "wordsLeftOut_few": "{{count}} слова не поместились: в уроке не больше {{max}}.",
     "wordsLeftOut_many": "{{count}} слов не поместилось: в уроке не больше {{max}}.",
     "wordsLeftOut_other": "{{count}} слова не поместились: в уроке не больше {{max}}.",
-    "wordCount": "{{count}} / {{max}} слов · минимум {{min}}"
+    "wordCount": "{{count}} / {{max}} слов · минимум {{min}}",
+    "wordField": "Слово {{number}}",
+    "removeWord": "Удалить слово {{number}}",
+    "addWord": "+ Добавить слово",
+    "dictate": "Надиктовать слова"
   },
   "settings": {
     "appLanguage": "Язык приложения"
@@ -243,9 +245,5 @@
   "tip": {
     "button": "Интересно знать про {{word}}",
     "card": "Интересно знать"
-  },
-  "wordChips": {
-    "remove": "Удалить {{word}}",
-    "edit": "Изменить {{word}}"
   }
 }

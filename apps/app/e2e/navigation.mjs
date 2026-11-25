@@ -43,7 +43,7 @@ try {
     await page.waitForURL((url) => url.pathname === tab.path);
     await (
       tab.path === '/'
-        ? page.getByRole('textbox', { name: 'Words you heard or saw today' })
+        ? page.getByRole('textbox', { name: 'Word 1' })
         : page.getByRole('heading', { name: tab.name })
     ).waitFor();
     assert.equal(

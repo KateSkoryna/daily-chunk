@@ -4,11 +4,12 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { useMenu } from '../../src/features/navigation/menu-context';
-import { commitDraft } from '../../src/lib/word-chips';
+import { createWordFields, filledWords } from '../../src/lib/word-fields';
 import { HomeScreen } from '../../src/features/words/HomeScreen';
 import { useAppStore, useStartAppStore } from '../../src/state/use-app-store';
 
 const minimumWords = 3;
+const emptyTexts = Array.from({ length: minimumWords }, () => '');
 const bossRound = { lessonsDone: 0, lessonsTotal: 5 };
 
 export default function HomeTab() {
@@ -19,8 +20,9 @@ export default function HomeTab() {
   const profile = useAppStore((state) => state.profile);
   const words = useAppStore((state) => state.words);
   const addTypedWords = useAppStore((state) => state.addTypedWords);
-  const [typedWords, setTypedWords] = useState<string[]>([]);
-  const [draft, setDraft] = useState('');
+  const [typedWords, setTypedWords] = useState(() =>
+    createWordFields(emptyTexts),
+  );
   const [notice, setNotice] = useState<string>();
   const [isChecking, setIsChecking] = useState(false);
 
@@ -33,14 +35,14 @@ export default function HomeTab() {
     setIsChecking(true);
     setNotice(undefined);
     try {
-      const allWords = commitDraft(typedWords, draft, maxWordsPerLesson).words;
-      const newWordCount = await addTypedWords(allWords.join('\n'));
+      const newWordCount = await addTypedWords(
+        filledWords(typedWords).join('\n'),
+      );
       if (newWordCount === 0) {
         setNotice(t('home.noWordsRecognised'));
         return;
       }
-      setTypedWords([]);
-      setDraft('');
+      setTypedWords(createWordFields(emptyTexts));
       router.push('/confirm');
     } catch {
       setNotice(t('home.checkFailed'));
@@ -58,19 +60,16 @@ export default function HomeTab() {
       }
       bossRound={bossRound}
       words={typedWords}
-      draft={draft}
       minimumWords={minimumWords}
       maxWords={maxWordsPerLesson}
       notice={notice}
-      onWordsChange={(change) => {
+      onWordsChange={(words) => {
         setNotice(undefined);
-        setTypedWords(change.words);
-        setDraft(change.draft);
+        setTypedWords(words);
       }}
       onWordsLeftOut={(count) =>
         setNotice(t('home.wordsLeftOut', { count, max: maxWordsPerLesson }))
       }
-      onDictate={() => setNotice(t('home.dictationComingSoon'))}
       onOpenMenu={openMenu}
       onOpenReview={() => router.push('/review')}
       onOpenBossRound={() => router.push('/boss')}

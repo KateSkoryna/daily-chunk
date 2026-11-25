@@ -105,7 +105,7 @@ describe('lesson task content', () => {
 });
 
 describe('home', () => {
-  it('types one chip for each demo word, within the lesson limit', () => {
+  it('types one field for each demo word, within the lesson limit', () => {
     expect(homeDemo.typedWords).toHaveLength(demoWords.length);
     expect(homeDemo.typedWords.length).toBeGreaterThanOrEqual(
       homeDemo.minimumWords,
