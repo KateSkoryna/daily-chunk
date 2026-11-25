@@ -41,7 +41,7 @@ export const readScreenMeta = {
       'ListenButton',
       'Icon',
     ],
-    pairsWith: ['ListenScreen', 'RecordScreen'],
+    pairsWith: ['ListenScreen', 'ReadQuizScreen'],
     usedIn: ['/lesson/read'],
   },
   tokens: {

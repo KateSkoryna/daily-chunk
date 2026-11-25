@@ -90,7 +90,7 @@ function LoadedReadTask({
         ),
       );
       hasFinished.current = true;
-      router.push('/lesson/record');
+      router.push('/lesson/answer');
     } catch {
       return;
     } finally {

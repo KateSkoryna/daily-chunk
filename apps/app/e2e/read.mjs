@@ -131,7 +131,7 @@ try {
 
   step('finish the task');
   await page.getByRole('button', { name: 'Next section →' }).click();
-  await page.waitForURL('**/lesson/record');
+  await page.waitForURL('**/lesson/answer');
 
   step('read the saved result');
   await page.goto(`${server.url}/dev/storage-check`);
