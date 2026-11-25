@@ -15,7 +15,8 @@
     "web": "npm run web -w @daily-chunk/app",
     "android": "npm run android -w @daily-chunk/app",
     "storybook": "npm run storybook -w @daily-chunk/app",
-    "test": "nx run-many -t test"
+    "test": "nx run-many -t test",
+    "test:ci": "bash scripts/test-ci.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
