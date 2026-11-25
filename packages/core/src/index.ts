@@ -1,7 +1,28 @@
 export type { LanguagePair } from './language-pair';
 export { lessonTaskTypes } from './lesson';
 export type { Lesson, LessonTaskType, TaskResult } from './lesson';
+export { defaultLevel, levels, highestTextLevel } from './level';
+export type { Level } from './level';
 export type { Profile } from './profile';
+export {
+  answerQuizQuestion,
+  createQuizSession,
+  isQuizPassed,
+  quizLanguage,
+  quizCorrectNeeded,
+  quizPassShare,
+  quizQuestionCount,
+  quizScore,
+  shuffleOptions,
+} from './quiz';
+export {
+  quizAnswerMaxWords,
+  quizOptionCount,
+  storyProblems,
+  storySentenceRange,
+} from './story-check';
+export type { StoryProblem } from './story-check';
+export type { QuizLanguage, QuizSession } from './quiz';
 export type { ReviewLog, ReviewSource } from './review-log';
 export type {
   LessonStorage,
@@ -37,7 +58,7 @@ export type {
   PronunciationRequest,
   PronunciationResponse,
   PronunciationVerdict,
-  StoryParagraph,
+  StoryQuestion,
   StoryRequest,
   StoryResponse,
   TranslationCheckRequest,

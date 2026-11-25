@@ -1,8 +1,8 @@
-import type { LanguagePair } from '@daily-chunk/core';
+import { storyProblems, type LanguagePair } from '@daily-chunk/core';
 import { describe, expect, it } from 'vitest';
 
 import { createMockAiService } from '../src/ai/mock-ai-service';
-import { translateTask } from '../src/mocks/lesson-tasks';
+import { derLetzteZug, translateTask } from '../src/mocks/lesson-tasks';
 import { demoWords } from '../src/mocks/words';
 
 const russian: LanguagePair = { targetLanguage: 'de', nativeLanguage: 'ru' };
@@ -58,22 +58,33 @@ describe('mock AI service', () => {
     expect(words.map((word) => word.lemma)).toEqual(['Gleis']);
   });
 
-  it.each([
-    ['ru', 'Анна стоит на вокзале. Её поезд снова опаздывает.'],
-    ['en', 'Anna is standing at the station. Her train is late again.'],
-  ] as const)(
+  it.each(['ru', 'en'] as const)(
     'writes the story translation in the native language %s',
-    async (nativeLanguage, firstTranslation) => {
+    async (nativeLanguage) => {
       const story = await ai.generateStory({
         languages: { targetLanguage: 'de', nativeLanguage },
         words: demoWords,
+        level: 'B2',
+        quizLanguage: 'target',
       });
 
-      expect(story.title).toBe('Der letzte Zug');
-      expect(story.paragraphs).toHaveLength(3);
-      expect(story.paragraphs[0]?.translation).toBe(firstTranslation);
+      expect(story.translation).toBe(derLetzteZug.translations[nativeLanguage]);
     },
   );
+
+  it('writes a story that follows every rule of the request', async () => {
+    const story = await ai.generateStory({
+      languages: english,
+      words: demoWords,
+      level: 'B2',
+      quizLanguage: 'target',
+    });
+    const lessonWords = demoWords.filter((word) =>
+      ['Bahnhof', 'Fahrkarte', 'Gleis'].includes(word.lemma),
+    );
+
+    expect(storyProblems(story, lessonWords, 'B2')).toEqual([]);
+  });
 
   it('returns gap sentences with a hint in the native language', async () => {
     const { sentences } = await ai.generateGapSentences({

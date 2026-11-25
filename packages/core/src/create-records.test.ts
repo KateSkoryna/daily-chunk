@@ -95,7 +95,7 @@ describe('isNewWord', () => {
 });
 
 describe('createInitialProfile', () => {
-  it('starts with no XP and no streak', () => {
+  it('starts with no XP and no streak, at level B2', () => {
     expect(
       createInitialProfile(
         { targetLanguage: 'de', nativeLanguage: 'en' },
@@ -106,6 +106,7 @@ describe('createInitialProfile', () => {
       id: 'profile-local',
       languages: { targetLanguage: 'de', nativeLanguage: 'en' },
       appLanguage: 'en',
+      level: 'B2',
       xp: 0,
       currentStreak: 0,
       longestStreak: 0,

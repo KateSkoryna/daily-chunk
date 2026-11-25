@@ -11,9 +11,7 @@ import { homeDemo } from '../src/mocks/home';
 import { demoWords } from '../src/mocks/words';
 
 const wordIds = demoWords.map((word) => word.id);
-const storyText = derLetzteZug.paragraphs
-  .map((paragraph) => paragraph.text)
-  .join(' ');
+const storyText = derLetzteZug.text;
 
 describe('demo words', () => {
   it('have unique ids', () => {
@@ -67,14 +65,12 @@ describe('lesson 13', () => {
 });
 
 describe('lesson task content', () => {
-  it('highlights only words that are in the story paragraph', () => {
-    for (const paragraph of derLetzteZug.paragraphs) {
-      for (const word of paragraph.highlightedWords) {
-        expect(paragraph.text).toContain(word);
-      }
-      expect(paragraph.translations.ru).toBeTruthy();
-      expect(paragraph.translations.en).toBeTruthy();
+  it('highlights only words that are in the story', () => {
+    for (const word of derLetzteZug.highlightedWords) {
+      expect(derLetzteZug.text).toContain(word);
     }
+    expect(derLetzteZug.translations.ru).toBeTruthy();
+    expect(derLetzteZug.translations.en).toBeTruthy();
   });
 
   it('asks to retry words that are in the story', () => {

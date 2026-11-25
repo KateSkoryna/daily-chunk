@@ -51,7 +51,7 @@ function WordPopover({ word, nativeLanguage, onPlay }: WordPopoverProps) {
             label={t(`partOfSpeech.short.${word.partOfSpeech}`)}
           />
         )}
-        <View className="min-w-0 flex-1">
+        <View className="min-w-0 shrink">
           <Text variant="option">{displayedWord(word)}</Text>
           <Text variant="body-sm">
             {word.forms

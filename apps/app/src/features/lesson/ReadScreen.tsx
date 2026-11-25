@@ -1,64 +1,77 @@
-import type { StoryParagraph, Word } from '@daily-chunk/core';
+import type { Word } from '@daily-chunk/core';
 import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage } from '@daily-chunk/languages';
-import { Fragment } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 
+import { ListenButton } from '../../components/ListenButton/ListenButton';
+import { cn } from '../../lib/utils';
+import { Icon } from '../../components/Icon/Icon';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { Screen } from '../../components/Screen/Screen';
 import {
   StoryText,
   type StoryTextMark,
+  type WordAnchor,
 } from '../../components/StoryText/StoryText';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { WordPopover } from '../../components/WordPopover/WordPopover';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
-type OpenWord = { word: string; paragraphIndex: number };
-
 type ReadScreenProps = {
   lessonNumber: number;
   xp: number;
-  title: string;
-  paragraphs: StoryParagraph[];
+  text: string;
+  highlightedWords: string[];
+  translation: string;
+  isTranslationShown: boolean;
   words: Word[];
   nativeLanguage: NativeLanguage;
-  activeWord: OpenWord | null;
+  activeWord: string | null;
   taskNames: string[];
   onTaskSelect: (step: number) => void;
-  onWordPress: (word: OpenWord) => void;
+  onWordPress: (word: string) => void;
+  onTranslationToggle: () => void;
+  isListening: boolean;
+  onPlayText: () => void;
   onPlayWord: (word: Word) => void;
   onBack: () => void;
   onClose: () => void;
-  onContinue: () => void;
+  onStartQuiz: () => void;
 };
 
 function ReadScreen({
   lessonNumber,
   xp,
-  title,
-  paragraphs,
+  text,
+  highlightedWords,
+  translation,
+  isTranslationShown,
   words,
   nativeLanguage,
   activeWord,
   taskNames,
   onTaskSelect,
   onWordPress,
+  onTranslationToggle,
+  isListening,
+  onPlayText,
   onPlayWord,
   onBack,
   onClose,
-  onContinue,
+  onStartQuiz,
 }: ReadScreenProps) {
   const { t } = useTranslation();
-  const activeLemma = words.find((word) => word.lemma === activeWord?.word);
+  const [anchor, setAnchor] = useState<WordAnchor | null>(null);
+  const [textWidth, setTextWidth] = useState(0);
+  const [popupWidth, setPopupWidth] = useState(0);
+  const activeLemma = words.find((word) => word.lemma === activeWord);
 
-  function marksOf(paragraph: StoryParagraph): StoryTextMark[] {
-    return paragraph.highlightedWords.map((highlighted) => ({
-      word: highlighted,
-      tone: words.find((word) => word.lemma === highlighted)?.gender ?? 'none',
-    }));
-  }
+  const marks: StoryTextMark[] = highlightedWords.map((highlighted) => ({
+    word: highlighted,
+    tone: words.find((word) => word.lemma === highlighted)?.gender ?? 'none',
+  }));
 
   return (
     <Screen className="gap-4">
@@ -89,39 +102,63 @@ function ReadScreen({
         stepNames={taskNames}
         onStepSelect={onTaskSelect}
       />
-      <Text variant="display-num" className="uppercase text-foreground">
-        {title}
-      </Text>
       <View className="gap-2.5">
-        {paragraphs.map((paragraph, paragraphIndex) => (
-          <Fragment key={paragraphIndex}>
-            <StoryText
-              text={paragraph.text}
-              marks={marksOf(paragraph)}
-              activeWord={
-                activeWord?.paragraphIndex === paragraphIndex
-                  ? activeWord.word
-                  : null
+        <Text variant="caption" className="uppercase">
+          {t('read.hint')}
+        </Text>
+        <View
+          className="relative z-10"
+          onLayout={(event) => setTextWidth(event.nativeEvent.layout.width)}
+        >
+          <StoryText
+            text={text}
+            marks={marks}
+            activeWord={activeWord}
+            onWordPress={(word, wordAnchor) => {
+              setAnchor(wordAnchor);
+              onWordPress(word);
+            }}
+          />
+          {activeLemma && (
+            <View
+              className={cn('absolute z-10 mt-1', !anchor && 'top-full')}
+              style={{
+                top: anchor?.bottom,
+                left: Math.min(
+                  Math.max((anchor?.x ?? 0) - popupWidth / 2, 0),
+                  Math.max(textWidth - popupWidth, 0),
+                ),
+                opacity: popupWidth > 0 ? 1 : 0,
+              }}
+              onLayout={(event) =>
+                setPopupWidth(event.nativeEvent.layout.width)
               }
-              onWordPress={(word) => onWordPress({ word, paragraphIndex })}
-            />
-            {activeWord?.paragraphIndex === paragraphIndex && activeLemma && (
+            >
               <WordPopover
                 word={activeLemma}
                 nativeLanguage={nativeLanguage}
                 onPlay={() => onPlayWord(activeLemma)}
               />
-            )}
-            <Text variant="body-sm">{paragraph.translation}</Text>
-          </Fragment>
-        ))}
+            </View>
+          )}
+        </View>
+        <View className="flex-row items-center gap-2.5">
+          <ListenButton isListening={isListening} onPress={onPlayText} />
+          <Button
+            variant="secondary"
+            className="shrink"
+            aria-expanded={isTranslationShown}
+            onPress={onTranslationToggle}
+          >
+            <Icon name="book" decorative />
+            <Text>{t('read.translation')}</Text>
+          </Button>
+        </View>
+        {isTranslationShown && <Text variant="reading">{translation}</Text>}
       </View>
-      <View className="mt-auto gap-2.5">
-        <Text variant="caption" className="uppercase">
-          {t('read.hint')}
-        </Text>
-        <Button onPress={onContinue}>
-          <Text>{t('read.readAloud')}</Text>
+      <View className="mt-auto">
+        <Button onPress={onStartQuiz}>
+          <Text>{t('read.startQuiz')}</Text>
         </Button>
       </View>
     </Screen>
@@ -129,4 +166,4 @@ function ReadScreen({
 }
 
 export { ReadScreen };
-export type { OpenWord, ReadScreenProps };
+export type { ReadScreenProps };

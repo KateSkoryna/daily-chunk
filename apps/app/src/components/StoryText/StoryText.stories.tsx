@@ -7,8 +7,6 @@ import { derLetzteZug } from '../../mocks/lesson-tasks';
 import { StoryText } from './StoryText';
 import { storyTextMeta } from './StoryText.meta';
 
-const paragraph = derLetzteZug.paragraphs[0]!;
-
 const meta = {
   title: 'Components/StoryText',
   component: StoryText,
@@ -18,7 +16,7 @@ const meta = {
     controls: { include: ['activeWord'] },
   },
   args: {
-    text: paragraph.text,
+    text: derLetzteZug.text,
     marks: [
       { word: 'Bahnhof', tone: 'masc' },
       { word: 'verspätet', tone: 'none' },
@@ -50,11 +48,18 @@ export const Default: Story = {
     const station = await canvas.findByRole('button', { name: 'Bahnhof' });
     const late = canvas.getByRole('button', { name: 'verspätet' });
 
-    expect(getComputedStyle(station).textDecorationLine).toBe('underline');
-    expect(getComputedStyle(station).textDecorationColor).not.toBe(
-      getComputedStyle(late).textDecorationColor,
+    expect(getComputedStyle(station).textDecorationLine).toBe('none');
+    expect(getComputedStyle(station).color).not.toBe(
+      getComputedStyle(station.parentElement!).color,
     );
-    expect(canvasElement.textContent).toContain(paragraph.text);
+    expect(getComputedStyle(late).textDecorationLine).toBe('none');
+    expect(getComputedStyle(late).color).not.toBe(
+      getComputedStyle(station).color,
+    );
+    expect(getComputedStyle(late).color).not.toBe(
+      getComputedStyle(late.parentElement!).color,
+    );
+    expect(canvasElement.textContent).toContain(derLetzteZug.text);
     if (args.activeWord === null) {
       expect(getComputedStyle(station).backgroundColor).toMatch(
         /, 0\)$|transparent/,
@@ -62,17 +67,19 @@ export const Default: Story = {
     }
 
     await userEvent.click(station);
-    expect(args.onWordPress).toHaveBeenCalledWith('Bahnhof');
+    expect((args.onWordPress as ReturnType<typeof fn>).mock.calls[0]?.[0]).toBe(
+      'Bahnhof',
+    );
   },
 };
 
 export const MarkedOnly: Story = {
   args: {
-    text: derLetzteZug.paragraphs[2]!.text,
+    text: derLetzteZug.text,
     marks: [
       { word: 'läuft', tone: 'retry' },
       { word: 'Zu', tone: 'retry' },
-      { word: 'Tasche', tone: 'retry' },
+      { word: 'Taschenlampe', tone: 'retry' },
     ],
     onWordPress: undefined,
   },
@@ -83,7 +90,7 @@ export const MarkedOnly: Story = {
 
     expect(canvas.queryByRole('button')).toBeNull();
     expect(canvas.queryByText('Zu')).toBeNull();
-    expect(canvas.queryByText('Tasche')).toBeNull();
+    expect(canvas.queryByText('Taschenlampe')).toBeNull();
     expect(getComputedStyle(word).textDecorationLine).toBe('underline');
     expect(getComputedStyle(word).color).toBe(
       getComputedStyle(word).textDecorationColor,

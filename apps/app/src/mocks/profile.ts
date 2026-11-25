@@ -4,6 +4,7 @@ export const demoProfile = {
   id: 'profile-demo',
   languages: { targetLanguage: 'de', nativeLanguage: 'ru' },
   appLanguage: 'ru',
+  level: 'B2',
   xp: 1240,
   currentStreak: 12,
   longestStreak: 12,

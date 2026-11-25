@@ -37,7 +37,7 @@ try {
   await page.getByRole('button', { name: 'Next phrase' }).click();
   await page.getByRole('button', { name: 'Next section →' }).click();
   await page.waitForURL('**/lesson/read');
-  await page.getByText('Der letzte Zug', { exact: true }).waitFor();
+  await page.getByText('Tap an underlined word for its card').waitFor();
 
   step('see the XP of the finished flashcards and listen');
   await page
@@ -46,19 +46,41 @@ try {
     .first()
     .waitFor();
 
-  step('see the translation under every paragraph');
-  await page.getByText('Anna is standing at the station.').waitFor();
-  await page.getByText('She is looking for her ticket in the bag.').waitFor();
+  step('see one text, listen to it and show the translation');
+  assert.equal(await page.getByText(/^Anna has been waiting/).count(), 0);
+  await page.getByRole('button', { name: 'Listen', exact: true }).click();
+  assert.deepEqual(
+    (await page.evaluate(() => window.spokenTexts)).map((item) => [
+      item.text.slice(0, 20),
+      item.language,
+    ]),
+    [['Anna wartet seit ein', 'de-DE']],
+  );
+  await page.getByRole('button', { name: 'Stop', exact: true }).click();
+  await page.getByRole('button', { name: 'Listen', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Translation' }).click();
+  await page.getByText(/^Anna has been waiting at the station/).waitFor();
+  await page.getByText(/she laughs with relief\.$/).waitFor();
   assert.equal(await page.getByRole('switch').count(), 0);
+  await page.getByRole('button', { name: 'Translation' }).click();
+  assert.equal(await page.getByText(/^Anna has been waiting/).count(), 0);
 
   step('open and close a word card');
   await page.getByRole('button', { name: 'Fahrkarte', exact: true }).click();
   const card = page.getByRole('group', { name: /Fahrkarte/ });
   await card.waitFor();
+  const wordBox = await page
+    .getByRole('button', { name: 'Fahrkarte', exact: true })
+    .boundingBox();
+  const cardBox = await card.boundingBox();
+  assert.ok(cardBox.y > wordBox.y + wordBox.height - 1);
+  assert.ok(cardBox.y - (wordBox.y + wordBox.height) < 12);
+  assert.ok(cardBox.width < 400);
   await card.getByRole('button', { name: /^Play/ }).click();
-  assert.deepEqual(await page.evaluate(() => window.spokenTexts), [
-    { text: 'die Fahrkarte', language: 'de-DE' },
-  ]);
+  assert.deepEqual((await page.evaluate(() => window.spokenTexts)).at(-1), {
+    text: 'die Fahrkarte',
+    language: 'de-DE',
+  });
   await page.getByRole('button', { name: 'Gleis', exact: true }).click();
   await page.getByRole('group', { name: /Gleis/ }).waitFor();
   assert.equal(await page.getByRole('group').count(), 1);
@@ -79,14 +101,42 @@ try {
   await page.getByRole('button', { name: 'Go to: Read the story' }).click();
   await page.waitForURL('**/lesson/read');
 
+  step('answer the quiz, one wrong');
+  await page.getByRole('button', { name: 'Start the quiz' }).click();
+  await page.getByText('Quiz · Question 1 of 5').waitFor();
+  await page.getByText('Wie lange wartet Anna schon?').waitFor();
+  assert.equal(await page.getByRole('radio').count(), 3);
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Start the quiz' }).click();
+  const quizAnswers = [
+    ['eine halbe Stunde', 'Next question →'],
+    ['18:40 Uhr', 'Next question →'],
+    ['im Internet', 'Next question →'],
+    ['19 Euro', 'Next question →'],
+    ['Gleis drei', 'Next section →'],
+  ];
+  for (const [answer, nextButton] of quizAnswers) {
+    await page.getByRole('radio', { name: new RegExp(`^${answer}`) }).click();
+    await page.getByRole('button', { name: nextButton }).waitFor();
+    if (answer === '19 Euro') {
+      await page.getByRole('radio', { name: /^29 Euro/ }).waitFor();
+    }
+    if (nextButton !== 'Next section →') {
+      await page.getByRole('button', { name: nextButton }).click();
+    }
+  }
+  await page
+    .getByText('4 of 5 right. This counts toward your next level.')
+    .waitFor();
+
   step('finish the task');
-  await page.getByRole('button', { name: 'Now read it aloud' }).click();
+  await page.getByRole('button', { name: 'Next section →' }).click();
   await page.waitForURL('**/lesson/record');
 
   step('read the saved result');
   await page.goto(`${server.url}/dev/storage-check`);
   await page
-    .getByText('lesson: lesson-1 flashcards 3/3 listen 0/3 read 3/3')
+    .getByText('lesson: lesson-1 flashcards 3/3 listen 0/3 read 4/5')
     .waitFor();
 
   assert.deepEqual(problems, []);

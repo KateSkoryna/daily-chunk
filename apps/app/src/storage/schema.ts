@@ -1,5 +1,6 @@
 import type {
   LanguagePair,
+  Level,
   LessonTaskType,
   TaskResult,
   PartOfSpeech,
@@ -19,6 +20,7 @@ export const profileTable = sqliteTable('profile', {
     .$type<LanguagePair['nativeLanguage']>()
     .notNull(),
   appLanguage: text('app_language').$type<AppLanguage>().notNull(),
+  level: text('level').$type<Level>().notNull().default('B2'),
   xp: integer('xp').notNull(),
   currentStreak: integer('current_streak').notNull(),
   longestStreak: integer('longest_streak').notNull(),

@@ -7,9 +7,9 @@ import {
 import { View } from 'react-native';
 
 import { ArticleChip } from '../../components/ArticleChip/ArticleChip';
-import { Icon } from '../../components/Icon/Icon';
 import { CardNavigator } from '../../components/CardNavigator/CardNavigator';
 import { ItemDots } from '../../components/ItemDots/ItemDots';
+import { ListenButton } from '../../components/ListenButton/ListenButton';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
 import { displayedWord } from '../../lib/displayed-word';
@@ -34,6 +34,7 @@ type FlashcardsScreenProps = {
   nativeLanguage: NativeLanguage;
   onFlip: () => void;
   onTipToggle: () => void;
+  isListening: boolean;
   onListen: () => void;
   onCardSelect: (card: number) => void;
   onPrevious: () => void;
@@ -120,6 +121,7 @@ function FlashcardsScreen({
   nativeLanguage,
   onFlip,
   onTipToggle,
+  isListening,
   onListen,
   onCardSelect,
   onPrevious,
@@ -205,10 +207,7 @@ function FlashcardsScreen({
         />
       </CardNavigator>
       <View className="items-center">
-        <Button variant="secondary" onPress={onListen}>
-          <Icon name="speaker" decorative />
-          <Text>{t('common.listen')}</Text>
-        </Button>
+        <ListenButton isListening={isListening} onPress={onListen} />
       </View>
       <View className="mt-auto">
         <Button onPress={onNextSection}>

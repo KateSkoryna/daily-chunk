@@ -1,4 +1,6 @@
 import type { LanguagePair } from './language-pair';
+import type { Level } from './level';
+import type { QuizLanguage } from './quiz';
 import type { Word } from './word';
 
 export type AiRequest = {
@@ -24,14 +26,24 @@ export type NormalisedWord = Pick<
 export type NormaliseRequest = AiRequest & { typedText: string };
 export type NormaliseResponse = { words: NormalisedWord[] };
 
-export type StoryParagraph = {
+export type StoryQuestion = {
+  question: string;
+  options: string[];
+  answer: string;
+};
+
+export type StoryRequest = AiRequest & {
+  words: Word[];
+  level: Level;
+  quizLanguage: QuizLanguage;
+};
+export type StoryResponse = {
+  level: Level;
   text: string;
   highlightedWords: string[];
   translation: string;
+  questions: StoryQuestion[];
 };
-
-export type StoryRequest = AiRequest & { words: Word[] };
-export type StoryResponse = { title: string; paragraphs: StoryParagraph[] };
 
 export type GapSentence = {
   wordId: string;

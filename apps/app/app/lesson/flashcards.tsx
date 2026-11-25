@@ -16,7 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlashcardsScreen } from '../../src/features/lesson/FlashcardsScreen';
 import { displayedWord } from '../../src/lib/displayed-word';
 import { useLessonNavigation } from '../../src/lib/use-lesson-navigation';
-import { speakWord } from '../../src/lib/speak-word';
+import { useListening } from '../../src/lib/use-listening';
 import { useAppStore, useStartAppStore } from '../../src/state/use-app-store';
 
 type FlashcardsTaskProps = {
@@ -37,10 +37,12 @@ function FlashcardsTask({
   );
   const [isFlipped, setIsFlipped] = useState(false);
   const [isTipOpen, setIsTipOpen] = useState(false);
+  const targetLanguage = words[0]?.targetLanguage ?? 'de';
+  const listening = useListening(targetLanguage);
   const navigation = useLessonNavigation({
     currentStep: 1,
     nativeLanguage,
-    targetLanguage: words[0]?.targetLanguage ?? 'de',
+    targetLanguage,
   });
   const isMoving = useRef(false);
   const hasFinished = useRef(false);
@@ -62,6 +64,7 @@ function FlashcardsTask({
   if (!word) return null;
 
   function showCard(nextSession: typeof session) {
+    listening.stop();
     setSession(nextSession);
     setIsFlipped(false);
     setIsTipOpen(false);
@@ -93,15 +96,14 @@ function FlashcardsTask({
       isTipOpen={isTipOpen}
       nativeLanguage={nativeLanguage}
       onFlip={() => {
+        listening.stop();
         setIsFlipped(!isFlipped);
         setIsTipOpen(false);
       }}
       onTipToggle={() => setIsTipOpen(!isTipOpen)}
+      isListening={listening.isListening}
       onListen={() =>
-        speakWord(
-          isFlipped ? word.sentence : displayedWord(word),
-          word.targetLanguage,
-        )
+        listening.toggle(isFlipped ? word.sentence : displayedWord(word))
       }
       onCardSelect={(card) => showCard(goToFlashcard(session, card - 1))}
       onPrevious={() => showCard(previousFlashcard(session))}

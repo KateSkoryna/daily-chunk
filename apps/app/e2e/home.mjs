@@ -66,8 +66,24 @@ try {
   await field(1).fill('Bahnhöfe');
   await field(2).fill('Fahrkarte');
   await field(3).fill('Gleis');
+  await page.evaluate(() => {
+    window.sawEmptyHome = false;
+    const watch = () => {
+      const inputs = [...document.querySelectorAll('input')];
+      if (
+        location.pathname === '/' &&
+        inputs.length > 0 &&
+        inputs.every((input) => input.value === '')
+      ) {
+        window.sawEmptyHome = true;
+      }
+      requestAnimationFrame(watch);
+    };
+    requestAnimationFrame(watch);
+  });
   await checkButton.click();
   await page.waitForURL('**/confirm');
+  assert.equal(await page.evaluate(() => window.sawEmptyHome), false);
 
   for (const word of ['der Bahnhof', 'die Fahrkarte', 'das Gleis']) {
     await page.getByText(word, { exact: true }).waitFor();
