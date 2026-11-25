@@ -760,21 +760,22 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status | Branch                   |
-| --------- | ------ | ------------------------ |
-| 3.1       | DONE   | `feat/navigation-shell`  |
-| 3.2       | DONE   | `feat/storage`           |
-| 3.3       | DONE   | `feat/srs-scheduler`     |
-| 3.4       | DONE   | `feat/ai-mocks`          |
-| 3.5       | DONE   | `feat/home-screen`       |
-| 3.6       | DONE   | `feat/confirm-screen`    |
-| 3.7       | DONE   | `feat/flashcards-screen` |
-| 3.8       | DONE   | `feat/listen-screen`     |
-| 3.9       | DONE   | `feat/read-screen`       |
-| 3.9b      | DONE   | `feat/tips-lamp`         |
-| 3.9c      | DONE   | `feat/word-chips-input`  |
-| 3.10–3.13 | TODO   | `feat/<screen>-screen`   |
-| 3.14      | TODO   | `chore/phase-3-review`   |
+| Step      | Status         | Branch                   |
+| --------- | -------------- | ------------------------ |
+| 3.1       | DONE           | `feat/navigation-shell`  |
+| 3.2       | DONE           | `feat/storage`           |
+| 3.3       | DONE           | `feat/srs-scheduler`     |
+| 3.4       | DONE           | `feat/ai-mocks`          |
+| 3.5       | DONE           | `feat/home-screen`       |
+| 3.6       | DONE           | `feat/confirm-screen`    |
+| 3.7       | DONE           | `feat/flashcards-screen` |
+| 3.8       | DONE           | `feat/listen-screen`     |
+| 3.9       | DONE           | `feat/read-screen`       |
+| 3.9b      | DONE           | `feat/tips-lamp`         |
+| 3.9c      | DONE           | `feat/word-chips-input`  |
+| 3.9d      | WAITING-REVIEW | `feat/read-quiz`         |
+| 3.10–3.13 | TODO           | `feat/<screen>-screen`   |
+| 3.14      | TODO           | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -904,6 +905,21 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Result: `core`: `maxWordsPerLesson` (6); `startLesson` takes at most 6 of the waiting words and only the room left in an open lesson, and never repeats a word (the even split into several lessons was dropped the same day). `app`: `lib/word-fields.ts` (spread a pasted list over the fields, skip duplicates, the limit; 12 unit tests), `WordFields` (meta; stories `Default`, `AddingFields`, `EnterMovesOn`, `PastedList`, `WithWords`, `NarrowScreen`), the Home screen and route use it (the fields' texts live in the route; Check my words uses the filled, de-duplicated words), shared TextInput styling in `lib/text-input-interop.ts`, strings `home.wordField`, `home.removeWord`, `home.addWord`, `home.wordsLeftOut_*`, `home.wordCount` (`n / max words · min m`) and a new `home.wordsPlaceholder` (the Russian is mine, please read it). `DESIGN.md` has a `WordFields` row. Learning note: `docs/learn/word-fields.md`.
 - Named: a paste into a one-line field loses its line breaks in the browser (they become spaces or nothing), so a pasted list is split on spaces too, but only when more than one character arrives at once; a typed phrase with a space stays in one field. The Home field stops at 6 words, so more than 6 never reach `startLesson`; leftovers only exist for words added while a lesson is open (not kept after an app restart, the existing rule). The Confirm screen does not say how many lessons. The dictation notice string was removed from Home; `home.dictate` stays for the text area and the top bar stories.
 - E2E: `e2e/home.mjs` types in three fields with Enter between them, sees `3 / 6 words · min 3`, adds fields to 6 (the add button goes away), removes extra fields, pastes `a b c d e f g h` after a reload (6 / 6 and `2 words left out: a lesson takes 6.`), checks the unknown words and then the demo words; the other e2e files fill the three fields one by one (`e2e/start-demo-lesson.mjs`).
+
+### 3.9d Read text and quiz
+
+- Owner decisions: the questions ask about details of the text (which platform, where she waited, how much the ticket cost), never whole-sentence answers: three short answers of at most 3 words, one right. No goal level: the goal is always as high as possible, so the profile keeps only `level` (A1–C2, default B2). The text is at the profile level and may stretch up to two levels above it, never more; C1 and C2 learners get sophisticated vocabulary, idioms and colloquial phrases (to be written into the German pack prompt in phase 5). `plan.md` D20 and the new step row 3.9d updated.
+- Owner decision, late in the step: the story is ONE text, not split into sentences or paragraphs (`StoryResponse` has `text`, `highlightedWords` and one `translation`), with the same Listen button as on the flashcards (speaker icon, `common.listen`, same width) that reads the whole text in the target voice and a Show/Hide translation button (the translation is hidden until asked for; this is the reader's choice, not the language switch that was removed earlier). The word card opens under the text.
+- Built (`core`): `Level`, `levels`, `defaultLevel`, `highestTextLevel`; `Profile.level`; quiz rules in `quiz.ts` (`quizLanguage`: native for A1 and A2, target from B1; `createQuizSession`, `answerQuizQuestion`, `quizScore`, `quizCorrectNeeded`, `isQuizPassed` at 80%, `shuffleOptions` seeded so the order is stable); `storyProblems` checks an AI story (6–8 sentences, every lesson word used or in its forms, 5 questions, 3 distinct options, the answer among them and at most 3 words, level at most two above the learner). `StoryRequest` carries `level` and `quizLanguage`; `StoryResponse` has `level` and `questions`.
+- Built (app): drizzle migration `0004_add_profile_level`; the mock story is now 7 sentences at B2 with 5 questions; `ReadScreen` ends with "Start the quiz"; new `ReadQuizScreen` (one question at a time, `OptionGrid` with `columns` 1, score notice, then "Next section →"); the route keeps the quiz state, Back in the quiz returns to the text, and the saved Read result is the quiz score. Strings `quiz.*` and `read.startQuiz`, removed `read.readAloud`.
+- Left, named: the AI request still ignores `weakSkills` and the German level rules (allowed and forbidden grammar per level); the A1–A2 native-language questions exist as the `quizLanguage` rule but the mock only has German questions (it is B2); using the 80% result to move the level up needs lesson history and comes with onboarding (phase 4); the lamp on the Read screen is still undecided.
+- Audio (owner, late in the step): one Listen button everywhere (the flashcards one: `Button` secondary, speaker icon, "Listen"), now with two states: while the voice speaks it becomes "Stop" with a stop icon and pressing it stops the voice. New component `ListenButton` (meta, stories, `DESIGN.md` row) and `useListening` hook, used by Flashcards and Read; the word card keeps its small speaker button (to be decided).
+- Review: first version reviewed by a fresh subagent: 0 blocking, 1 medium fixed (`sentenceCount` split on quotes and initials; it counts a sentence only before an uppercase letter or an opening quote and ignores single-letter initials), 2 low left, named: `Dr.`, `Nr.` and ordinals like `3. Mai` still count as sentence ends until the German pack has its own abbreviation list; `usesWord` matches by substring, so a very short lemma could match inside another word. The one-text change (Listen, translation) came after that review and needs the reviewer once more.
+- Review of the one-text change and the audio button: 1 blocking (a TS error in a story), 1 medium (speech kept playing after leaving Read; now stopped by `useListening` on unmount), 1 low (stale "paragraph" wording in metas, `DESIGN.md` and `plan.md`), all fixed. Left, named: Android `Speech.speak` limits text to about 4000 characters and the story length is not capped in `storyProblems`; the word card keeps its own small speaker button.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm run test:ci` (Ubuntu image in Docker) → exit 0: 8 languages, 16 i18n, 100 core, 431 app (140 files, EN and RU); navigation, storage, home, flashcards, listen and read e2e all passed (read e2e: one text, Listen then Stop, show and hide translation, quiz with one wrong answer, `4 of 5 right`, saved `read 4/5`).
+- Late changes from the owner (all checked in stories and the read e2e): no story title; marked words are coloured by gender role with no underline on every platform, grey for adjectives and verbs (no underline); the tapped word opens a small popup right under it (`mt-1` gap, as wide as its content, centred on the word and kept inside the text), anchored with the text line layout on the phone app and the element boxes on the web; the translation button is "Translation" with the book icon; the e2e runs against the web export, so rebuild it first (`npx nx run @daily-chunk/app:export:web`) when running one script by hand. Not verified on a device: the popup position and the coloured words on the A54.
+- Evidence (final run): `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm run test:ci` → exit 0, navigation, storage, home, flashcards, listen and read e2e passed.
+- Please read: the Russian strings `common.stop`, `read.showTranslation`, `read.hideTranslation`, `quiz.title`, `quiz.question`, `quiz.answers`, `quiz.next`, `quiz.passed`, `quiz.failed`, `read.startQuiz`.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
