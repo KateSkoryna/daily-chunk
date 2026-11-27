@@ -79,6 +79,7 @@ const expectedVariantStyles = {
   'label-sm': { family: 'pixel', sizeInRem: 1.25 },
   ui: { family: 'pixel', sizeInRem: 1.375 },
   caption: { family: 'pixel', sizeInRem: 1.125 },
+  'label-xs': { family: 'pixel', sizeInRem: 0.75 },
   'word-xl': { family: 'content-semibold', sizeInRem: 3 },
   'word-l': { family: 'content-semibold', sizeInRem: 1.375 },
   option: { family: 'content-semibold', sizeInRem: 1.125 },
@@ -123,6 +124,7 @@ async function expectVariantStyles(
 
   expect(colours.get('label')).toBe(colours.get('label-sm'));
   expect(colours.get('caption')).toBe(colours.get('body-sm'));
+  expect(colours.get('label-xs')).toBe(colours.get('caption'));
   expect(colours.get('body')).toBe(colours.get('chip'));
   expect(colours.get('label')).not.toBe(colours.get('body'));
   expect(colours.get('display-num')).not.toBe(colours.get('body'));
