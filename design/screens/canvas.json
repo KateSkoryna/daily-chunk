@@ -21,7 +21,7 @@
     "Done.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S9 Lesson done",
+      "title": "S11 Lesson done (not built yet)",
       "w": 390,
       "x": 470,
       "y": 1264
@@ -29,17 +29,17 @@
     "Flashcards.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S3 Task 1 · Flashcards",
+      "title": "S4 Task 1 · Flashcards",
       "w": 390,
-      "x": 940,
+      "x": 1410,
       "y": 0
     },
     "GapFill.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S7 Task 5 · Gap fill",
+      "title": "S9 Task 6 · Gap fill (not built yet)",
       "w": 390,
-      "x": 2820,
+      "x": 6580,
       "y": 0
     },
     "Lessons.dc.html": {
@@ -53,9 +53,9 @@
     "Listen.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S4 Task 2 · Listen & shadow",
+      "title": "S6 Task 3 · Listen & shadow, step 1 listen",
       "w": 390,
-      "x": 1410,
+      "x": 2820,
       "y": 0
     },
     "Logo.dc.html": {
@@ -91,17 +91,17 @@
     "Read.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S5 Task 3 · Read the story",
+      "title": "S7 Task 4 · Read the story, word card open",
       "w": 390,
-      "x": 1880,
+      "x": 4230,
       "y": 0
     },
     "Record.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S6 Task 4 · Read aloud",
+      "title": "Removed · Read aloud (replaced by task 5 Answer)",
       "w": 390,
-      "x": 2350,
+      "x": 7050,
       "y": 0
     },
     "Review.dc.html": {
@@ -147,7 +147,7 @@
     "Translate.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "S8 Task 6 · RU → DE",
+      "title": "S10 Task 7 · RU → DE (not built yet)",
       "w": 390,
       "x": 0,
       "y": 1264
@@ -159,6 +159,78 @@
       "w": 390,
       "x": 1410,
       "y": 1264
+    },
+    "Crossword.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S5 Task 2 · Crossword",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "CrosswordActive.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "S5 Task 2 · Crossword, word 1 selected",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "Overview.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "w": 390,
+      "x": 940,
+      "y": 0,
+      "title": "S3 Lesson overview"
+    },
+    "ReadQuiz.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "w": 390,
+      "x": 5170,
+      "y": 0,
+      "title": "S7 Task 4 · Quiz, right answer"
+    },
+    "Answer.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "w": 390,
+      "x": 6110,
+      "y": 0,
+      "title": "S8 Task 5 · Answer"
+    },
+    "ListenRepeat.dc.html": {
+      "is_interactive": true,
+      "w": 390,
+      "x": 3290,
+      "y": 0,
+      "title": "S6 Task 3 · Listen & shadow, step 2 repeat, before recording",
+      "h": 844
+    },
+    "ReadTranslation.dc.html": {
+      "is_interactive": true,
+      "w": 390,
+      "x": 4700,
+      "y": 0,
+      "title": "S7 Task 4 · Read the story, translation shown",
+      "h": 1240
+    },
+    "ReadQuizWrong.dc.html": {
+      "is_interactive": true,
+      "w": 390,
+      "x": 5640,
+      "y": 0,
+      "title": "S7 Task 4 · Quiz, wrong answer",
+      "h": 844
+    },
+    "ListenScore.dc.html": {
+      "is_interactive": true,
+      "w": 390,
+      "h": 1060,
+      "title": "S6 Task 3 · Listen & shadow, step 2 repeat, scored",
+      "x": 3760,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -180,8 +252,8 @@
   "notes": {
     "t1": {
       "kind": "title1",
-      "maxW": 3210,
-      "text": "Add words → lesson tasks 1–5",
+      "maxW": 7440,
+      "text": "Add words → lesson tasks 1–6",
       "w": 240,
       "x": 0,
       "y": -300
@@ -189,7 +261,7 @@
     "t2": {
       "kind": "title1",
       "maxW": 3210,
-      "text": "Task 6, review, tests, settings, notifications",
+      "text": "Task 7, review, tests, settings, notifications",
       "w": 240,
       "x": 0,
       "y": 964
@@ -206,10 +278,18 @@
   "order": [
     "Main.dc.html",
     "Confirm.dc.html",
+    "Overview.dc.html",
     "Flashcards.dc.html",
+    "Crossword.dc.html",
+    "CrosswordActive.dc.html",
     "Listen.dc.html",
+    "ListenRepeat.dc.html",
+    "ListenScore.dc.html",
     "Read.dc.html",
-    "Record.dc.html",
+    "ReadTranslation.dc.html",
+    "ReadQuiz.dc.html",
+    "ReadQuizWrong.dc.html",
+    "Answer.dc.html",
     "GapFill.dc.html",
     "Translate.dc.html",
     "Done.dc.html",
@@ -223,7 +303,8 @@
     "Account.dc.html",
     "Lessons.dc.html",
     "Score.dc.html",
-    "Stats.dc.html"
+    "Stats.dc.html",
+    "Record.dc.html"
   ],
   "pages": [],
   "title": "Daily Chunk Mobile"

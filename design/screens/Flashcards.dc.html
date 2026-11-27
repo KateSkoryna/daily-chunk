@@ -8,60 +8,85 @@
 <body>
 <x-dc>
 <helmet>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=VT323&amp;family=Pixelify+Sans&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&amp;family=Handjet&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
 a{text-decoration:none}
-button{font-family:inherit}
+button{font-family:inherit;padding:0}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 48px 24px 16px; display: flex; flex-direction: column; gap: 16px; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'VT323', 'Pixelify Sans', monospace; font-size: 22px">
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 24px; letter-spacing: 2px">
-<a href="Confirm.dc.html" aria-label="Quit lesson" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: #2EE6D6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 3 L17 17 M17 3 L3 17"></path></svg></a>
-<span style="color: #A9A3C2">LESSON 13</span>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 56px 24px 16px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; position: relative; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'Handjet', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; font-size: 24px; letter-spacing: 2px; color: #A9A3C2">
+<a href="Overview.dc.html" aria-label="Back" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M15 3 L6 12 L15 21"></path></svg><span>BACK</span></a>
+<span>LESSON 13</span>
+<a href="Main.dc.html" aria-label="Quit" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><span>QUIT</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M4 4 L20 20 M20 4 L4 20"></path></svg></a>
 </div>
-<div role="progressbar" aria-label="Lesson step 1 of 6" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" style="display: flex; flex-direction: column; gap: 8px">
+<div role="progressbar" aria-label="Lesson step 1 of 7" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1" style="display: flex; flex-direction: column; gap: 8px">
 <div style="display: flex; justify-content: space-between; font-size: 20px; letter-spacing: 2px"><span style="color: #FF3D8B">01 / FLASHCARDS</span><span style="color: #A9A3C2">+0 XP</span></div>
-<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px"><i style="display: block; height: 8px; background: #FFD23F; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i><i style="display: block; height: 8px; background: #251E48; border-radius: 2px"></i></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px"><i style="display: block; height: 8px; background: #FFD23F"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i></div>
 </div>
-<div style="font-size: 20px; color: #A9A3C2; letter-spacing: 1px">CARD 1 OF 4</div>
-<button type="button" onClick="{{flip}}" aria-label="Flip card" style="{{cardStyle}}">
-<sc-if value="{{front}}" hint-placeholder-val="{{true}}">
-<span style="align-self: flex-start; display: flex; align-items: center; height: 32px; padding: 0 10px; background: #5AA9FF; color: #120E24; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 16px">der</span>
-<span style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 36px; line-height: 42px; text-align: left">der Bahnhof</span>
-<span style="font-size: 18px; color: #A9A3C2">TAP TO FLIP</span>
-</sc-if>
-<sc-if value="{{back}}" hint-placeholder-val="{{false}}">
-<span style="display: flex; flex-direction: column; gap: 4px; text-align: left">
-<span style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px">die Bahnhöfe <span style="font-family: 'VT323', monospace; font-weight: 400; font-size: 18px; color: #FFB547">PL.</span></span>
-<span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; line-height: 26px; color: #A9A3C2">вокзал (м. р.)</span>
-</span>
-<span style="display: flex; flex-direction: column; gap: 2px; text-align: left; font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; line-height: 26px">
-<span>Ich warte am Bahnhof.</span>
-<span style="color: #A9A3C2">Я жду на вокзале.</span>
-</span>
-<span style="font-size: 18px; color: #A9A3C2">TAP TO FLIP BACK</span>
-</sc-if>
+<span style="font-size: 18px; color: #A9A3C2">{{counter}}</span>
+<div style="display: flex; justify-content: center; gap: 16px"><sc-for list="{{dots}}" as="dot" hint-placeholder-count="3"><i style="{{dot.style}}"></i></sc-for></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<button type="button" onClick="{{previous}}" aria-label="Previous card" aria-disabled="{{isFirst}}" style="{{previousStyle}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M15 3 L6 12 L15 21"></path></svg></button>
+<div style="flex: 1; position: relative; padding-top: 16px">
+<span style="{{chipStyle}}">{{article}}</span>
+<button type="button" onClick="{{tip}}" aria-label="Tip" style="{{tipStyle}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M9 16 V14 a6 6 0 1 1 6 0 V16 Z"></path><path d="M9 19 H15 M10 22 H14"></path></svg></button>
+<button type="button" onClick="{{flip}}" aria-label="{{flipLabel}}" style="width: 100%; min-height: 220px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 24px 16px 32px; text-align: left; background: {{cardBackground}}; border: 2px solid #5A4E96; box-shadow: 4px 4px 0 #FF3D8B; color: #F3EFE6; cursor: pointer; position: relative">
+<span style="{{frontStyle}}"><span style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 40px; line-height: 48px">{{word}}</span><span style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 18px; line-height: 24px; color: #FFB547">{{plural}} <span style="font-family: Handjet, monospace; font-weight: 400; color: #A9A3C2">(Pl.)</span></span><span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; line-height: 26px; color: #A9A3C2">{{meaning}}</span></span>
+<span style="{{backStyle}}"><span style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px">{{sentence}}</span><span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; line-height: 26px; color: #A9A3C2">{{sentenceTranslation}}</span></span>
+<span style="position: absolute; right: 12px; bottom: 8px; font-size: 18px; color: #A9A3C2">{{flipHint}}</span>
 </button>
-<div style="display: flex; justify-content: center">
-<button type="button" aria-label="Play pronunciation" style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 16px; background: transparent; border: 2px solid #2EE6D6; color: #2EE6D6; font-size: 22px; letter-spacing: 2px; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z M17 9a4 4 0 0 1 0 6"></path></svg>LISTEN</button>
 </div>
-<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-<button type="button" style="height: 64px; background: transparent; border: 2px solid #FF3D8B; color: #FF3D8B; font-family: 'Bungee', sans-serif; font-size: 16px; cursor: pointer">← AGAIN</button>
-<a href="Listen.dc.html" style="display: flex; align-items: center; justify-content: center; height: 64px; background: #FFD23F; color: #120E24; font-family: 'Bungee', sans-serif; font-size: 16px; box-shadow: 4px 4px 0 #FF3D8B">KNEW IT →</a>
+<button type="button" onClick="{{next}}" aria-label="Next card" style="{{nextStyle}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M9 3 L18 12 L9 21"></path></svg></button>
 </div>
+<div style="{{tipCardStyle}}"><span style="font-size: 20px; letter-spacing: 2px; color: #2EE6D6">GOOD TO KNOW</span><span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; line-height: 22px">{{tipText}}</span></div>
+<button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 56px; width: auto; padding: 0 24px; background: transparent; border: 2px solid #2EE6D6; color: #2EE6D6; font-family: 'Russo One', sans-serif; font-size: 16px; cursor: pointer; align-self: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 z"></path><path d="M17 9 a4 4 0 0 1 0 6"></path></svg><span>LISTEN</span></button>
+<a href="Crossword.dc.html" style="display: flex; align-items: center; justify-content: center; height: 64px; flex: none; border: 0; background: #FFD23F; color: #120E24; font-family: 'Russo One', sans-serif; font-size: 20px; box-shadow: 4px 4px 0 #FF3D8B; cursor: pointer; margin-top: auto">NEXT SECTION →</a>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-state = { flipped: false };
+cards = [
+{ article: 'der', gender: '#5AA9FF', word: 'Bahnhof', plural: 'die Bahnhöfe', meaning: 'station', sentence: 'Ich warte am Bahnhof.', sentenceTranslation: 'I am waiting at the station.', tip: '' },
+{ article: 'die', gender: '#FF6B6B', word: 'Fahrkarte', plural: 'die Fahrkarten', meaning: 'ticket', sentence: 'Sie sucht ihre Fahrkarte in der Tasche.', sentenceTranslation: 'She is looking for her ticket in the bag.', tip: '' },
+{ article: 'das', gender: '#4ADE80', word: 'Gleis', plural: 'die Gleise', meaning: 'platform', sentence: 'Der Zug fährt heute von Gleis drei ab.', sentenceTranslation: 'The train leaves from platform three today.', tip: 'No article before a number: "von Gleis drei", not "vom Gleis drei".' }
+];
+state = { index: 0, isFlipped: false, isTipOpen: false };
+go(index) {
+this.setState({ index, isFlipped: false, isTipOpen: false });
+}
 renderVals() {
-const f = this.state.flipped;
+const { index, isFlipped, isTipOpen } = this.state;
+const card = this.cards[index];
+const isFirst = index === 0;
+const isLast = index === this.cards.length - 1;
+const arrow = (enabled) => 'width: 48px; height: 56px; flex: none; display: flex; align-items: center; justify-content: center; cursor: pointer; ' + (enabled ? 'background: transparent; border: 2px solid #2EE6D6; color: #2EE6D6' : 'background: #251E48; border: 2px solid #251E48; color: #A9A3C2');
 return {
-front: !f,
-back: f,
-flip: () => this.setState({ flipped: !f }),
-cardStyle: 'height: 360px; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; cursor: pointer; color: #F3EFE6; border: 2px solid #5A4E96; box-shadow: 4px 4px 0 #FF3D8B; background: ' + (f ? '#251E48' : '#1B1636') + ';'
+counter: 'CARD ' + (index + 1) + ' OF ' + this.cards.length,
+dots: this.cards.map((_, position) => ({ style: 'display: block; width: 12px; height: 12px; box-sizing: border-box; ' + (position === index ? 'background: #FFD23F' : 'border: 2px solid #7A6CC4') })),
+isFirst: isFirst ? 'true' : 'false',
+previous: () => { if (!isFirst) this.go(index - 1); },
+previousStyle: arrow(!isFirst),
+next: () => { if (!isLast) this.go(index + 1); },
+nextStyle: arrow(!isLast),
+article: card.article,
+chipStyle: isFlipped ? 'display: none' : 'position: absolute; top: 0; left: 24px; z-index: 1; display: inline-flex; align-items: center; height: 32px; padding: 0 12px; background: ' + card.gender + '; color: #120E24; font-family: \'IBM Plex Sans\', sans-serif; font-weight: 600; font-size: 16px',
+tip: () => this.setState({ isTipOpen: !isTipOpen }),
+tipStyle: card.tip ? 'position: absolute; top: 24px; right: 8px; z-index: 1; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; ' + (isTipOpen ? 'background: #2EE6D6; color: #120E24; border: 2px solid #2EE6D6' : 'background: transparent; color: #2EE6D6; border: 2px solid #2EE6D6') : 'display: none',
+tipCardStyle: card.tip && isTipOpen ? 'display: flex; flex-direction: column; gap: 4px; padding: 12px; background: #1B1636; border: 2px solid #2EE6D6' : 'display: none',
+tipText: card.tip,
+flip: () => this.setState({ isFlipped: !isFlipped }),
+flipLabel: isFlipped ? 'Flip back to the word' : 'Flip to the example sentence',
+cardBackground: isFlipped ? '#251E48' : '#1B1636',
+frontStyle: isFlipped ? 'display: none' : 'display: flex; flex-direction: column; gap: 4px',
+backStyle: isFlipped ? 'display: flex; flex-direction: column; gap: 8px' : 'display: none',
+word: card.word,
+plural: card.plural,
+meaning: card.meaning,
+sentence: card.sentence,
+sentenceTranslation: card.sentenceTranslation,
+flipHint: isFlipped ? 'Tap to flip back' : 'Tap to flip'
 };
 }
 }
