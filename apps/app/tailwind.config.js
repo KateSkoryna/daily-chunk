@@ -83,6 +83,7 @@ module.exports = {
         ],
         ui: ['1.375rem', { lineHeight: '1.5625rem' }],
         caption: ['1.125rem', { lineHeight: '1.25rem' }],
+        'label-xs': ['0.75rem', { lineHeight: '0.75rem' }],
         'word-xl': ['3rem', { lineHeight: '3.5rem' }],
         'word-l': ['1.375rem', { lineHeight: '1.75rem' }],
         option: ['1.125rem', { lineHeight: '1.5rem' }],

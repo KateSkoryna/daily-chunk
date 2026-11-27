@@ -19,6 +19,7 @@ const variantClasses = {
   'label-sm': 'font-pixel text-label-sm uppercase text-highlight',
   ui: 'font-pixel text-ui',
   caption: 'font-pixel text-caption text-muted-foreground',
+  'label-xs': 'font-pixel text-label-xs text-muted-foreground',
   'word-xl': 'font-content-semibold text-word-xl',
   'word-l': 'font-content-semibold text-word-l',
   option: 'font-content-semibold text-option',

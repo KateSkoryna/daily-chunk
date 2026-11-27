@@ -180,6 +180,7 @@ Each style is one Tailwind `fontSize` entry (size + line height + letter spacing
 | `label-sm`       | pixel            | 1.25 / 1.25       | tracking 0.125rem, uppercase         | 03 / READ THE STORY       | Stepper label, tutor tab |
 | `ui`             | pixel            | 1.375 / 1.5625    |                                      | 5 words due today         | UI copy, tab labels      |
 | `caption`        | pixel            | 1.125 / 1.25      |                                      | Tap to flip               | Hints, metadata          |
+| `label-xs`       | pixel            | 0.75 / 0.75       | `ink-muted`                          | 4                         | Crossword cell number    |
 | `word-xl`        | content-semibold | 3 / 3.5           |                                      | der Bahnhof               | Flashcard front          |
 | `word-l`         | content-semibold | 1.375 / 1.75      |                                      | die Bahnhöfe              | Word in lists, plural    |
 | `option`         | content-semibold | 1.125 / 1.5       |                                      | des Bahnhofs              | Gap-fill options         |
@@ -188,7 +189,7 @@ Each style is one Tailwind `fontSize` entry (size + line height + letter spacing
 | `body`           | content          | 1.0625 / 1.625    |                                      | Он ждёт поезд на вокзале. | Sentences, translations  |
 | `body-sm`        | content          | 0.9375 / 1.375    |                                      | вокзал (м.)               | Translation under a word |
 
-`display-btn-sm`, `label-sm`, `option` and `chip` come from the component specs (`Button.md`, `LessonStepper.md`, `TutorQuote.md`, `GapFill.md`, `ArticleChip.md`). They're promoted to the scale so no component sets a font size inline.
+`label-xs` is the number in the corner of a crossword cell (owner, 2026-11-27); nothing else uses it. `display-btn-sm`, `label-sm`, `option` and `chip` come from the component specs (`Button.md`, `LessonStepper.md`, `TutorQuote.md`, `GapFill.md`, `ArticleChip.md`). They're promoted to the scale so no component sets a font size inline.
 
 Tutor quote text = `label` with line height 1.625rem (`TutorQuote.md`).
 
@@ -209,6 +210,7 @@ const variantClasses = {
   'label-sm': 'font-pixel text-label-sm uppercase text-highlight',
   ui: 'font-pixel text-ui',
   caption: 'font-pixel text-caption text-muted-foreground',
+  'label-xs': 'font-pixel text-label-xs text-muted-foreground',
   'word-xl': 'font-content-semibold text-word-xl',
   'word-l': 'font-content-semibold text-word-l',
   option: 'font-content-semibold text-option',
@@ -578,6 +580,7 @@ module.exports = {
         ],
         ui: ['1.375rem', { lineHeight: '1.5625rem' }],
         caption: ['1.125rem', { lineHeight: '1.25rem' }],
+        'label-xs': ['0.75rem', { lineHeight: '0.75rem' }],
         'word-xl': ['3rem', { lineHeight: '3.5rem' }],
         'word-l': ['1.375rem', { lineHeight: '1.75rem' }],
         option: ['1.125rem', { lineHeight: '1.5rem' }],

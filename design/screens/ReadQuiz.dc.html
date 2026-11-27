@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Task 4 Read the story, quiz, right answer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&amp;family=Handjet&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+button{font-family:inherit;padding:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 56px 24px 16px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; position: relative; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'Handjet', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; font-size: 24px; letter-spacing: 2px; color: #A9A3C2">
+<a href="Read.dc.html" aria-label="Back" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M15 3 L6 12 L15 21"></path></svg><span>BACK</span></a>
+<span>LESSON 13</span>
+<a href="Main.dc.html" aria-label="Quit" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><span>QUIT</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M4 4 L20 20 M20 4 L4 20"></path></svg></a>
+</div>
+<div role="progressbar" aria-label="Lesson step 4 of 7" aria-valuemin="1" aria-valuemax="7" aria-valuenow="4" style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 20px; letter-spacing: 2px"><span style="color: #FF3D8B">04 / READ THE STORY</span><span style="color: #A9A3C2">+60 XP</span></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px"><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #FFD23F"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i></div>
+</div>
+<span style="font-size: 24px; letter-spacing: 2px; color: #FF3D8B">{{label}}</span>
+<p style="margin: 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 20px; line-height: 32px">{{question}}</p>
+<div role="radiogroup" aria-label="Answers" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{options}}" as="option" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{option.checked}}" onClick="{{option.pick}}" style="{{option.style}}">{{option.text}}</button>
+</sc-for>
+</div>
+<div role="status" style="{{noticeStyle}}">{{notice}}</div>
+<button type="button" onClick="{{next}}" style="{{nextStyle}}">{{nextText}}</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+questions = [
+{ question: 'Wie lange wartet Anna schon?', options: ['eine Stunde', 'eine halbe Stunde', 'zehn Minuten'], answer: 'eine halbe Stunde' },
+{ question: 'Wann soll der Zug ankommen?', options: ['18:40 Uhr', '18:04 Uhr', '16:40 Uhr'], answer: '18:40 Uhr' },
+{ question: 'Wo hat Anna die Fahrkarte gekauft?', options: ['am Schalter', 'im Zug', 'im Internet'], answer: 'im Internet' },
+{ question: 'Wie viel hat die Fahrkarte gekostet?', options: ['19 Euro', '29 Euro', '39 Euro'], answer: '29 Euro' },
+{ question: 'Von welchem Gleis fährt der Zug nach Berlin ab?', options: ['Gleis acht', 'Gleis drei', 'Gleis zwei'], answer: 'Gleis drei' }
+];
+state = { index: 0, answers: ['eine halbe Stunde'] };
+renderVals() {
+const { index, answers } = this.state;
+const current = this.questions[index];
+const given = answers[index];
+const isAnswered = given !== undefined;
+const isLast = index === this.questions.length - 1;
+const correct = this.questions.filter((question, position) => answers[position] === question.answer).length;
+const base = 'min-height: 56px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #1B1636; font-family: \'IBM Plex Sans\', sans-serif; font-weight: 600; font-size: 18px; cursor: pointer; ';
+return {
+label: 'QUIZ · QUESTION ' + (index + 1) + ' OF ' + this.questions.length,
+question: current.question,
+options: current.options.map((text) => {
+const isRight = text === current.answer;
+const isPicked = text === given;
+let style = base + 'border: 2px solid #7A6CC4; color: #F3EFE6';
+let mark = '';
+if (isAnswered && isRight) { style = base + 'border: 2px solid #2EE6D6; color: #2EE6D6'; mark = '✓ '; }
+if (isAnswered && isPicked && !isRight) { style = base + 'border: 2px solid #FF3D8B; color: #FF3D8B'; mark = '✗ '; }
+return { text: mark + text, checked: isPicked ? 'true' : 'false', style, pick: () => { if (!isAnswered) this.setState({ answers: Object.assign([...answers], { [index]: text }) }); } };
+}),
+notice: correct >= 4 ? correct + ' OF 5 RIGHT. THIS COUNTS TOWARD YOUR NEXT LEVEL.' : correct + ' OF 5 RIGHT. YOU NEED 4 TO COUNT TOWARD THE NEXT LEVEL.',
+noticeStyle: isAnswered && isLast ? 'margin-top: auto; padding: 10px 12px; border: 2px dashed #FFB547; color: #FFB547; font-size: 20px; letter-spacing: 2px' : 'display: none',
+next: () => { if (isAnswered && !isLast) this.setState({ index: index + 1 }); },
+nextText: isLast ? 'NEXT SECTION →' : 'NEXT QUESTION →',
+nextStyle: isAnswered ? (isLast ? '' : 'margin-top: auto; ') + 'height: 64px; flex: none; border: 0; background: #FFD23F; color: #120E24; font-family: \'Russo One\', sans-serif; font-size: 20px; box-shadow: 4px 4px 0 #FF3D8B; cursor: pointer' : 'display: none'
+};
+}
+}
+</script>
+</body>
+</html>

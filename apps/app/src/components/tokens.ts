@@ -43,6 +43,7 @@ export const textVariants = [
   'display-btn-sm',
   'label',
   'label-sm',
+  'label-xs',
   'ui',
   'caption',
   'word-xl',

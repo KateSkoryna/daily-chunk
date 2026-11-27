@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Task 2 Crossword, word selected</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Russo+One&amp;family=Handjet&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+          a {
+            text-decoration: none;
+          }
+          button {
+            font-family: inherit;
+            padding: 0;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 390px;
+          height: 844px;
+          box-sizing: border-box;
+          padding: 48px 24px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          background-color: #120e24;
+          background-image: repeating-linear-gradient(
+            0deg,
+            rgba(243, 239, 230, 0.04) 0,
+            rgba(243, 239, 230, 0.04) 1px,
+            transparent 1px,
+            transparent 4px
+          );
+          color: #f3efe6;
+          font-family: 'Handjet', monospace;
+          font-size: 22px;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 24px;
+            letter-spacing: 2px;
+          "
+        >
+          <a
+            href="Flashcards.dc.html"
+            aria-label="Back"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              min-height: 48px;
+              color: #2ee6d6;
+            "
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="square"
+              aria-hidden="true"
+            >
+              <path d="M10 2 L4 8 L10 14"></path></svg
+            ><span>BACK</span></a
+          >
+          <span style="color: #a9a3c2">LESSON 13</span>
+        </div>
+        <div
+          role="progressbar"
+          aria-label="Lesson step 2 of 7"
+          aria-valuemin="1"
+          aria-valuemax="7"
+          aria-valuenow="2"
+          style="display: flex; flex-direction: column; gap: 8px"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 20px;
+              letter-spacing: 2px;
+            "
+          >
+            <span style="color: #ff3d8b">02 / CROSSWORD</span
+            ><span style="color: #a9a3c2">+20 XP</span>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(7, minmax(0, 1fr));
+              gap: 4px;
+            "
+          >
+            <i style="display: block; height: 8px; background: #2ee6d6"></i
+            ><i style="display: block; height: 8px; background: #ffd23f"></i
+            ><i style="display: block; height: 8px; background: #251e48"></i
+            ><i style="display: block; height: 8px; background: #251e48"></i
+            ><i style="display: block; height: 8px; background: #251e48"></i
+            ><i style="display: block; height: 8px; background: #251e48"></i
+            ><i style="display: block; height: 8px; background: #251e48"></i>
+          </div>
+        </div>
+        <div style="{{titleStyle}}">
+          <h1
+            style="
+              margin: 0;
+              font-family: 'Handjet', monospace;
+              font-weight: 400;
+              font-size: 24px;
+              line-height: 24px;
+              letter-spacing: 2px;
+              color: #ff3d8b;
+            "
+          >
+            FIND THE WORDS
+          </h1>
+        </div>
+        <div
+          role="grid"
+          aria-label="Crossword"
+          style="
+            display: grid;
+            grid-template-columns: repeat(9, 32px);
+            grid-auto-rows: 32px;
+            gap: 4px;
+            justify-content: center;
+          "
+        >
+          <sc-for list="{{cells}}" as="cell" hint-placeholder-count="63">
+            <button
+              type="button"
+              role="gridcell"
+              onClick="{{cell.pick}}"
+              aria-label="{{cell.label}}"
+              aria-hidden="{{cell.hidden}}"
+              tabindex="{{cell.tab}}"
+              style="{{cell.style}}"
+            >
+              <span style="{{cell.numberStyle}}">{{cell.number}}</span
+              ><span>{{cell.letter}}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="{{idleStyle}}">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="square"
+            stroke-linejoin="miter"
+            aria-hidden="true"
+            style="{{idleIconStyle}}"
+          >
+            <path d="M9 16 V14 a6 6 0 1 1 6 0 V16 Z"></path>
+            <path d="M9 19 H15 M10 22 H14"></path>
+          </svg>
+          <span style="font-size: 18px; line-height: 20px; color: {{idleColor}}"
+            >{{idleText}}</span
+          >
+        </div>
+        <div style="{{panelStyle}}">
+          <div style="display: flex; align-items: flex-start; gap: 8px">
+            <div
+              style="
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                min-width: 0;
+              "
+            >
+              <span style="font-size: 20px; letter-spacing: 2px; color: #ff3d8b"
+                >{{clueLabel}}</span
+              >
+              <span
+                style="
+                  font-family: 'IBM Plex Sans', sans-serif;
+                  font-size: 17px;
+                  line-height: 24px;
+                "
+                >{{clueText}}</span
+              >
+            </div>
+            <button
+              type="button"
+              aria-label="Close the keyboard"
+              onClick="{{close}}"
+              style="
+                width: 48px;
+                height: 48px;
+                flex: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                border: 2px solid #7a6cc4;
+                color: #f3efe6;
+                cursor: pointer;
+              "
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="square"
+                aria-hidden="true"
+              >
+                <path d="M3 3 L13 13 M13 3 L3 13"></path>
+              </svg>
+            </button>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 8px">
+            <div role="status" style="{{feedbackStyle}}">
+              <span style="{{chipStyle}}">{{chipText}}</span
+              ><span>{{feedback}}</span>
+            </div>
+            <button
+              type="button"
+              onClick="{{hint}}"
+              aria-disabled="{{hintDisabled}}"
+              aria-label="{{hintText}}"
+              style="{{hintStyle}}"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="square"
+                stroke-linejoin="miter"
+                aria-hidden="true"
+              >
+                <path d="M9 16 V14 a6 6 0 1 1 6 0 V16 Z"></path>
+                <path d="M9 19 H15 M10 22 H14"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div role="group" aria-label="Keyboard" style="{{keyboardStyle}}">
+          <div style="display: flex; gap: 4px; justify-content: center">
+            <sc-for list="{{row1}}" as="key" hint-placeholder-count="11">
+              <button
+                type="button"
+                onClick="{{key.press}}"
+                aria-label="{{key.label}}"
+                style="{{key.style}}"
+              >
+                {{key.text}}
+              </button>
+            </sc-for>
+          </div>
+          <div style="display: flex; gap: 4px; justify-content: center">
+            <sc-for list="{{row2}}" as="key" hint-placeholder-count="11">
+              <button
+                type="button"
+                onClick="{{key.press}}"
+                aria-label="{{key.label}}"
+                style="{{key.style}}"
+              >
+                {{key.text}}
+              </button>
+            </sc-for>
+          </div>
+          <div style="display: flex; gap: 4px; justify-content: center">
+            <sc-for list="{{row3}}" as="key" hint-placeholder-count="8">
+              <button
+                type="button"
+                onClick="{{key.press}}"
+                aria-label="{{key.label}}"
+                style="{{key.style}}"
+              >
+                {{key.text}}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick="{{primary}}"
+          aria-disabled="{{primaryDisabled}}"
+          style="{{primaryStyle}}"
+        >
+          {{primaryText}}
+        </button>
+      </div>
+    </x-dc>
+    <script
+      type="text/x-dc"
+      data-dc-script
+      data-props='{"$preview":{"width":390,"height":844}}'
+    >
+      class Component extends DCLogic {
+      words = [
+      { number: 1, direction: 'down', row: 0, col: 2, answer: 'BAHNHOF', isLink: false, article: 'der', gender: '#5AA9FF', translation: 'вокзал', clue: 'Ein Gebäude, in dem sich Reisende und Züge treffen.' },
+      { number: 2, direction: 'across', row: 0, col: 6, answer: 'ZUG', isLink: true, article: 'der', gender: '#5AA9FF', translation: 'поезд', clue: 'Er fährt auf Schienen und hält am Bahnhof.' },
+      { number: 3, direction: 'down', row: 0, col: 8, answer: 'GLEIS', isLink: false, article: 'das', gender: '#4ADE80', translation: 'путь, платформа', clue: 'Zwei Schienen mit einer Nummer, von denen der Zug abfährt.' },
+      { number: 4, direction: 'across', row: 2, col: 0, answer: 'FAHRKARTE', isLink: false, article: 'die', gender: '#FF6B6B', translation: 'билет', clue: 'Ohne sie darfst du nicht mitfahren. Du kaufst sie am Automaten.' }
+      ];
+      given = ['2,2', '0,8', '2,8'];
+      state = { active: 0, entries: { '2,2': 'H', '0,8': 'G', '2,8': 'E', '0,2': 'B', '1,2': 'A' }, solved: [], wrongTries: {}, autoFilled: [], hintsUsed: [], status: 'open', lastSolved: null };
+      cellsOf(word) {
+      return word.answer.split('').map((letter, index) => ({ key: word.direction === 'down' ? (word.row + index) + ',' + word.col : word.row + ',' + (word.col + index), letter }));
+      }
+      nextCell(state) {
+      return this.cellsOf(this.words[state.active]).find((cell) => !state.entries[cell.key]);
+      }
+      pick(index) {
+      if (this.state.solved.includes(index)) return;
+      this.setState({ active: index, status: 'open' });
+      }
+      close() {
+      this.setState({ active: null, status: 'open' });
+      }
+      type(letter) {
+      const state = this.state;
+      if (state.active === null) return;
+      const cell = this.nextCell(state);
+      if (!cell) return;
+      const entries = { ...state.entries };
+      const wrongTries = { ...state.wrongTries };
+      const autoFilled = [...state.autoFilled];
+      let status = 'right';
+      if (letter === cell.letter) {
+      entries[cell.key] = letter;
+      } else {
+      wrongTries[cell.key] = (wrongTries[cell.key] || 0) + 1;
+      status = 'wrong';
+      if (wrongTries[cell.key] >= 3) { entries[cell.key] = cell.letter; autoFilled.push(cell.key); status = 'auto'; }
+      }
+      const isDone = this.cellsOf(this.words[state.active]).every((wordCell) => entries[wordCell.key]);
+      if (isDone) {
+      this.setState({ entries, wrongTries, autoFilled, solved: [...state.solved, state.active], active: null, status: 'solved', lastSolved: state.active });
+      return;
+      }
+      this.setState({ entries, wrongTries, autoFilled, status, lastWrong: status === 'wrong' ? letter : null });
+      }
+      useHint() {
+      const state = this.state;
+      if (state.active === null || state.hintsUsed.includes(state.active)) return;
+      this.setState({ hintsUsed: [...state.hintsUsed, state.active] });
+      }
+      renderVals() {
+      const state = this.state;
+      const hasActive = state.active !== null;
+      const activeWord = hasActive ? this.words[state.active] : null;
+      const activeKeys = hasActive ? this.cellsOf(activeWord).map((cell) => cell.key) : [];
+      const allSolved = state.solved.length === this.words.length;
+      const starts = {};
+      this.words.forEach((word) => { starts[word.row + ',' + word.col] = word.number; });
+      const ownersOf = (key) => this.words.map((word, index) => ({ word, index })).filter(({ word }) => this.cellsOf(word).some((cell) => cell.key === key));
+      const cursor = hasActive ? this.nextCell(state) : null;
+      const cellLook = (key) => {
+      const owners = ownersOf(key);
+      const solvedOwners = owners.filter(({ index }) => state.solved.includes(index));
+      const isLessonSolved = solvedOwners.some(({ word }) => !word.isLink);
+      const isLinkSolved = solvedOwners.length > 0 && !isLessonSolved;
+      const isCursor = cursor && cursor.key === key;
+      let border = '#7A6CC4';
+      let color = '#F3EFE6';
+      let background = '#1B1636';
+      if (this.given.includes(key)) { background = '#251E48'; }
+      if (isLinkSolved) { border = '#5A4E96'; color = '#A9A3C2'; }
+      if (isLessonSolved) { border = '#2EE6D6'; color = '#2EE6D6'; }
+      if (activeKeys.includes(key)) { background = '#251E48'; border = '#2EE6D6'; }
+      if (isCursor) border = state.status === 'wrong' ? '#FF3D8B' : '#FFD23F';
+      return 'width: 32px; height: 32px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: ' + background + '; border: ' + (isCursor ? 3 : 2) + 'px ' + (state.autoFilled.includes(key) ? 'dashed' : 'solid') + ' ' + border + '; color: ' + color + '; font-family: \'IBM Plex Sans\', sans-serif; font-weight: 600; font-size: 18px';
+      };
+      const cells = [];
+      for (let row = 0; row < 7; row += 1) {
+      for (let col = 0; col < 9; col += 1) {
+      const key = row + ',' + col;
+      const owners = ownersOf(key);
+      if (owners.length === 0) {
+      cells.push({ hidden: 'true', tab: '-1', label: '', number: '', letter: '', numberStyle: 'display: none', style: 'visibility: hidden; border: 0; background: transparent', pick: () => {} });
+      continue;
+      }
+      const open = owners.filter(({ index }) => !state.solved.includes(index));
+      const target = open.length > 1 && activeKeys.includes(key) ? open.find(({ index }) => index !== state.active) : open[0];
+      cells.push({
+      hidden: 'false',
+      tab: '0',
+      number: starts[key] || '',
+      letter: state.entries[key] || '',
+      label: owners.map(({ word }) => word.number + ' ' + word.direction).join(' and ') + (state.entries[key] ? ', ' + state.entries[key] : ', empty'),
+      numberStyle: starts[key] ? 'position: absolute; top: 2px; left: 2px; font-family: Handjet, monospace; font-size: 12px; line-height: 12px; color: #A9A3C2' : 'display: none',
+      style: 'position: relative; cursor: pointer; ' + cellLook(key),
+      pick: () => { if (target) this.pick(target.index); }
+      });
+      }
+      }
+      const keyStyle = 'flex: 0 0 calc((100% - 40px) / 11); height: 48px; background: #1B1636; border: 2px solid #7A6CC4; color: #F3EFE6; font-family: \'IBM Plex Sans\', sans-serif; font-weight: 600; font-size: 16px; cursor: pointer';
+      const letterKeys = (letters) => letters.split('').map((letter) => ({ text: letter, label: letter, style: keyStyle, press: () => this.type(letter) }));
+      const tries = cursor ? (state.wrongTries[cursor.key] || 0) : 0;
+      let feedback = '';
+      let feedbackColor = '#A9A3C2';
+      if (hasActive) feedback = activeWord.isLink ? 'Link word: joins your words, does not count.' : 'Lesson word · ' + activeWord.answer.length + ' letters';
+      if (hasActive && state.hintsUsed.includes(state.active)) feedback = 'Hint: ' + activeWord.translation;
+      if (state.status === 'wrong') { feedback = '✗ Not ' + state.lastWrong + '. ' + (3 - tries) + (3 - tries === 1 ? ' try' : ' tries') + ' left, then Chunk fills it in.'; feedbackColor = '#FF3D8B'; }
+      if (state.status === 'auto') { feedback = 'Chunk filled in that letter. Keep going.'; feedbackColor = '#2EE6D6'; }
+      const solvedWord = state.lastSolved !== null ? this.words[state.lastSolved] : null;
+      const isHintUsed = hasActive && state.hintsUsed.includes(state.active);
+      let idleText = 'Tap the first letter of a word, the one with a number, to start.';
+      let idleColor = '#F3EFE6';
+      if (state.status === 'solved' && solvedWord) idleColor = '#2EE6D6';
+      if (state.status === 'solved' && solvedWord) idleText = '✓ ' + solvedWord.article + ' ' + solvedWord.answer.charAt(0) + solvedWord.answer.slice(1).toLowerCase() + '. Tap the next word.';
+      if (allSolved) idleText = '✓ All words found.';
+      const showsLamp = state.status !== 'solved' && !allSolved;
+      return {
+      cells,
+      idleText,
+      idleColor,
+      idleIconStyle: showsLamp ? 'flex: none; color: #2EE6D6' : 'display: none',
+      idleStyle: hasActive ? 'display: none' : 'display: flex; align-items: center; gap: 8px; padding: 12px; border: 2px dashed #5A4E96',
+      titleStyle: 'display: flex; margin-bottom: 8px',
+      panelStyle: hasActive ? 'display: flex; flex-direction: column; gap: 8px; padding: 8px; background: #1B1636; border: 2px solid ' + (activeWord.isLink ? '#5A4E96' : '#2EE6D6') : 'display: none',
+      clueLabel: hasActive ? activeWord.number + (activeWord.direction === 'down' ? ' ↓ DOWN' : ' → ACROSS') + (activeWord.isLink ? ' · LINK WORD' : '') : '',
+      clueText: hasActive ? activeWord.clue : '',
+      close: () => this.close(),
+      feedback,
+      feedbackStyle: 'flex: 1; display: flex; align-items: flex-end; min-height: 48px; font-size: 18px; line-height: 20px; color: ' + feedbackColor,
+      chipText: '',
+      chipStyle: 'display: none',
+      hint: () => this.useHint(),
+      hintDisabled: isHintUsed ? 'true' : 'false',
+      hintText: isHintUsed ? 'Hint used' : 'Show a hint: the translation',
+      hintStyle: 'width: 48px; height: 48px; flex: none; display: flex; align-items: center; justify-content: center; background: transparent; border: 2px solid ' + (isHintUsed ? '#5A4E96' : '#2EE6D6') + '; color: ' + (isHintUsed ? '#A9A3C2' : '#2EE6D6') + '; cursor: pointer',
+      keyboardStyle: hasActive ? 'display: flex; flex-direction: column; gap: 4px; margin-top: auto' : 'display: none',
+      row1: letterKeys('QWERTZUIOPÜ'),
+      row2: letterKeys('ASDFGHJKLÖÄ'),
+      row3: letterKeys('YXCVBNMß'),
+      primaryText: 'NEXT SECTION →',
+      primaryDisabled: allSolved ? 'false' : 'true',
+      primaryStyle: hasActive ? 'display: none' : 'margin-top: auto; height: 64px; flex: none; border: 0; background: ' + (allSolved ? '#FFD23F' : '#251E48') + '; color: ' + (allSolved ? '#120E24' : '#A9A3C2') + '; font-family: \'Russo One\', sans-serif; font-size: 20px; box-shadow: ' + (allSolved ? '4px 4px 0 #FF3D8B' : 'none') + '; cursor: pointer',
+      primary: () => {}
+      };
+      }
+      }
+    </script>
+  </body>
+</html>

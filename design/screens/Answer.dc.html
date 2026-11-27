@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Task 5 Answer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&amp;family=Handjet&amp;family=IBM+Plex+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{text-decoration:none}
+button{font-family:inherit;padding:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 56px 24px 16px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; position: relative; background-color: #120E24; background-image: repeating-linear-gradient(0deg, rgba(243,239,230,0.04) 0, rgba(243,239,230,0.04) 1px, transparent 1px, transparent 4px); color: #F3EFE6; font-family: 'Handjet', monospace; font-size: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; font-size: 24px; letter-spacing: 2px; color: #A9A3C2">
+<a href="ReadQuiz.dc.html" aria-label="Back" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M15 3 L6 12 L15 21"></path></svg><span>BACK</span></a>
+<span>LESSON 13</span>
+<a href="Main.dc.html" aria-label="Quit" style="display: flex; align-items: center; gap: 8px; min-height: 48px; color: #A9A3C2"><span>QUIT</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M4 4 L20 20 M20 4 L4 20"></path></svg></a>
+</div>
+<div role="progressbar" aria-label="Lesson step 5 of 7" aria-valuemin="1" aria-valuemax="7" aria-valuenow="5" style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 20px; letter-spacing: 2px"><span style="color: #FF3D8B">05 / ANSWER</span><span style="color: #A9A3C2">+80 XP</span></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px"><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #2EE6D6"></i><i style="display: block; height: 8px; background: #FFD23F"></i><i style="display: block; height: 8px; background: #251E48"></i><i style="display: block; height: 8px; background: #251E48"></i></div>
+</div>
+<span style="font-size: 24px; letter-spacing: 2px; color: #FF3D8B">QUESTION 1 OF 3</span>
+<div style="padding: 14px; background: #1B1636; border: 2px solid #5A4E96"><p style="margin: 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 20px; line-height: 32px">Wo wartest du auf deinen Zug?</p></div>
+<div role="group" aria-label="Your answer" style="min-height: 112px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; padding: 12px; background: #1B1636; border: 2px solid #2EE6D6">
+<sc-for list="{{placed}}" as="tile" hint-placeholder-count="3"><span style="height: 48px; box-sizing: border-box; display: flex; align-items: center; padding: 0 14px; background: #1B1636; border: 2px solid #7A6CC4; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 18px">{{tile.text}}</span></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{pool}}" as="tile" hint-placeholder-count="9"><button type="button" onClick="{{tile.press}}" aria-label="{{tile.label}}" style="{{tile.style}}"><span style="{{tile.crossStyle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M4 4 L20 20 M20 4 L4 20"></path></svg></span><span style="{{tile.lampStyle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M9 16 V14 a6 6 0 1 1 6 0 V16 Z"></path><path d="M9 19 H15 M10 22 H14"></path></svg></span><span>{{tile.text}}</span></button></sc-for>
+</div>
+<div role="status" style="{{noticeStyle}}">{{notice}}</div>
+<div role="status" style="{{feedbackStyle}}"><span style="position: absolute; top: -13px; left: 12px; display: flex; align-items: center; gap: 4px; padding: 0 8px; background: #2EE6D6; color: #120E24; font-size: 20px; letter-spacing: 2px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 13 L10 18 L19 7"></path></svg>RIGHT ORDER</span><span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 20px; line-height: 32px">Ich warte am Bahnhof auf meinen Zug, der leider Verspätung hat.</span><span style="font-size: 18px; line-height: 20px; color: #A9A3C2">I am waiting for my train at the station, which is unfortunately late.</span></div>
+<a href="GapFill.dc.html" style="{{nextStyle}}">NEXT QUESTION →</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+answer = 'Ich warte am Bahnhof auf meinen Zug, der leider Verspätung hat.'.split(' ');
+order = [10, 4, 9, 3, 5, 6, 8, 1, 2, 7, 0];
+state = { placed: 3, wrongTile: null, mistakesInRow: 0 };
+renderVals() {
+const { placed, wrongTile, mistakesInRow } = this.state;
+const expected = this.answer[placed];
+const pool = this.order.filter((id) => id >= placed);
+const hintTile = mistakesInRow >= 3 ? pool.find((id) => this.answer[id] === expected) : null;
+const isDone = placed === this.answer.length;
+const tileBase = 'height: 48px; box-sizing: border-box; display: flex; align-items: center; gap: 6px; padding: 0 14px; background: #1B1636; color: #F3EFE6; font-family: \'IBM Plex Sans\', sans-serif; font-weight: 600; font-size: 18px; cursor: pointer; ';
+let notice = '';
+if (wrongTile !== null) notice = 'NOT THIS WORD. TRY ANOTHER ONE.';
+if (hintTile !== null && hintTile !== undefined) notice = 'LOOK AT THE MARKED WORD.';
+return {
+placed: this.answer.slice(0, placed).map((text) => ({ text })),
+pool: pool.map((id) => {
+const text = this.answer[id];
+const isHint = id === hintTile;
+const isWrong = id === wrongTile && !isHint;
+return {
+text,
+label: isHint ? text + ', the next word' : isWrong ? text + ', not the next word' : text,
+crossStyle: isWrong ? 'display: flex' : 'display: none',
+lampStyle: isHint ? 'display: flex' : 'display: none',
+style: tileBase + 'border: 2px solid ' + (isHint ? '#2EE6D6' : isWrong ? '#FF3D8B' : '#7A6CC4'),
+press: () => {
+if (text === expected) this.setState({ placed: placed + 1, wrongTile: null, mistakesInRow: 0 });
+else this.setState({ wrongTile: id, mistakesInRow: mistakesInRow + 1 });
+}
+};
+}),
+notice,
+noticeStyle: notice && !isDone ? 'padding: 10px 12px; border: 2px dashed #FFB547; color: #FFB547; font-size: 20px; letter-spacing: 2px' : 'display: none',
+feedbackStyle: isDone ? 'position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding: 24px 14px 14px; border: 2px solid #2EE6D6' : 'display: none',
+nextStyle: isDone ? 'margin-top: auto; display: flex; align-items: center; justify-content: center; height: 64px; flex: none; background: #FFD23F; color: #120E24; font-family: \'Russo One\', sans-serif; font-size: 20px; box-shadow: 4px 4px 0 #FF3D8B' : 'display: none'
+};
+}
+}
+</script>
+</body>
+</html>
