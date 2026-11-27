@@ -9,6 +9,7 @@ import { Screen } from '../../components/Screen/Screen';
 import { SectionLabel } from '../../components/SectionLabel/SectionLabel';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { lessonStep } from '../../lib/lesson-step';
 
 type GapFillExercise = {
   before: string;
@@ -93,6 +94,7 @@ function GapFillScreen({
   onContinue,
 }: GapFillScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('gap-fill');
   const isAnswered = articleChoice !== null && wordChoice !== null;
 
   return (
@@ -106,12 +108,12 @@ function GapFillScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '05',
+          step: step.label,
           task: t('lesson.tasks.gap-fill'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={5}
+        stepCount={step.count}
+        currentStep={step.current}
       />
       <View className="gap-2.5">
         <SectionLabel>{t('gapFill.articleSection')}</SectionLabel>

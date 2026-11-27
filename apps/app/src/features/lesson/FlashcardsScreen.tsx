@@ -12,6 +12,7 @@ import { ItemDots } from '../../components/ItemDots/ItemDots';
 import { ListenButton } from '../../components/ListenButton/ListenButton';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
 import { PartOfSpeechChip } from '../../components/PartOfSpeechChip/PartOfSpeechChip';
+import { lessonStep } from '../../lib/lesson-step';
 import { displayedWord } from '../../lib/displayed-word';
 import { Screen } from '../../components/Screen/Screen';
 import { TopBar } from '../../components/TopBar/TopBar';
@@ -133,6 +134,7 @@ function FlashcardsScreen({
   onClose,
 }: FlashcardsScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('flashcards');
   const tip = word.tip?.[nativeLanguage];
 
   return (
@@ -157,12 +159,12 @@ function FlashcardsScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '01',
+          step: step.label,
           task: t('lesson.tasks.flashcards'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={1}
+        stepCount={step.count}
+        currentStep={step.current}
       />
       <View>
         <Text variant="caption" className="uppercase">

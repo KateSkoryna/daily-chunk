@@ -55,7 +55,7 @@ function LoadedReadTask({
   );
   const targetLanguage = words[0]?.targetLanguage ?? 'de';
   const navigation = useLessonNavigation({
-    currentStep: 3,
+    task: 'read',
     nativeLanguage,
     targetLanguage,
   });

@@ -42,7 +42,7 @@ function LoadedAnswerTask({
   const [placed, setPlaced] = useState<AnswerTile[]>([]);
   const [wrongTileId, setWrongTileId] = useState<string>();
   const navigation = useLessonNavigation({
-    currentStep: 4,
+    task: 'answer',
     nativeLanguage,
     targetLanguage: 'de',
   });

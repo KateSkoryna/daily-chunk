@@ -40,7 +40,7 @@ function FlashcardsTask({
   const targetLanguage = words[0]?.targetLanguage ?? 'de';
   const listening = useListening(targetLanguage);
   const navigation = useLessonNavigation({
-    currentStep: 1,
+    task: 'flashcards',
     nativeLanguage,
     targetLanguage,
   });

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { ListenButton } from '../../components/ListenButton/ListenButton';
+import { lessonStep } from '../../lib/lesson-step';
 import { cn } from '../../lib/utils';
 import { Icon } from '../../components/Icon/Icon';
 import { LessonHeader } from '../../components/LessonHeader/LessonHeader';
@@ -63,6 +64,7 @@ function ReadScreen({
   onStartQuiz,
 }: ReadScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('read');
   const [anchor, setAnchor] = useState<WordAnchor | null>(null);
   const [textWidth, setTextWidth] = useState(0);
   const [popupWidth, setPopupWidth] = useState(0);
@@ -93,12 +95,12 @@ function ReadScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '03',
+          step: step.label,
           task: t('lesson.tasks.read'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={3}
+        stepCount={step.count}
+        currentStep={step.current}
         stepNames={taskNames}
         onStepSelect={onTaskSelect}
       />

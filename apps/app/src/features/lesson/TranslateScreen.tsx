@@ -13,6 +13,7 @@ import { TopBar } from '../../components/TopBar/TopBar';
 import { WordTag } from '../../components/WordTag/WordTag';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { lessonStep } from '../../lib/lesson-step';
 import { splitAroundWord } from '../../lib/split-around-word';
 
 type TranslateFeedback =
@@ -112,6 +113,7 @@ function TranslateScreen({
   onContinue,
 }: TranslateScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('translate');
 
   return (
     <Screen className="gap-3.5">
@@ -124,15 +126,15 @@ function TranslateScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '06',
+          step: step.label,
           task: t('lesson.tasks.translate', {
             from: nativeLanguage.toUpperCase(),
             to: targetLanguage.toUpperCase(),
           }),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={6}
+        stepCount={step.count}
+        currentStep={step.current}
       />
       <View className="border-2 border-border bg-card p-3.5">
         <Text variant="reading">{prompt}</Text>
