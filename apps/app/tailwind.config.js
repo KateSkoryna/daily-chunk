@@ -97,7 +97,7 @@ module.exports = {
         'gutter-tablet': '2rem',
         'gutter-desktop': '3rem',
         section: '1.25rem',
-        'screen-top': '3.5rem',
+        'screen-top': '1rem',
         'screen-bottom': '1rem',
         glitch: '0.1875rem',
         touch: '3rem',

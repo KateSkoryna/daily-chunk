@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
 import { Modal, Pressable, View } from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { Icon } from '../Icon/Icon';
 import type { IconName } from '../Icon/icon-shapes';
@@ -18,34 +22,33 @@ type DrawerProps = {
   children: ReactNode;
 };
 
-function Drawer({
-  isOpen,
+type DrawerPanelProps = Omit<DrawerProps, 'isOpen'>;
+
+function DrawerPanel({
   onClose,
   title,
   closeLabel,
   accessibilityLabel,
   children,
-}: DrawerProps) {
+}: DrawerPanelProps) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Modal
-      visible={isOpen}
-      transparent
-      animationType="none"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={closeLabel}
-          onPress={onClose}
-          className="absolute inset-0 bg-background/80"
-        />
-        <HardShadow className="absolute inset-y-0 left-0 w-4/5 max-w-xs">
-          <View
-            role="navigation"
-            aria-label={accessibilityLabel}
-            className="flex-1 gap-5 border-r-2 border-primary bg-popover px-5 pb-6 pt-screen-top"
-          >
+    <View className="flex-1">
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={closeLabel}
+        onPress={onClose}
+        className="absolute inset-0 bg-background/80"
+      />
+      <HardShadow className="absolute inset-y-0 left-0 w-4/5 max-w-xs">
+        <View
+          role="navigation"
+          aria-label={accessibilityLabel}
+          style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+          className="flex-1 border-r-2 border-primary bg-popover"
+        >
+          <View className="flex-1 gap-5 px-5 pb-6 pt-screen-top">
             <TopBar
               left={
                 <View className="flex-row items-center gap-2.5">
@@ -63,8 +66,25 @@ function Drawer({
             />
             <View accessibilityRole="list">{children}</View>
           </View>
-        </HardShadow>
-      </View>
+        </View>
+      </HardShadow>
+    </View>
+  );
+}
+
+function Drawer({ isOpen, ...panelProps }: DrawerProps) {
+  return (
+    <Modal
+      visible={isOpen}
+      transparent
+      statusBarTranslucent
+      navigationBarTranslucent
+      animationType="none"
+      onRequestClose={panelProps.onClose}
+    >
+      <SafeAreaProvider>
+        <DrawerPanel {...panelProps} />
+      </SafeAreaProvider>
     </Modal>
   );
 }

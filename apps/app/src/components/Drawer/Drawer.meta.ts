@@ -43,7 +43,7 @@ export const drawerMeta = {
     ],
     typography: ['display-btn-sm', 'label', 'caption'],
     spacing: ['2', '5', '6', 'screen-top'],
-    other: ['touch', 'shadow-hard'],
+    other: ['touch', 'shadow-hard', 'safe-area'],
   },
   accessibility: [
     'A navigation named from i18n; the items are links in a list',
