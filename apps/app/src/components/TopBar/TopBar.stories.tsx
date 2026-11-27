@@ -155,6 +155,46 @@ export const DictateButton: Story = {
   },
 };
 
+export const HintButton: Story = {
+  render: () => (
+    <View className="flex-row gap-4 p-gutter">
+      <WithText>
+        {(t) => (
+          <>
+            <TopBar.Button
+              variant="tip"
+              icon="lamp"
+              accessibilityLabel={t('crossword.showHint')}
+              onPress={fn()}
+            />
+            <TopBar.Button
+              variant="tip"
+              icon="lamp"
+              accessibilityLabel={t('crossword.hintUsed')}
+              disabled
+              onPress={fn()}
+            />
+          </>
+        )}
+      </WithText>
+    </View>
+  ),
+  play: async ({ canvasElement, globals }) => {
+    const t = textFor(globals);
+    const canvas = within(canvasElement);
+    const hint = await canvas.findByRole('button', {
+      name: t('crossword.showHint'),
+    });
+    const used = canvas.getByRole('button', { name: t('crossword.hintUsed') });
+
+    expect(hint.getAttribute('aria-disabled')).not.toBe('true');
+    expect(used.getAttribute('aria-disabled')).toBe('true');
+    expect(getComputedStyle(used).borderTopColor).not.toBe(
+      getComputedStyle(hint).borderTopColor,
+    );
+  },
+};
+
 export const LabelledAction: Story = {
   render: () => (
     <View className="p-gutter">
