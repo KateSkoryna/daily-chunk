@@ -32,6 +32,7 @@
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
     "react-native-gesture-handler": "~3.3.0",
+    "react-native-keyboard-controller": "1.22.7",
     "react-native-reanimated": "4.7.1",
     "react-native-safe-area-context": "~5.11.1",
     "react-native-screens": "~4.30.1",
@@ -67,7 +68,7 @@
     "check-meta": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-meta.mjs",
     "export:web": "expo export --platform web",
     "db:generate": "drizzle-kit generate",
-    "e2e": "node e2e/navigation.mjs && node e2e/storage.mjs && node e2e/home.mjs && node e2e/flashcards.mjs && node e2e/listen.mjs && node e2e/read.mjs && node e2e/answer.mjs",
+    "e2e": "node e2e/navigation.mjs && node e2e/storage.mjs && node e2e/home.mjs && node e2e/flashcards.mjs && node e2e/crossword.mjs && node e2e/listen.mjs && node e2e/read.mjs && node e2e/answer.mjs",
     "test": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o storybook-static"

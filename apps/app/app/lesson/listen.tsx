@@ -40,7 +40,7 @@ function ListenTask({ lesson, words, nativeLanguage }: ListenTaskProps) {
   );
   const [speedIndex, setSpeedIndex] = useState(0);
   const navigation = useLessonNavigation({
-    currentStep: 2,
+    task: 'listen',
     nativeLanguage,
     targetLanguage: words[0]?.targetLanguage ?? 'de',
   });

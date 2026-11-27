@@ -13,6 +13,7 @@ import {
 import { TopBar } from '../../components/TopBar/TopBar';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { lessonStep } from '../../lib/lesson-step';
 
 type AnswerTile = Pick<SentenceTile, 'id' | 'text'>;
 
@@ -58,6 +59,7 @@ function AnswerScreen({
   onClose,
 }: AnswerScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('answer');
   const isDone = pool.length === 0;
   const markedPool: SentenceTile[] = pool.map((tile) => {
     if (tile.id === hintTileId) {
@@ -97,12 +99,12 @@ function AnswerScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '04',
+          step: step.label,
           task: t('lesson.tasks.answer'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={4}
+        stepCount={step.count}
+        currentStep={step.current}
         stepNames={taskNames}
         onStepSelect={onTaskSelect}
       />

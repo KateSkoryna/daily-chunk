@@ -13,7 +13,7 @@ export const readQuizScreenMeta = {
       'The questions with their options (already in the order to show) and the right answer',
     answers: 'The answer given to each question, or none yet',
     questionIndex: 'The question on screen',
-    taskNames: 'The names of the six tasks, for the stepper',
+    taskNames: 'The names of the seven tasks, for the stepper',
     onTaskSelect: 'Called with the number of the task picked in the stepper',
     onAnswer: 'Called with the option the person pressed',
     onNextQuestion: 'Called by the next-question button',

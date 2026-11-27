@@ -77,9 +77,10 @@ describe('Word', () => {
 });
 
 describe('Lesson', () => {
-  it('has the six tasks in lesson order', () => {
+  it('has the seven tasks in lesson order', () => {
     expect(lessonTaskTypes).toEqual([
       'flashcards',
+      'crossword',
       'listen',
       'read',
       'answer',

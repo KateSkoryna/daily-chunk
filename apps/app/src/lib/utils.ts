@@ -5,8 +5,19 @@ import { textVariants } from '../components/tokens';
 
 const desktopTextSizes = ['display-xl-desktop', 'display-l-desktop'];
 
+const sizeNames = [
+  'touch',
+  'control',
+  'button',
+  'record',
+  'tabbar',
+  'rail',
+  'flashcard',
+];
+
 const mergeClassNames = extendTailwindMerge({
   extend: {
+    theme: { spacing: sizeNames },
     classGroups: {
       'font-size': [{ text: [...textVariants, ...desktopTextSizes] }],
     },

@@ -1,6 +1,7 @@
 import type { LanguagePair } from './language-pair';
 import type { Level } from './level';
 import type { QuizLanguage } from './quiz';
+import type { CrosswordPuzzle } from './crossword';
 import type { Word } from './word';
 
 export type AiRequest = {
@@ -58,6 +59,12 @@ export type AnswerExercisesRequest = AiRequest & {
 };
 export type AnswerExercisesResponse = { exercises: AnswerExercise[] };
 
+export type CrosswordRequest = AiRequest & {
+  words: Word[];
+  level: Level;
+};
+export type CrosswordResponse = { puzzle: CrosswordPuzzle };
+
 export type GapSentence = {
   wordId: string;
   before: string;
@@ -104,6 +111,7 @@ export type AiService = {
   generateGapSentences: (
     request: GapSentencesRequest,
   ) => Promise<GapSentencesResponse>;
+  generateCrossword: (request: CrosswordRequest) => Promise<CrosswordResponse>;
   generateAnswerExercises: (
     request: AnswerExercisesRequest,
   ) => Promise<AnswerExercisesResponse>;

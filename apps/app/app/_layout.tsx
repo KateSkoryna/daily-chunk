@@ -21,6 +21,7 @@ import { rem } from 'nativewind';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 const transparentNavigationTheme = {
   ...DarkTheme,
@@ -63,13 +64,19 @@ export default function RootLayout() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ThemeProvider value={transparentNavigationTheme}>
-        <View className="flex-1 bg-background">
-          <StatusBar style="light" />
-          <Stack screenOptions={{ headerShown: false }} />
-          <PortalHost />
-        </View>
-      </ThemeProvider>
+      <KeyboardProvider
+        statusBarTranslucent
+        navigationBarTranslucent
+        preserveEdgeToEdge
+      >
+        <ThemeProvider value={transparentNavigationTheme}>
+          <View className="flex-1 bg-background">
+            <StatusBar style="light" />
+            <Stack screenOptions={{ headerShown: false }} />
+            <PortalHost />
+          </View>
+        </ThemeProvider>
+      </KeyboardProvider>
     </I18nextProvider>
   );
 }

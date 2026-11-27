@@ -20,7 +20,7 @@ export const answerScreenMeta = {
     translation:
       'The answer in the native language, shown when every word is placed',
     isLast: 'True on the last question: the button leads to the next task',
-    taskNames: 'The names of the six tasks, for the stepper',
+    taskNames: 'The names of the seven tasks, for the stepper',
     onTaskSelect: 'Called with the number of the task picked in the stepper',
     onTilePress: 'Called with the id of a pool tile that was pressed',
     onNext: 'Called by the next button once every word is placed',

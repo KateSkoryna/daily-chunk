@@ -37,4 +37,11 @@ describe('cn', () => {
       expect(cn(classNames)).toBe(classNames);
     },
   );
+
+  it('lets a later size replace the touch minimum of a pressable', () => {
+    expect(cn('min-h-touch min-w-touch', 'min-h-0 min-w-0')).toBe(
+      'min-h-0 min-w-0',
+    );
+    expect(cn('h-touch', 'h-control')).toBe('h-control');
+  });
 });

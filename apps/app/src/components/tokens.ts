@@ -91,6 +91,7 @@ export const otherTokens = [
   'flashcard-desktop',
   'reading-max',
   'segment',
+  'safe-area',
   'border-3',
   'shadow-hard',
   'shadow-hard-lg',

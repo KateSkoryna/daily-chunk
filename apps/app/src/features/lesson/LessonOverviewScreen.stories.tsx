@@ -59,7 +59,7 @@ export const Default: Story = {
     expect(canvas.getByText(t('lesson.overviewIntro'))).toBeTruthy();
     expect(canvas.queryByText(t('lesson.taskDone'))).toBeNull();
 
-    await userEvent.click(within(list).getAllByRole('button')[2]!);
+    await userEvent.click(within(list).getAllByRole('button')[3]!);
     await userEvent.click(
       canvas.getByRole('button', { name: t('lesson.overviewStart') }),
     );

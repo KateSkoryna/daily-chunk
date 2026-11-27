@@ -20,7 +20,7 @@ export const stepIndicatorMeta = {
     pairsWith: ['LessonStepper', 'Waveform'],
     usedIn: ['Listen & shadow'],
     alternatives: {
-      LessonStepper: 'Progress through the six tasks of a lesson',
+      LessonStepper: 'Progress through the seven tasks of a lesson',
     },
   },
   tokens: {

@@ -54,7 +54,7 @@ export const lessonStepperMeta = {
     ],
     avoidWhen: [
       'Showing a percentage or a score: use a stat tile',
-      'Showing a long list of steps: it is built for 6 segments or fewer',
+      'Showing a long list of steps: it is built for 7 segments or fewer',
     ],
     invalid: [
       'A current position below 1 or above total (in the lesson variant)',

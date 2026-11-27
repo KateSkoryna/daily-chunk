@@ -11,6 +11,7 @@ import { SectionLabel } from '../../components/SectionLabel/SectionLabel';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { lessonStep } from '../../lib/lesson-step';
 
 type ReadQuizScreenProps = {
   lessonNumber: number;
@@ -42,6 +43,7 @@ function ReadQuizScreen({
   onContinue,
 }: ReadQuizScreenProps) {
   const { t } = useTranslation();
+  const step = lessonStep('read');
   const question = questions[questionIndex];
   const answer = answers[questionIndex] ?? null;
   const isAnswered = answer !== null;
@@ -74,12 +76,12 @@ function ReadQuizScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '03',
+          step: step.label,
           task: t('lesson.tasks.read'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={3}
+        stepCount={step.count}
+        currentStep={step.current}
         stepNames={taskNames}
         onStepSelect={onTaskSelect}
       />

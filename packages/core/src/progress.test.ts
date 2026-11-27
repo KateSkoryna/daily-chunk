@@ -125,6 +125,6 @@ describe('placeholderTaskBonusXp', () => {
         .reduce((sum, task) => sum + placeholderTaskBonusXp[task], 0),
     );
 
-    expect(headerXpBeforeTask).toEqual([0, 20, 40, 60, 80, 110]);
+    expect(headerXpBeforeTask).toEqual([0, 20, 40, 60, 80, 100, 130]);
   });
 });

@@ -33,7 +33,7 @@ export default function StorageCheck() {
   }, []);
 
   return (
-    <View className="flex-1 gap-4 px-gutter pb-screen-bottom pt-screen-top">
+    <View className="flex-1 gap-4 px-gutter pb-screen-bottom pt-14">
       <Text className="font-display text-display-l text-foreground">
         Storage check
       </Text>

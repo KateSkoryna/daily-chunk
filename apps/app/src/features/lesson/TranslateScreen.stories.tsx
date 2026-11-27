@@ -139,7 +139,7 @@ export const Default: Story = {
       canvas
         .getByRole('progressbar', {
           name: t('lesson.stepLabel', {
-            step: '06',
+            step: '07',
             task: t('lesson.tasks.translate', {
               from: appLanguage.toUpperCase(),
               to: 'DE',
@@ -147,7 +147,7 @@ export const Default: Story = {
           }),
         })
         .getAttribute('aria-valuenow'),
-    ).toBe('6');
+    ).toBe('7');
 
     await userEvent.type(field, translateTask.attempt);
     expect(args.onAnswerChange).toHaveBeenLastCalledWith(translateTask.attempt);

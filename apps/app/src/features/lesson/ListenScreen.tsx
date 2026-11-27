@@ -18,6 +18,7 @@ import { Waveform } from '../../components/Waveform/Waveform';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+import { lessonStep } from '../../lib/lesson-step';
 import { cn } from '../../lib/utils';
 import { displayedWord } from '../../lib/displayed-word';
 import { splitAroundWord } from '../../lib/split-around-word';
@@ -100,6 +101,7 @@ function ListenScreen({
   onNextSection,
 }: ListenScreenProps) {
   const { t } = useTranslation();
+  const lessonPosition = lessonStep('listen');
   const parts = splitAroundWord(word.sentence, highlightedWord);
   const underline = word.gender ? underlineClasses[word.gender] : '';
 
@@ -123,12 +125,12 @@ function ListenScreen({
         }
         lessonLabel={t('lesson.title', { number: lessonNumber })}
         stepLabel={t('lesson.stepLabel', {
-          step: '02',
+          step: lessonPosition.label,
           task: t('lesson.tasks.listen'),
         })}
         xpLabel={t('lesson.xpEarned', { count: xp })}
-        stepCount={6}
-        currentStep={2}
+        stepCount={lessonPosition.count}
+        currentStep={lessonPosition.current}
         stepNames={taskNames}
         onStepSelect={onTaskSelect}
       />

@@ -25,8 +25,8 @@ type Story = StoryObj<typeof meta>;
 function expectedPaddingInRem() {
   const viewportInRem = window.innerWidth / rootFontSizeInPixels();
   if (viewportInRem >= 64) return { top: 1.5, side: 3, bottom: 2.5 };
-  if (viewportInRem >= 37.5) return { top: 3.5, side: 2, bottom: 1 };
-  return { top: 3.5, side: 1.5, bottom: 1 };
+  if (viewportInRem >= 37.5) return { top: 1, side: 2, bottom: 1 };
+  return { top: 1, side: 1.5, bottom: 1 };
 }
 
 function ScreenWithContent() {
@@ -38,6 +38,16 @@ function ScreenWithContent() {
       </Screen>
     </View>
   );
+}
+
+function ancestorWhere(
+  start: HTMLElement,
+  isWanted: (element: HTMLElement) => boolean,
+) {
+  let element = start.parentElement;
+  while (element && !isWanted(element)) element = element.parentElement;
+  if (!element) throw new Error('No matching ancestor');
+  return element;
 }
 
 export const Default: Story = {
@@ -55,7 +65,11 @@ export const Default: Story = {
     expect(toRem(style.paddingRight)).toBe(expected.side);
     expect(toRem(style.paddingBottom)).toBe(expected.bottom);
 
-    const ground = content.parentElement!.parentElement!.parentElement!;
+    const ground = ancestorWhere(
+      content,
+      (element) =>
+        element.firstElementChild?.getAttribute('aria-hidden') === 'true',
+    );
     const lines = ground.querySelectorAll('[aria-hidden="true"]');
     expect(lines).toHaveLength(1);
     expect(ground.firstElementChild).toBe(lines[0]);
@@ -91,8 +105,10 @@ export const TallContent: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const lastLine = await canvas.findByText('Wort 12');
-    const scrollContainer =
-      lastLine.parentElement!.parentElement!.parentElement!;
+    const scrollContainer = ancestorWhere(
+      lastLine,
+      (element) => getComputedStyle(element).overflowY !== 'visible',
+    );
 
     expect(scrollContainer.scrollHeight).toBeGreaterThan(
       scrollContainer.clientHeight,

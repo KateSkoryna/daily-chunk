@@ -32,6 +32,8 @@ try {
   step('reach the Read screen');
   await startDemoLesson(page, server.url);
   await page.getByRole('button', { name: 'Next section →' }).click();
+  await page.waitForURL('**/lesson/crossword');
+  await page.getByRole('button', { name: 'Go to: Listen & shadow' }).click();
   await page.waitForURL('**/lesson/listen');
   await page.getByRole('button', { name: 'Next phrase' }).click();
   await page.getByRole('button', { name: 'Next phrase' }).click();

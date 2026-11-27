@@ -16,16 +16,26 @@ export const topBarMeta = {
     'Action iconPosition':
       'start (icon before the word, the default) or end (icon after the word, for Quit on the right)',
     'Button variant':
-      'default (grey border) or record (pink border, for dictating or recording)',
+      'default (grey border), record (pink border, for dictating or recording) or tip (cyan border and icon, for a hint such as the crossword lamp)',
+    'Button disabled':
+      'True when the button cannot be used now (a hint already shown): muted border and icon, not pressable',
   },
-  states: ['default'],
+  states: ['default', 'disabled'],
   relationships: {
     composedOf: ['PressableFocus', 'Icon', 'Button'],
     pairsWith: ['HeaderStats', 'LessonStepper'],
     usedIn: ['Home', 'Lesson task screens', 'Boss round'],
   },
   tokens: {
-    color: ['input', 'foreground', 'highlight', 'background'],
+    color: [
+      'input',
+      'foreground',
+      'highlight',
+      'background',
+      'ring',
+      'border',
+      'muted-foreground',
+    ],
     other: ['touch'],
   },
   accessibility: [

@@ -131,7 +131,7 @@ export const Default: Story = {
     });
     const segments = within(stepper).getAllByRole('button');
 
-    expect(segments).toHaveLength(6);
+    expect(segments).toHaveLength(7);
     expect(segments[0]).toHaveAttribute('aria-current', 'step');
     await userEvent.click(segments[4]!);
     expect(args.onTaskSelect).toHaveBeenCalledWith(5);

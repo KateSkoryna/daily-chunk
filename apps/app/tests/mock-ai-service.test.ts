@@ -1,5 +1,6 @@
 import {
   answerProblems,
+  crosswordProblems,
   storyProblems,
   type LanguagePair,
 } from '@daily-chunk/core';
@@ -204,5 +205,38 @@ describe('mock AI service', () => {
     });
 
     expect(exercises).toEqual([]);
+  });
+
+  it('builds the designed crossword from the lesson words, with the rest as link words', async () => {
+    const lessonWords = demoWords.filter((word) => word.lemma !== 'verspätet');
+    const { puzzle } = await ai.generateCrossword({
+      languages: russian,
+      words: lessonWords,
+      level: 'B2',
+    });
+
+    expect(crosswordProblems(puzzle, lessonWords)).toEqual([]);
+    expect(puzzle.entries.map((entry) => [entry.lemma, entry.wordId])).toEqual([
+      ['Bahnhof', 'word-bahnhof'],
+      ['Zug', null],
+      ['Gleis', 'word-gleis'],
+      ['Fahrkarte', 'word-fahrkarte'],
+    ]);
+    expect(puzzle.entries[0]?.translation).toBe('вокзал');
+  });
+
+  it('writes the crossword hints in the native language of the learner', async () => {
+    const { puzzle } = await ai.generateCrossword({
+      languages: english,
+      words: demoWords,
+      level: 'B2',
+    });
+
+    expect(puzzle.entries.map((entry) => entry.translation)).toEqual([
+      'station',
+      'train',
+      'platform',
+      'ticket',
+    ]);
   });
 });

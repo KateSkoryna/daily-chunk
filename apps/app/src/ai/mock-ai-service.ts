@@ -5,6 +5,7 @@ import type {
   Word,
 } from '@daily-chunk/core';
 
+import { crosswordPuzzleFor } from '../mocks/crossword';
 import { articleGapFill, ticketGapFill } from '../mocks/gap-fill';
 import {
   answerExercises,
@@ -76,6 +77,12 @@ export function createMockAiService(): AiService {
             options: [answer, ...wrongAnswers],
           }),
         ),
+      };
+    },
+
+    async generateCrossword({ languages, words }) {
+      return {
+        puzzle: crosswordPuzzleFor(words, languages.nativeLanguage),
       };
     },
 

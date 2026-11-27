@@ -25,16 +25,18 @@ function TopBar({ left, center, right, className }: TopBarProps) {
   );
 }
 
-type TopBarButtonVariant = 'default' | 'record';
+type TopBarButtonVariant = 'default' | 'record' | 'tip';
 
 const buttonClasses = {
   default: 'border-input',
   record: 'border-highlight bg-background',
+  tip: 'border-ring',
 } satisfies Record<TopBarButtonVariant, string>;
 
 const iconClasses = {
   default: 'text-foreground',
   record: 'text-highlight',
+  tip: 'text-ring',
 } satisfies Record<TopBarButtonVariant, string>;
 
 type TopBarButtonProps = {
@@ -42,6 +44,7 @@ type TopBarButtonProps = {
   icon: IconName;
   onPress: () => void;
   accessibilityLabel: string;
+  disabled?: boolean;
 };
 
 function TopBarButton({
@@ -49,16 +52,21 @@ function TopBarButton({
   icon,
   onPress,
   accessibilityLabel,
+  disabled = false,
 }: TopBarButtonProps) {
   return (
-    <TextClassContext.Provider value={iconClasses[variant]}>
+    <TextClassContext.Provider
+      value={disabled ? 'text-muted-foreground' : iconClasses[variant]}
+    >
       <PressableFocus
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        accessibilityState={{ disabled }}
+        disabled={disabled}
         onPress={onPress}
         className={cn(
           'items-center justify-center border-2',
-          buttonClasses[variant],
+          disabled ? 'border-border' : buttonClasses[variant],
         )}
       >
         <Icon name={icon} decorative />

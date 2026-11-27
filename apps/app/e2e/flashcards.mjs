@@ -138,8 +138,8 @@ try {
 
   step('finish on the last card');
   await page.getByRole('button', { name: 'Next section →' }).click();
-  await page.waitForURL('**/lesson/listen');
-  assert.equal(pathname(), '/lesson/listen');
+  await page.waitForURL('**/lesson/crossword');
+  assert.equal(pathname(), '/lesson/crossword');
 
   step('come back to the flashcards');
   await page.goBack();

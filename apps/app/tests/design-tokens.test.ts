@@ -88,7 +88,11 @@ describe('token lists match tailwind.config.js', () => {
         .map((key) => `border-${key}`),
       ...Object.keys(transitionDuration).map((key) => `duration-${key}`),
     ];
-    const tokensWithoutConfigEntry = ['shadow-hard', 'shadow-hard-lg'];
+    const tokensWithoutConfigEntry = [
+      'shadow-hard',
+      'shadow-hard-lg',
+      'safe-area',
+    ];
     for (const token of otherTokens) {
       if (tokensWithoutConfigEntry.includes(token)) continue;
       expect(configOtherNames, `other token "${token}"`).toContain(token);

@@ -19,7 +19,7 @@ export const itemDotsMeta = {
     pairsWith: ['LessonStepper', 'FlashcardsScreen', 'ListenScreen'],
     usedIn: ['Flashcards', 'Listen & shadow'],
     alternatives: {
-      LessonStepper: 'The six tasks of the lesson, not the items inside one',
+      LessonStepper: 'The seven tasks of the lesson, not the items inside one',
     },
   },
   tokens: {

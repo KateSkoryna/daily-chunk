@@ -97,12 +97,12 @@ export const Default: Story = {
       canvas
         .getByRole('progressbar', {
           name: t('lesson.stepLabel', {
-            step: '05',
+            step: '06',
             task: t('lesson.tasks.gap-fill'),
           }),
         })
         .getAttribute('aria-valuenow'),
-    ).toBe('5');
+    ).toBe('6');
 
     await userEvent.click(canvas.getByRole('radio', { name: 'vom' }));
     expect(check.getAttribute('aria-disabled')).toBe('true');

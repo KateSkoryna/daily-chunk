@@ -40,7 +40,7 @@ function FlashcardsTask({
   const targetLanguage = words[0]?.targetLanguage ?? 'de';
   const listening = useListening(targetLanguage);
   const navigation = useLessonNavigation({
-    currentStep: 1,
+    task: 'flashcards',
     nativeLanguage,
     targetLanguage,
   });
@@ -76,7 +76,7 @@ function FlashcardsTask({
     try {
       await saveTaskResult('flashcards', flashcardResult(session));
       hasFinished.current = true;
-      router.push('/lesson/listen');
+      router.push('/lesson/crossword');
     } catch {
       return;
     } finally {

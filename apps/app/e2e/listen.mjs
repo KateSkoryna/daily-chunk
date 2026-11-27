@@ -46,6 +46,8 @@ try {
   step('start the lesson and finish the flashcards');
   await startDemoLesson(page, server.url);
   await page.getByRole('button', { name: 'Next section →' }).click();
+  await page.waitForURL('**/lesson/crossword');
+  await page.getByRole('button', { name: 'Go to: Listen & shadow' }).click();
   await page.waitForURL('**/lesson/listen');
   await page.getByText('Phrase 1 of 3 · Repeat 1 of 3').waitFor();
   await page
@@ -84,14 +86,14 @@ try {
     .getByText('+20 XP', { exact: true })
     .locator('visible=true')
     .waitFor();
-  await page.getByRole('button', { name: /^2.*Listen & shadow/ }).click();
+  await page.getByRole('button', { name: /^3.*Listen & shadow/ }).click();
   await page.waitForURL('**/lesson/listen');
 
-  step('go back to the flashcards from the header');
+  step('go back to the crossword from the header');
   await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.waitForURL('**/lesson/flashcards');
+  await page.waitForURL('**/lesson/crossword');
   assert.equal(await page.getByRole('alertdialog').count(), 0);
-  await page.getByRole('button', { name: 'Next section →' }).click();
+  await page.getByRole('button', { name: 'Go to: Listen & shadow' }).click();
   await page.waitForURL('**/lesson/listen');
 
   step('see only the play controls on the Listen tab');

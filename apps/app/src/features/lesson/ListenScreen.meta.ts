@@ -21,7 +21,7 @@ export const listenScreenMeta = {
     phrase: 'The number of this phrase and how many there are',
     repeat: 'The number of this repeat and how many there are',
     taskNames:
-      'The names of the six tasks, already translated, for the stepper buttons',
+      'The names of the seven tasks, already translated, for the stepper buttons',
     onTaskSelect:
       'Called with the task (from 1) whose stepper segment was tapped',
     onBack: 'Called by the back button: the previous part of the lesson',

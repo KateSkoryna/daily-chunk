@@ -3,6 +3,7 @@ import { useTranslation } from '@daily-chunk/i18n';
 import type { NativeLanguage, TargetLanguage } from '@daily-chunk/languages';
 import { useRouter } from 'expo-router';
 
+import { lessonStep } from './lesson-step';
 import { lessonStepNames } from './lesson-step-names';
 
 export function lessonTaskRoute(task: LessonTaskType) {
@@ -10,13 +11,13 @@ export function lessonTaskRoute(task: LessonTaskType) {
 }
 
 type LessonNavigationInput = {
-  currentStep: number;
+  task: LessonTaskType;
   nativeLanguage: NativeLanguage;
   targetLanguage: TargetLanguage;
 };
 
 export function useLessonNavigation({
-  currentStep,
+  task: currentTask,
   nativeLanguage,
   targetLanguage,
 }: LessonNavigationInput) {
@@ -24,6 +25,7 @@ export function useLessonNavigation({
   const router = useRouter();
 
   const stepNames = lessonStepNames(t, nativeLanguage, targetLanguage);
+  const currentStep = lessonStep(currentTask).current;
 
   function goToStep(step: number) {
     const task = lessonTaskTypes[step - 1];
