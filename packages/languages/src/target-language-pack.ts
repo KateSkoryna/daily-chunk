@@ -6,4 +6,5 @@ export type TargetLanguagePack = {
   pluralCaption: string;
   pickerGenders: readonly PickerGender[];
   speechLocale: string;
+  keyboardRows: readonly string[];
 };

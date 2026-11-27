@@ -40,4 +40,11 @@ describe('getTargetLanguagePack', () => {
   it('names the voice language used to read German words aloud', () => {
     expect(getTargetLanguagePack('de').speechLocale).toBe('de-DE');
   });
+
+  it('lays out the letter keyboard as a German QWERTZ with umlauts and ß', () => {
+    const { keyboardRows } = getTargetLanguagePack('de');
+
+    expect(keyboardRows).toEqual(['QWERTZUIOPÜ', 'ASDFGHJKLÖÄ', 'YXCVBNMß']);
+    expect(new Set(keyboardRows.join('')).size).toBe(30);
+  });
 });

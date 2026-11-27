@@ -6,4 +6,5 @@ export const germanPack = {
   pluralCaption: '(Pl.)',
   pickerGenders: ['masc', 'fem', 'neut'],
   speechLocale: 'de-DE',
+  keyboardRows: ['QWERTZUIOPÜ', 'ASDFGHJKLÖÄ', 'YXCVBNMß'],
 } satisfies TargetLanguagePack;
