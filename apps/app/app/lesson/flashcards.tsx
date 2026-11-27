@@ -76,7 +76,7 @@ function FlashcardsTask({
     try {
       await saveTaskResult('flashcards', flashcardResult(session));
       hasFinished.current = true;
-      router.push('/lesson/listen');
+      router.push('/lesson/crossword');
     } catch {
       return;
     } finally {

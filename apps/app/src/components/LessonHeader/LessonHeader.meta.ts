@@ -17,7 +17,7 @@ export const lessonHeaderMeta = {
     stepCount: 'How many tasks the lesson has',
     currentStep: 'The current task, counting from 1',
     stepNames:
-      'The names of the six tasks, already translated; they name the stepper segments when onStepSelect is given',
+      'The names of the seven tasks, already translated; they name the stepper segments when onStepSelect is given',
     onStepSelect:
       'Optional. Called with the tapped task (from 1); makes the stepper segments buttons that jump to that task',
   },

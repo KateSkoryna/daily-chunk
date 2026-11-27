@@ -117,14 +117,14 @@ export const Default: Story = {
     expect(within(waveform).getAllByTestId('bar-played')).toHaveLength(13);
     const stepper = canvas.getByRole('toolbar', {
       name: t('lesson.stepLabel', {
-        step: '02',
+        step: '03',
         task: t('lesson.tasks.listen'),
       }),
     });
     const segments = within(stepper).getAllByRole('button');
 
-    expect(segments).toHaveLength(6);
-    expect(segments[1]).toHaveAttribute('aria-current', 'step');
+    expect(segments).toHaveLength(7);
+    expect(segments[2]).toHaveAttribute('aria-current', 'step');
     await userEvent.click(segments[4]!);
     expect(args.onTaskSelect).toHaveBeenCalledWith(5);
 

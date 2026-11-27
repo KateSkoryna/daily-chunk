@@ -17,7 +17,7 @@ export const readScreenMeta = {
       'The words of the lesson, to find the gender and translation of a highlighted word',
     nativeLanguage: 'The language of the word card translation',
     activeWord: 'The word whose card is open, or none',
-    taskNames: 'The names of the six tasks, for the stepper',
+    taskNames: 'The names of the seven tasks, for the stepper',
     onTaskSelect: 'Called with the number of the task picked in the stepper',
     onWordPress: 'Called with the tapped word',
     onTranslationToggle: 'Called by the show or hide translation button',

@@ -4,7 +4,7 @@ export const lessonOverviewScreenMeta = {
   name: 'LessonOverviewScreen',
   category: 'organism',
   description:
-    'The list of the six lesson tasks, shown after the words are confirmed so the person sees what to expect. Each row names the task and says in one line what it is; a finished task shows a check and "Done". Tapping a row starts that task, so a lesson can begin anywhere. The primary button starts the first task that is not done.',
+    'The list of the seven lesson tasks, shown after the words are confirmed so the person sees what to expect. Each row names the task and says in one line what it is; a finished task shows a check and "Done". Tapping a row starts that task, so a lesson can begin anywhere. The primary button starts the first task that is not done.',
   spec: 'plan.md §4 (no screen design yet), DESIGN.md §9.3',
   props: {
     lessonNumber: 'The number shown in the title, for example Lesson 13',

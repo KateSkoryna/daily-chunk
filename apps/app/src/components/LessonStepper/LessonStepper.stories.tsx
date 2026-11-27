@@ -17,14 +17,14 @@ const meta = {
     docs: { description: { component: metaToMarkdown(lessonStepperMeta) } },
     controls: { include: ['total', 'current'] },
   },
-  args: { total: 6, current: 3 },
+  args: { total: 7, current: 3 },
   argTypes: {
     total: {
-      control: { type: 'number', min: 1, max: 6 },
-      description: 'How many segments: 6 for a lesson, 3 for a Boss round.',
+      control: { type: 'number', min: 1, max: 7 },
+      description: 'How many segments: 7 for a lesson, 3 for a Boss round.',
     },
     current: {
-      control: { type: 'number', min: 1, max: 6 },
+      control: { type: 'number', min: 1, max: 7 },
       description: 'The position of the current task, counting from 1.',
     },
   },
@@ -138,9 +138,9 @@ export const JumpToTask: Story = {
             {...args}
             label={t('lesson.stepLabel', {
               step: '02',
-              task: t('lesson.tasks.listen'),
+              task: t('lesson.tasks.crossword'),
             })}
-            xpLabel={t('lesson.xpEarned', { count: 40 })}
+            xpLabel={t('lesson.xpEarned', { count: 20 })}
             segmentLabels={lessonStepNames(t, appLanguage, 'de')}
           />
         )}
@@ -153,15 +153,15 @@ export const JumpToTask: Story = {
     const bar = await canvas.findByRole('toolbar', {
       name: t('lesson.stepLabel', {
         step: '02',
-        task: t('lesson.tasks.listen'),
+        task: t('lesson.tasks.crossword'),
       }),
     });
     const segments = within(bar).getAllByRole('button');
 
-    expect(segments).toHaveLength(6);
+    expect(segments).toHaveLength(7);
     expect(segments[1]).toHaveAttribute('aria-current', 'step');
     expect(toRem(segments[0]!.getBoundingClientRect().height)).toBe(3);
-    expect(segments[5]).toHaveAccessibleName(
+    expect(segments[6]).toHaveAccessibleName(
       t('lesson.goToTask', {
         task: t('lesson.tasks.translate', {
           from: appLanguageOf(globals).toUpperCase(),
@@ -169,8 +169,8 @@ export const JumpToTask: Story = {
         }),
       }),
     );
-    await userEvent.click(segments[5]!);
+    await userEvent.click(segments[6]!);
 
-    expect(args.onSelect).toHaveBeenCalledWith(6);
+    expect(args.onSelect).toHaveBeenCalledWith(7);
   },
 };

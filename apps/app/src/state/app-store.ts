@@ -8,6 +8,7 @@ import {
   wordIdFor,
   type AiService,
   type AnswerExercise,
+  type CrosswordPuzzle,
   type Lesson,
   type LessonTaskType,
   type TaskResult,
@@ -28,6 +29,7 @@ export type AppState = {
   lessons: Lesson[];
   stories: Record<string, StoryResponse>;
   answerExercises: Record<string, AnswerExercise[]>;
+  crosswords: Record<string, CrosswordPuzzle>;
   pluralInput: PluralInput | undefined;
   typedWordIds: string[];
   load: (appLanguage: AppLanguage) => Promise<void>;
@@ -37,6 +39,7 @@ export type AppState = {
   saveTaskResult: (task: LessonTaskType, result: TaskResult) => Promise<void>;
   loadStory: (lessonId: string) => Promise<void>;
   loadAnswerExercises: (lessonId: string) => Promise<void>;
+  loadCrossword: (lessonId: string) => Promise<void>;
 };
 
 type AppStoreDependencies = {
@@ -48,6 +51,7 @@ type AppStoreDependencies = {
 export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
   const pendingStories = new Map<string, Promise<void>>();
   const pendingAnswerExercises = new Map<string, Promise<void>>();
+  const pendingCrosswords = new Map<string, Promise<void>>();
 
   return createStore<AppState>((set, get) => ({
     status: 'idle',
@@ -56,6 +60,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
     lessons: [],
     stories: {},
     answerExercises: {},
+    crosswords: {},
     pluralInput: undefined,
     typedWordIds: [],
 
@@ -156,6 +161,7 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         words: words.filter((word) => !isNewWord(word)),
         stories: {},
         answerExercises: {},
+        crosswords: {},
         typedWordIds: [],
         pluralInput: undefined,
       });
@@ -269,6 +275,38 @@ export function createAppStore({ getStorage, ai, now }: AppStoreDependencies) {
         })
         .finally(() => pendingAnswerExercises.delete(lessonId));
       pendingAnswerExercises.set(lessonId, request);
+      return request;
+    },
+
+    loadCrossword: (lessonId) => {
+      const { profile, lessons, words, crosswords } = get();
+      const lesson = lessons.find((candidate) => candidate.id === lessonId);
+      if (!profile || !lesson || crosswords[lessonId]) {
+        return Promise.resolve();
+      }
+      const pendingCrossword = pendingCrosswords.get(lessonId);
+      if (pendingCrossword) return pendingCrossword;
+      const lessonWords = lesson.wordIds.flatMap((wordId) =>
+        words.filter((word) => word.id === wordId),
+      );
+      const request = ai
+        .generateCrossword({
+          languages: profile.languages,
+          words: lessonWords,
+          level: profile.level,
+        })
+        .then(({ puzzle }) => {
+          const isLessonOpen = get().lessons.some(
+            (candidate) => candidate.id === lessonId,
+          );
+          if (isLessonOpen) {
+            set((state) => ({
+              crosswords: { ...state.crosswords, [lessonId]: puzzle },
+            }));
+          }
+        })
+        .finally(() => pendingCrosswords.delete(lessonId));
+      pendingCrosswords.set(lessonId, request);
       return request;
     },
   }));

@@ -1,5 +1,6 @@
 export const lessonTaskTypes = [
   'flashcards',
+  'crossword',
   'listen',
   'read',
   'answer',

@@ -51,6 +51,8 @@ export type {
   AnswerExercise,
   AnswerExercisesRequest,
   AnswerExercisesResponse,
+  CrosswordRequest,
+  CrosswordResponse,
   AiService,
   GapSentence,
   GapSentencesRequest,
@@ -116,3 +118,30 @@ export {
   recordListenRepeat,
 } from './listen';
 export type { ListenSession } from './listen';
+export {
+  closeCrosswordEntry,
+  createCrosswordSession,
+  crosswordCellKey,
+  crosswordCells,
+  crosswordDirections,
+  crosswordEntryAt,
+  crosswordProblems,
+  crosswordResult,
+  crosswordSolution,
+  areLessonWordsFound,
+  nextCrosswordCell,
+  selectCrosswordEntry,
+  showCrosswordHint,
+  typeCrosswordLetter,
+  wrongTriesBeforeFill,
+  wrongTriesLeft,
+} from './crossword';
+export type {
+  CrosswordCell,
+  CrosswordDirection,
+  CrosswordEntry,
+  CrosswordEvent,
+  CrosswordProblem,
+  CrosswordPuzzle,
+  CrosswordSession,
+} from './crossword';

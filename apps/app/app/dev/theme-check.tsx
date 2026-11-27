@@ -344,7 +344,7 @@ export default function ThemeCheck() {
           xpLabel="+40 XP"
         />
         <TutorQuote variant="start" tabLabel="Chunk says">
-          Six tasks. Try to look surprised.
+          Seven tasks. Try to look surprised.
         </TutorQuote>
         <TutorQuote variant="pass" tabLabel="Chunk approves">
           Correct. Chunk pretends he is not impressed.

@@ -29,7 +29,7 @@ export const flashcardsScreenMeta = {
       'Called by the primary button: finish the cards and go to the next section',
     onNext: 'Called by the next card button',
     taskNames:
-      'The names of the six tasks, already translated, for the stepper buttons',
+      'The names of the seven tasks, already translated, for the stepper buttons',
     onTaskSelect:
       'Called with the task (from 1) whose stepper segment was tapped',
     onBack: 'Called by the back button: the list of lesson tasks',

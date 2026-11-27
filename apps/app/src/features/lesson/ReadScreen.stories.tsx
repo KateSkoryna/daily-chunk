@@ -100,14 +100,14 @@ export const Default: Story = {
 
     const stepper = canvas.getByRole('toolbar', {
       name: t('lesson.stepLabel', {
-        step: '03',
+        step: '04',
         task: t('lesson.tasks.read'),
       }),
     });
     const segments = within(stepper).getAllByRole('button');
 
-    expect(segments).toHaveLength(6);
-    expect(segments[2]).toHaveAttribute('aria-current', 'step');
+    expect(segments).toHaveLength(7);
+    expect(segments[3]).toHaveAttribute('aria-current', 'step');
     expect(canvas.getByText(t('read.hint'))).toBeTruthy();
     expect(canvas.queryByText(translation)).toBeNull();
     expect(

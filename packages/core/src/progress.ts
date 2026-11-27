@@ -6,6 +6,7 @@ export const lessonXp = 100;
 export const placeholderTaskBonusXp: Readonly<Record<LessonTaskType, number>> =
   {
     flashcards: 20,
+    crossword: 20,
     listen: 20,
     read: 20,
     answer: 20,

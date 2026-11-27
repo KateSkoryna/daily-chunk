@@ -25,7 +25,7 @@ const meta = {
     lessonLabel: '',
     stepLabel: '',
     xpLabel: '',
-    stepCount: 6,
+    stepCount: 7,
     currentStep: 1,
   },
   render: (args) => (

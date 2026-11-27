@@ -382,4 +382,36 @@ describe('app store', () => {
       store.getState().saveTaskResult('flashcards', { correct: 1, total: 1 }),
     ).rejects.toThrow('There is no open lesson');
   });
+
+  it('loads the crossword of the open lesson once, with its words', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('ru');
+    await store.getState().addTypedWords('Bahnhof\nFahrkarte\nGleis');
+    const lesson = await store.getState().startLesson();
+
+    await Promise.all([
+      store.getState().loadCrossword(lesson.id),
+      store.getState().loadCrossword(lesson.id),
+    ]);
+    const puzzle = store.getState().crosswords[lesson.id];
+
+    expect(
+      puzzle?.entries
+        .filter((entry) => entry.wordId)
+        .map((entry) => entry.wordId),
+    ).toEqual(['word-de-bahnhof', 'word-de-gleis', 'word-de-fahrkarte']);
+    expect(puzzle?.entries[0]?.translation).toBe('вокзал');
+  });
+
+  it('forgets the crossword when the lesson is abandoned', async () => {
+    const { store } = createStoreWith();
+    await store.getState().load('en');
+    await store.getState().addTypedWords('Gleis');
+    const lesson = await store.getState().startLesson();
+    await store.getState().loadCrossword(lesson.id);
+
+    await store.getState().abandonLesson();
+
+    expect(store.getState().crosswords).toEqual({});
+  });
 });

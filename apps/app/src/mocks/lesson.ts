@@ -21,9 +21,10 @@ export const doneDemo = {
 
 export const stepXpDemo = {
   flashcards: 0,
-  listen: 20,
-  read: 40,
-  answer: 60,
-  'gap-fill': 80,
-  translate: 110,
+  crossword: 20,
+  listen: 40,
+  read: 60,
+  answer: 80,
+  'gap-fill': 100,
+  translate: 130,
 } satisfies Record<LessonTaskType, number>;

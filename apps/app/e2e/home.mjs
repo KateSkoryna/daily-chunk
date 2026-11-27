@@ -108,8 +108,8 @@ try {
   assert.equal(await page.getByRole('button', { name: /^Edit/ }).count(), 0);
   await page.getByRole('button', { name: 'Start lesson' }).click();
   await page.waitForURL('**/lesson/overview');
-  await page.getByRole('list').getByRole('listitem').nth(5).waitFor();
-  assert.equal(await page.getByRole('list').getByRole('listitem').count(), 6);
+  await page.getByRole('list').getByRole('listitem').nth(6).waitFor();
+  assert.equal(await page.getByRole('list').getByRole('listitem').count(), 7);
   await page.getByRole('button', { name: 'Start', exact: true }).click();
   await page.waitForURL('**/lesson/flashcards');
   await page.getByText('Lesson 1', { exact: true }).waitFor();
