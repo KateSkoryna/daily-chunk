@@ -760,23 +760,24 @@ Status: final, all steps `DONE`. One branch `feat/phase-2-screens`, one PR.
 
 Branches are one per step (phase 3 is back to the normal rule).
 
-| Step      | Status         | Branch                   |
-| --------- | -------------- | ------------------------ |
-| 3.1       | DONE           | `feat/navigation-shell`  |
-| 3.2       | DONE           | `feat/storage`           |
-| 3.3       | DONE           | `feat/srs-scheduler`     |
-| 3.4       | DONE           | `feat/ai-mocks`          |
-| 3.5       | DONE           | `feat/home-screen`       |
-| 3.6       | DONE           | `feat/confirm-screen`    |
-| 3.7       | DONE           | `feat/flashcards-screen` |
-| 3.8       | DONE           | `feat/listen-screen`     |
-| 3.9       | DONE           | `feat/read-screen`       |
-| 3.9b      | DONE           | `feat/tips-lamp`         |
-| 3.9c      | DONE           | `feat/word-chips-input`  |
-| 3.9d      | DONE           | `feat/read-quiz`         |
-| 3.10      | WAITING-REVIEW | `feat/answer-screen`     |
-| 3.11–3.13 | TODO           | `feat/<screen>-screen`   |
-| 3.14      | TODO           | `chore/phase-3-review`   |
+| Step      | Status | Branch                   |
+| --------- | ------ | ------------------------ |
+| 3.1       | DONE   | `feat/navigation-shell`  |
+| 3.2       | DONE   | `feat/storage`           |
+| 3.3       | DONE   | `feat/srs-scheduler`     |
+| 3.4       | DONE   | `feat/ai-mocks`          |
+| 3.5       | DONE   | `feat/home-screen`       |
+| 3.6       | DONE   | `feat/confirm-screen`    |
+| 3.7       | DONE   | `feat/flashcards-screen` |
+| 3.8       | DONE   | `feat/listen-screen`     |
+| 3.9       | DONE   | `feat/read-screen`       |
+| 3.9b      | DONE   | `feat/tips-lamp`         |
+| 3.9c      | DONE   | `feat/word-chips-input`  |
+| 3.9d      | DONE   | `feat/read-quiz`         |
+| 3.10      | DONE   | `feat/answer-screen`     |
+| 3.10b     | DONE   | `feat/crossword-screen`  |
+| 3.11–3.13 | TODO   | `feat/<screen>-screen`   |
+| 3.14      | TODO   | `chore/phase-3-review`   |
 
 ### 3.1 Navigation shell
 
@@ -934,6 +935,25 @@ Branches are one per step (phase 3 is back to the normal rule).
 - Learning note: `docs/learn/answer-task.md`.
 - Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm run test:ci` (Ubuntu image) → exit 0: 8 languages, 16 i18n, 110 core (new module 100% lines), 442 app (140 files, EN and RU); navigation, storage, home, flashcards, listen, read and answer e2e passed.
 - Review: 0 blocking, 2 medium, 3 low. Fixed: an empty exercise list shows the failure notice with Back instead of a blank screen; evidence and limits written above. Left, named: the mock ignores the level; the Russian translation of the Fahrkarte answer drops "für den Zug" in a free wording.
+
+### 3.10b Crossword (task 2)
+
+- Owner decisions (chat, 2026-11-27): build the crossword before Gap fill; edit `DESIGN.md` (crossword rows, seven tasks, `AnswerScreen` in place of `RecordScreen` in the screen list); the AI mock returns the designed grid and a layout function that places any words is a later step; the score counts lesson words without a filled-in letter (the hint is free); cells stretch to the column width and, like the keyboard keys, may be under 3rem on a phone.
+- Result (`core`): task `crossword` after `flashcards` (`lessonTaskTypes`, 7 tasks; `placeholderTaskBonusXp.crossword` 20, so the header XP before the tasks is 0, 20, 40, 60, 80, 100, 130). `crossword.ts`: puzzle and entry types (a link word has `wordId: null`), `crosswordProblems` (missing word, outside the grid, letter clash, given cell outside the words), the session (`selectCrosswordEntry`, `typeCrosswordLetter` with `wrongTriesBeforeFill` = 3, `showCrosswordHint`, `closeCrosswordEntry`, `crosswordEntryAt`, a word filled by crossing words counts as solved), `crosswordResult`. `AiService.generateCrossword` with request (languages, words, level) and response types.
+- Result (languages): `keyboardRows` in the target pack (German QWERTZ with Ü Ö Ä ß).
+- Result (app): `Crossword` and `LetterKeyboard` components and `CrosswordScreen` (metas, stories), `crossword-grid.ts` (cell looks), route `app/lesson/crossword.tsx`, store action `loadCrossword` (same shape as `loadAnswerExercises`), mock grid in `mocks/crossword.ts` (a grid word not in the lesson becomes a link word). Flashcards now end on `/lesson/crossword`, the crossword ends on `/lesson/listen`. `TopBar.Button` got `variant="tip"` and `disabled` (the lamp). The step number, count and label of every task screen now come from `lessonStep(task)` and `useLessonNavigation` takes the task, so no screen holds a hard-coded step number. `cn` now knows the custom sizes (`touch`, `control`…), so `min-w-0` can replace `min-w-touch`. Strings `crossword.*`, `lesson.tasks.crossword`, `lesson.taskDescriptions.crossword` and "Seven tasks" (EN and RU, **the Russian is mine, please read it**).
+- `DESIGN.md`: new rows `Crossword`, `LetterKeyboard`, `CrosswordScreen`; `TopBar` tip variant; `LessonStepper` one segment per task (7); `LessonOverviewScreen` seven tasks; screen list with `CrosswordScreen` and `AnswerScreen`. No new token.
+- E2E: `e2e/crossword.mjs` (in `npm run e2e`): flashcards lead to the crossword; start line and a disabled next button; open 1 down (clue, "Lesson word · 7 letters", keyboard); a wrong letter ("Not X. 2 tries left"); three wrong letters fill it in; the hint shows "Hint: station" and the lamp turns disabled; the word solves past the given H and shows "der Bahnhof"; the link word opens with "Link word" and closes; the other words solve; "All words found."; next opens Listen with +40 XP; saved `crossword 2/3`. The home, flashcards, listen and read e2e follow the new order.
+- Limits, named: the mock grid only knows Bahnhof, Zug, Gleis and Fahrkarte, so a lesson word outside it is missing from the grid (`crosswordProblems` would say `missing-word`); the grid is not checked by `crosswordProblems` in the app yet (phase 5, with the layout function); typing on the web uses the drawn keyboard only (no physical keyboard).
+- Owner request (chat, same day: "on a mobile phone the phone keyboard should appear"): the drawn keyboard is web only (`LetterKeyboard.web.tsx`); the phone app (`LetterKeyboard.tsx`) focuses a hidden one-letter field so the phone keyboard opens, passes each typed letter on in upper case (ß stays ß), and closing the phone keyboard closes the clue panel (tap the word to open it again). Not tried on a device yet: **please check it on the A54**. `npx expo export --platform android` → exported. Limit: a phone keyboard without umlauts cannot type Ü, Ö, Ä (no ue/oe/ae alternatives in letter-by-letter typing yet).
+- Learning note: `docs/learn/crossword-task.md`.
+- Evidence: `npx nx run-many -t lint typecheck check-meta --skip-nx-cache` → exit 0; `npx prettier --check .` → exit 0; `npm test` → 9 languages, 16 i18n, 129 core (`crossword.ts` new), 485 app (147 files, EN and RU); `npx nx run @daily-chunk/app:e2e` → navigation, storage, home, flashcards, crossword, listen, read and answer e2e passed.
+
+- `npm run test:ci` (Ubuntu image, after the review fixes) → 9 languages, 16 i18n, 129 core, 485 app passed; crossword e2e passed again after the fixes.
+- Review: 0 blocking, 4 medium, 5 low. Fixed: the route updates the session from the current state (a phone keyboard that sends several letters at once lost all but the last); Android keyboard without word prediction (`visible-password`); letters upper-cased without the device locale; `answer` documents that ß stays ß; `DESIGN.md` `border-3` row names the crossword cursor. Open, for the owner: on desktop and tablet web the cells stretch to about 8rem and the grid is taller than the screen (needs a width cap, see the question); on the A54, check that the phone keyboard does not hide the clue panel and that Samsung Keyboard types letter by letter. Known: a cell filled in by Chunk while typing a link word also costs the crossing lesson word its point. Story controls stay off for these components (their props are built from the puzzle), like the other screens.
+- Owner request (chat, same day: the screen jumps when the keyboard opens): `react-native-keyboard-controller` 1.22.7 (installed with `npx expo install`), `KeyboardProvider` in the root layout and its `KeyboardAvoidingView` in `Screen` (registered with NativeWind in `keyboard-avoiding-interop.ts`), so every screen moves with the phone keyboard frame by frame. Native code: **the development APK has to be built again** (`eas build --profile development --platform android`). `DESIGN.md` §11 has one line on it; learning note `docs/learn/keyboard-controller.md`. Evidence: lint, typecheck, prettier exit 0; `npx expo export --platform android` → exported; 8 e2e passed; `npm run test:ci` → 9, 16, 129, 485 passed. Found by the owner on the phone: the status bar turned white, because the provider assumed bars that are not see-through and moved the app below them, while Expo draws the app edge to edge; fixed with `statusBarTranslucent`, `navigationBarTranslucent` and `preserveEdgeToEdge` on `KeyboardProvider`. Not reviewed by a second reviewer run; not tried on the A54 yet.
+- Owner request (chat, same day: the gap under the status bar is too big, and it must look right on every phone): `Screen` now pads its content by the phone's real safe-area insets (`useSafeAreaInsets` from `react-native-safe-area-context`) and then by `screen-top`, now 1rem (was a fixed 3.5rem); the bottom inset too, except on tab screens, where the tab bar owns it (`ScreenEdgesContext` set in the tabs layout). `Drawer` has its own `SafeAreaProvider` inside its `Modal` and draws under the bars. Storybook wraps stories in a `SafeAreaProvider`. A first try with NativeWind's `pt-safe-offset-4` was dropped: it exists only in NativeWind's phone build and showed no inset on the A54. `DESIGN.md` §6 updated; learning note `docs/learn/safe-areas.md`. Dev pages keep a fixed `pt-14`.
+- Web layout (owner, same day, after the grid was huge on the web): from `desktop` (64rem) the grid and the task column (status or clue panel, then the drawn keyboard) share the row in proportion (`desktop:flex-row desktop:gap-8`): the grid by its number of columns, the task column as 9 columns, so the 9-column demo grid takes half and a wider grid takes more (owner: "if words take more space the crossword box should take more width"; story `WideGrid` checks 15 against 9); under the row the Next section button sits at the bottom (`mt-auto`) as on every task screen, always visible and disabled until every lesson word is found (`areLessonWordsFound` replaces `isCrosswordSolved`: the link word is not needed). Below `desktop` the row is stacked and the grid is at most 22.5rem. In the phone app the button hides while a word is open (it would sit under the phone keyboard). The story `WideScreen` checks the two halves and the button under them; `LessonWordsFound` checks that the button turns on without the link word. Checked in a browser at 1280×800 and 390×844.
 
 ### Flashcards fixes found on the A54 (made on the Listen branch, own commit)
 
